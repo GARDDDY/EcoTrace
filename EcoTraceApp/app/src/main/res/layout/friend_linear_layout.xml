@@ -1,0 +1,30 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="1dp"
+        android:layout_marginTop="1dp"
+        android:layout_marginEnd="1dp"
+        android:layout_marginBottom="1dp"
+        android:orientation="vertical">
+
+        <ImageButton
+            android:id="@+id/user_img_friend_layout"
+            android:layout_width="52dp"
+            android:layout_height="52dp"
+            android:layout_gravity="center"
+            android:padding="0dp"
+            android:src="@drawable/error"
+            android:foregroundTint="@color/red_no"
+            android:backgroundTint="@color/transparent" />
+
+        <TextView
+            android:id="@+id/username_friend_layout"
+            android:layout_width="wrap_content"
+            android:layout_gravity="center"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:padding="5dp"
+            android:textSize="14dp"
+            android:layout_height="wrap_content"
+            android:text="Username" />
+</LinearLayout>

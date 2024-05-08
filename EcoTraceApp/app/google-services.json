@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "805802078645",
+    "firebase_url": "https://ecotrace-cf2be-default-rtdb.firebaseio.com",
+    "project_id": "ecotrace-cf2be",
+    "storage_bucket": "ecotrace-cf2be.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:805802078645:android:204f9598db992e4e9ee9fc",
+        "android_client_info": {
+          "package_name": "com.gy.ecotrace"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDFntTAbp_W6ckFJQu6lnU9jbBark3ZQXU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

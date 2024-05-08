@@ -1,0 +1,35 @@
+<resources>
+    <string name="app_name" translatable="false">EcoTrace</string>
+    <string name="news">Новости</string>
+
+    <string name="education">Образование</string>
+
+
+    <string name="ratings">Рейтинг</string>
+
+    <string name="more">Ещё</string>
+    <string name="profile">Мой профиль</string>
+    <string name="login">Логин</string>
+    <string name="email">Email</string>
+    <string name="login_email">Логин/Email</string>
+    <string name="password">Пароль</string>
+    <string name="signin">Войти</string>
+    <string name="forgot">Забыли пароль?</string>
+    <string name="signup">Зарегистрироваться</string>
+    <string name="fullname">Ваше имя</string>
+    <string name="male"><b>Мужчина</b></string>
+    <string name="female"><b>Женщина</b></string>
+    <string name="noaccount"><b>Нет аккаунта?</b></string>
+    <string name="account"><b>Есть аккаунт?</b></string>
+    <string name="send_code">Отправить код</string>
+    <string name="code">Полученный код</string>
+    <string name="calculator">Экологический калькулятор</string>
+
+    <string-array name="whoCanSeeFullname">
+        <item>Все</item>
+        <item>Только друзья</item>
+        <item>Никто</item>
+    </string-array>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/navigation_news"
+        android:icon="@drawable/outline_breaking_news_24"
+        android:title="News" />
+
+    <item
+        android:id="@+id/navigation_education"
+        android:icon="@drawable/outline_history_edu_24"
+        android:title="Education" />
+
+    <item
+        android:id="@+id/navigation_ratings"
+        android:icon="@drawable/outline_arrow_outward_24"
+        android:title="Ratings" />
+
+    <item
+        android:id="@+id/navigation_more"
+        android:icon="@drawable/outline_more_vert_24"
+        android:title="More" />
+</menu>
