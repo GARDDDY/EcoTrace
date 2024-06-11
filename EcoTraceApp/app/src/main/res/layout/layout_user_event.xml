@@ -1,0 +1,45 @@
+<!-- form_layout.xml -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:paddingEnd="10dp"
+    android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/event_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="event_name"
+            android:textColor="@color/silver"
+            android:textStyle="bold" />
+
+        <ImageView
+            android:id="@+id/event_show_more"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:srcCompat="@drawable/baseline_remove_red_eye_24" />
+
+        <TextView
+            android:id="@+id/event_status"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="event_status"
+            android:textColor="@color/ok_green" />
+
+        <TextView
+            android:id="@+id/event_count_members"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="event_count_members"
+            android:textColor="@color/ok_green" />
+
+        <TextView
+            android:id="@+id/event_user_role"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="event_user_role"
+            android:textColor="@color/ok_green" />
+
+</LinearLayout>

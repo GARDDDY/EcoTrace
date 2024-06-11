@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
+
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
@@ -18,13 +19,35 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
-            android:name=".ui.activities.profile.SignInUpHub"
+            android:name=".ui.more.events.CreateEventActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.more.groups.ShowGroupActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.more.groups.CreateOwnGroupActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.more.groups.AllGroupsActivity"
+            android:exported="false"
+            android:theme="@style/Theme.AppCompat.NoActionBar" />
+        <activity
+            android:name=".ui.more.events.ShowEventActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.more.events.Activity_CreateOwnEvent"
+            android:exported="false" />
+        <activity
+            android:name=".ui.more.events.Activity_AllEventsList"
+            android:exported="false" />
+        <activity
+            android:name=".ui.more.profile.SignInUpHub"
             android:exported="false" />
         <activity
             android:name=".ui.more.activities.GroupsSearchAndCreate"
             android:exported="false" />
         <activity
-            android:name=".ui.more.activities.UsersSearchFriends"
+            android:name=".ui.more.friends.UsersSearchFriends"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -39,15 +62,15 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ui.activities.profile.ChangeProfile"
+            android:name=".ui.more.profile.ChangeProfile"
             android:exported="false" />
         <activity
             android:name=".ui.activities.CalculatorActivity"
             android:exported="false"
-            android:label="@string/calculator"
+            android:label="@string/ecocalc"
             android:theme="@style/Theme.AppCompat.NoActionBar" />
         <activity
-            android:name=".ui.activities.profile.ProfileActivity"
+            android:name=".ui.more.profile.ProfileActivity"
             android:exported="false"
             android:label="@string/profile"
             android:theme="@style/Theme.AppCompat.NoActionBar" />
@@ -62,11 +85,17 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <service android:name=".PushNotificationsService" android:exported="false">
+
+        <service
+            android:name=".db.PushNotificationsService"
+            android:exported="false">
             <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
+        <service
+            android:name=".AppGlobalServices"
+            android:stopWithTask="false" />
     </application>
 
 </manifest>

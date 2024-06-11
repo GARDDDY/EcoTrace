@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.button.MaterialButton xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:clickable="false"
+    android:text="tag_filter"
+    android:textColor="#1A331F"
+    app:backgroundTint="#7DB388"
+    app:cornerRadius="30dp">
+
+</com.google.android.material.button.MaterialButton>

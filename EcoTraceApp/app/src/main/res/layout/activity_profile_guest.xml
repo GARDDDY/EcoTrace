@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@color/dirt_white"
     android:fitsSystemWindows="true"
-    tools:context=".ui.activities.profile.ProfileActivity">
+    tools:context=".ui.more.profile.ProfileActivity">
 
     <ProgressBar
         android:id="@+id/Guest_progressBar"

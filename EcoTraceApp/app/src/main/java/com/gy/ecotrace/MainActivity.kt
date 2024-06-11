@@ -1,7 +1,8 @@
 package com.gy.ecotrace
 
-import android.content.Context
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar;
@@ -10,6 +11,9 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.gy.ecotrace.databinding.ActivityMainBinding
+import com.imagekit.android.ImageKit
+import com.imagekit.android.entity.TransformationPosition
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -37,15 +41,22 @@ class MainActivity : AppCompatActivity() {
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
 
-        val localSettings = getSharedPreferences("localValues", Context.MODE_PRIVATE)
+        val localSettings = getSharedPreferences("localValues", MODE_PRIVATE)
         if (!localSettings.contains("created")){
             val creator = localSettings.edit()
             creator.putBoolean("created", true)
             creator.putString("loggedId", "0")
             creator.apply()
         }
-        Globals.getInstance().setString("CurrentlyLogged", localSettings.getString("loggedId", "0"))
-        Globals.getInstance().setString("CurrentlyWatching", localSettings.getString("loggedId", "0"))
-        FirebaseMethods().appCont(this)
+        Globals.getInstance().setString("CurrentlyLogged", localSettings.getString("loggedId", "0")!!)
+        Globals.getInstance().setString("CurrentlyWatching", localSettings.getString("loggedId", "0")!!)
+        startService(Intent(this, Globals::class.java))
+
+        ImageKit.init(
+            applicationContext,
+            "public_tRIdzX7zcMC4IdUKnQkmL9sZoWY=",
+            "https://ik.imagekit.io/ecoimagetracekit",
+            TransformationPosition.PATH,
+        );
     }
 }

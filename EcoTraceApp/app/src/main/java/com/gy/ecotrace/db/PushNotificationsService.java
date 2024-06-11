@@ -1,4 +1,4 @@
-package com.gy.ecotrace;
+package com.gy.ecotrace.db;
 
 import android.app.Notification;
 import android.app.NotificationChannel;
@@ -14,6 +14,7 @@ import androidx.core.app.NotificationManagerCompat;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
+import com.gy.ecotrace.R;
 
 public class PushNotificationsService extends FirebaseMessagingService {
     @RequiresApi(api = Build.VERSION_CODES.O)

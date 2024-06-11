@@ -29,7 +29,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:backgroundTint="@color/ok_green"
-            android:text="Ecological calculator"
+            android:text="@string/ecocalc"
             android:textColor="@color/dirt_white" />
 
         <Button
@@ -37,7 +37,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:backgroundTint="@color/ok_green"
-            android:text="Сообщения"
+            android:text="@string/messages"
             android:textColor="@color/dirt_white" />
 
         <Button
@@ -45,14 +45,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:backgroundTint="@color/ok_green"
-            android:text="Друзья"
+            android:text="@string/friends"
             android:textColor="@color/dirt_white" />
-
-        <Button
-            android:id="@+id/see_groups_button_more_menu"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Группы" />
 
         <TextView
             android:id="@+id/textView5"
@@ -68,7 +62,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:backgroundTint="@color/ok_green"
-            android:text="Просмотреть все"
+            android:text="@string/showall"
             android:textColor="@color/dirt_white" />
 
         <Button
@@ -76,7 +70,32 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:backgroundTint="@color/ok_green"
-            android:text="Создать свою"
+            android:text="@string/createown"
+            android:textColor="@color/dirt_white" />
+
+        <TextView
+            android:id="@+id/textView6"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="30dp"
+            android:text="Группы"
+            android:textColor="@color/black"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/button7"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/ok_green"
+            android:text="@string/showall"
+            android:textColor="@color/dirt_white" />
+
+        <Button
+            android:id="@+id/button8"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/ok_green"
+            android:text="@string/createown"
             android:textColor="@color/dirt_white" />
 
         <TextView
@@ -87,14 +106,6 @@
             android:text="Настройки"
             android:textColor="@color/black"
             android:textStyle="bold" />
-
-        <Button
-            android:id="@+id/apply_user_theme_btn"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:backgroundTint="@color/ok_green"
-            android:text="Apply own color theme"
-            android:textColor="@color/dirt_white" />
 
         <TextView
             android:id="@+id/textView13"
@@ -110,7 +121,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:backgroundTint="@color/ok_green"
-            android:text="Как пользоваться"
+            android:text="@string/howtouse"
             android:textColor="@color/dirt_white" />
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

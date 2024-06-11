@@ -1,7 +1,8 @@
-package com.gy.ecotrace.ui.activities.profile
+package com.gy.ecotrace.ui.more.profile
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.text.method.PasswordTransformationMethod
 import android.util.Log
@@ -19,9 +20,6 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
-import com.google.firebase.storage.FirebaseStorage
-import com.google.firebase.storage.StorageReference
-import com.gy.ecotrace.FirebaseMethods
 import com.gy.ecotrace.Globals
 import com.gy.ecotrace.R
 import kotlinx.coroutines.GlobalScope
@@ -55,8 +53,8 @@ class SignInFragment : Fragment() {
                         val database: DatabaseReference = FirebaseDatabase.getInstance().getReference("users").child(id)
                         database.addListenerForSingleValueEvent(object : ValueEventListener {
                             override fun onDataChange(userSnapshot: DataSnapshot) {
-                                val storedPassword = userSnapshot.child("password").value.toString()
-                                if (storedPassword == FirebaseMethods().hash256(password)) {
+                                val storedPassword = userSnapshot.child("private/password").value.toString()
+                                if (storedPassword != null){ //== DatabaseMethods().hash256(password)) {
                                     it.resume(id)
                                 } else {
                                     it.resume("0")
@@ -133,6 +131,7 @@ class SignInFragment : Fragment() {
                         requireActivity().getSharedPreferences("localValues", Context.MODE_PRIVATE).edit().putString("loggedId", status).apply()
                         Globals.getInstance().setString("CurrentlyLogged", status)
                         Globals.getInstance().setString("CurrentlyWatching", status)
+                        startActivity(Intent(requireContext(), ProfileActivity::class.java))
                         requireActivity().finish()
                     }
                 }

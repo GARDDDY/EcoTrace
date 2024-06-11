@@ -6,10 +6,10 @@
     android:layout_height="match_parent"
     android:background="@color/dirt_white"
     android:fitsSystemWindows="true"
-    tools:context=".ui.activities.profile.ProfileActivity">
+    tools:context=".ui.more.profile.ProfileActivity">
 
     <ProgressBar
-        android:id="@+id/progressBar"
+        android:id="@+id/progressBar_loading"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:indeterminateTint="@color/ok_green"
@@ -21,7 +21,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <androidx.appcompat.widget.Toolbar
+    <android.widget.Toolbar
         android:id="@+id/toolbar_profile"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -32,22 +32,16 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-
-    <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/content_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:visibility="gone" />
-
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/refresh_profile"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolbar_profile"
-        app:layout_constraintVertical_bias="1.0">>
+        app:layout_constraintVertical_bias="1.0">
 
         <ScrollView
             android:id="@+id/scrollView2"
@@ -72,7 +66,6 @@
                         android:layout_width="128dp"
                         android:layout_height="128dp"
                         android:layout_weight="0"
-                        android:tint="@color/ok_green"
                         tools:srcCompat="@drawable/baseline_person_24" />
 
                     <LinearLayout
@@ -95,13 +88,13 @@
                             android:textStyle="bold" />
 
                         <TextView
-                            android:id="@+id/textView19"
+                            android:id="@+id/user_about_me_text"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_weight="1"
                             android:layout_margin="10dp"
-                            android:textColor="@color/ok_green"
-                            android:text="About me" />
+                            android:layout_weight="1"
+                            android:text="About me"
+                            android:textColor="@color/ok_green" />
 
                         <EditText
                             android:id="@+id/edit_aboutMe_entry"
@@ -219,7 +212,9 @@
                     android:id="@+id/user_public_info_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:paddingTop="15dp"
+                    android:paddingBottom="30dp">
 
                     <LinearLayout
                         android:layout_width="wrap_content"
@@ -232,7 +227,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:gravity="center"
-                            android:text="Страна"
+                            android:text="@string/country"
                             android:textColor="@color/ok_green"
                             android:textStyle="bold" />
 
@@ -240,11 +235,10 @@
                             android:id="@+id/imageView"
                             android:layout_width="50dp"
                             android:layout_height="50dp"
-                            android:tint="@color/purple_200"
                             app:srcCompat="@drawable/baseline_flag_24" />
 
                         <TextView
-                            android:id="@+id/textView21"
+                            android:id="@+id/user_country_text"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:gravity="center"
@@ -263,7 +257,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:gravity="center"
-                            android:text="Ранг"
+                            android:text="@string/rank"
                             android:textColor="@color/ok_green"
                             android:textStyle="bold" />
 
@@ -283,6 +277,7 @@
                     </LinearLayout>
 
                     <LinearLayout
+                        android:id="@+id/add_user_as_friend"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginHorizontal="20dp"
@@ -293,7 +288,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:gravity="center"
-                            android:text="В друзья"
+                            android:text="@string/addfriend"
                             android:textColor="@color/ok_green"
                             android:textStyle="bold" />
 
@@ -306,6 +301,7 @@
                     </LinearLayout>
 
                     <LinearLayout
+                        android:id="@+id/invite_user_to_group"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginHorizontal="20dp"
@@ -316,7 +312,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:gravity="center"
-                            android:text="В группу"
+                            android:text="@string/addgroup"
                             android:textColor="@color/ok_green"
                             android:textStyle="bold" />
 
@@ -330,18 +326,29 @@
 
                 </LinearLayout>
 
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp"
+                    android:text="@string/useractivity"
+                    android:textColor="@color/ok_green"
+                    android:textSize="17sp"
+                    android:textStyle="bold" />
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:paddingBottom="30dp">
 
                     <Spinner
                         android:id="@+id/spinner2"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:backgroundTint="@color/ok_green"
-                        android:gravity="end" />
+                        android:layout_marginBottom="15dp"
+                        android:backgroundTint="@color/transparent"
+                        android:entries="@array/eventsAndStatistics"
+                        android:spinnerMode="dropdown" />
 
                     <FrameLayout
                         android:id="@+id/activities_graphs_framelayout"
@@ -351,111 +358,70 @@
 
                     </FrameLayout>
 
-                    <HorizontalScrollView
+                    <TextView
+                        android:id="@+id/text_warning_no_activity"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent">
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="@string/noeventfound"
+                        android:textColor="@color/black"
+                        android:textSize="20sp" />
+
+                    <HorizontalScrollView
+                        android:id="@+id/events_scroll_view_profile"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:visibility="gone">
 
                         <LinearLayout
                             android:id="@+id/activities_layout"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
-                            android:orientation="horizontal">
-
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:layout_marginRight="10dp"
-                                android:orientation="vertical">
-
-                                <TextView
-                                    android:id="@+id/textView26"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:gravity="center"
-                                    android:text="event_name"
-                                    android:textColor="@color/silver"
-                                    android:textStyle="bold" />
-
-                                <ImageButton
-                                    android:id="@+id/imageButton4"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    app:srcCompat="@drawable/baseline_remove_red_eye_24" />
-
-                                <TextView
-                                    android:id="@+id/textView29"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:text="event_status"
-                                    android:textColor="@color/ok_green" />
-
-                                <TextView
-                                    android:id="@+id/textView27"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:text="event_count_members"
-                                    android:textColor="@color/ok_green" />
-
-                                <TextView
-                                    android:id="@+id/textView28"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:text="event_user_role"
-                                    android:textColor="@color/ok_green" />
-                            </LinearLayout>
-
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:orientation="vertical">
-
-                                <TextView
-                                    android:id="@+id/textView26"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:gravity="center"
-                                    android:text="event_name"
-                                    android:textColor="@color/silver"
-                                    android:textStyle="bold" />
-
-                                <ImageButton
-                                    android:id="@+id/imageButton4"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    app:srcCompat="@drawable/baseline_remove_red_eye_24" />
-
-                                <TextView
-                                    android:id="@+id/textView29"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:text="event_status"
-                                    android:textColor="@color/ok_green" />
-
-                                <TextView
-                                    android:id="@+id/textView27"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:text="event_count_members"
-                                    android:textColor="@color/ok_green" />
-
-                                <TextView
-                                    android:id="@+id/textView28"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:text="event_user_role"
-                                    android:textColor="@color/ok_green" />
-                            </LinearLayout>
-
-                        </LinearLayout>
+                            android:orientation="horizontal" />
                     </HorizontalScrollView>
 
                 </LinearLayout>
 
-                <LinearLayout
-                    android:id="@+id/friends_layout"
+                <TextView
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal"></LinearLayout>
+                    android:layout_height="wrap_content"
+                    android:layout_marginVertical="15dp"
+                    android:text="@string/userfriends"
+                    android:textColor="@color/ok_green"
+                    android:textSize="17sp"
+                    android:textStyle="bold" />
+
+                <HorizontalScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <LinearLayout
+                        android:id="@+id/friends_layout"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal" />
+                </HorizontalScrollView>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginVertical="15dp"
+                    android:text="@string/usergroups"
+                    android:textColor="@color/ok_green"
+                    android:textSize="17sp"
+                    android:textStyle="bold" />
+
+                <ScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <LinearLayout
+                        android:id="@+id/groups_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical" />
+                </ScrollView>
 
             </LinearLayout>
         </ScrollView>

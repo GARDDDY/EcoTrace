@@ -1,5 +1,7 @@
-package com.gy.ecotrace.ui.activities.profile
+package com.gy.ecotrace.ui.more.profile
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.FrameLayout

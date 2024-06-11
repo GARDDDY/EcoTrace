@@ -1,4 +1,4 @@
-package com.gy.ecotrace.ui.activities.profile
+package com.gy.ecotrace.ui.more.profile
 
 import android.content.Intent
 import android.os.Bundle
@@ -6,7 +6,6 @@ import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.gy.ecotrace.Globals
 import com.gy.ecotrace.R
-import java.security.MessageDigest
 
 
 class ProfileActivity : AppCompatActivity() {
@@ -23,9 +22,16 @@ class ProfileActivity : AppCompatActivity() {
         }
         else {
             Log.e("Profile", "Logged")
-            val loggedUser = ProfileFragment()
-            supportFragmentManager.beginTransaction().replace(R.id.main_profile_activity_layout, loggedUser).commit()
+            supportFragmentManager.beginTransaction().replace(R.id.main_profile_activity_layout, ProfileFragment()).commit()
         }
 
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        val previousId = intent.getStringExtra("previousId")
+        if (previousId != null) {
+            Globals.getInstance().setString("CurrentlyWatching", previousId)
+        }
     }
 }
