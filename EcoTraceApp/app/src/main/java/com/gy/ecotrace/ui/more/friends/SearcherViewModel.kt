@@ -35,14 +35,7 @@ class SearcherViewModel(private val repository: Repository) : ViewModel() {
         }
     }
 
-    val tags = mutableListOf<Triple<String, String, Pair<String, String>>>(
-        Triple("Активный", "\"Активный\" пользователь всегдат\nготов присоединиться к новым мероприятиям", Pair("#00FA9A", "#1A3329")),
-        Triple("Веселый", "\"Веселый\" пользователь", Pair("#FF7F50", "#33201A")),
-        Triple("Ветеран", "Пользователь, зарегистрировавшийся довольно давно (награда)", Pair("#00CED1", "#1A3333")),
-        Triple("В сети", "Пользователь часто бывает в сети", Pair("#DA70D6", "#331A32"))
-    )
-
-    private val filtersSearchNew = MutableList(tags.size) { false }
+    private val filtersSearchNew = MutableList(DatabaseMethods.DataClasses.UserFiltersSearchBy.size) { false }
     fun reapplyFilter(filterIndex: Int) {
         filtersSearchNew[filterIndex] = !filtersSearchNew[filterIndex]
     }

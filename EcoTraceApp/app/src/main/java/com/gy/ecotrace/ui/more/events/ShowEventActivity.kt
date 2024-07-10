@@ -1,35 +1,32 @@
 package com.gy.ecotrace.ui.more.events
 
 import android.content.Intent
-import android.graphics.PorterDuff
 import android.os.Bundle
-import android.widget.LinearLayout
-import android.widget.TextView
 import android.widget.Toolbar
 import androidx.activity.enableEdgeToEdge
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.bumptech.glide.Glide
+import androidx.viewpager2.adapter.FragmentStateAdapter
+import androidx.viewpager2.widget.ViewPager2
+import com.google.android.material.tabs.TabLayout
+import com.google.android.material.tabs.TabLayoutMediator
 import com.gy.ecotrace.Globals
 import com.gy.ecotrace.R
 import com.gy.ecotrace.db.DatabaseMethods
 import com.gy.ecotrace.db.Repository
-import com.gy.ecotrace.ui.more.profile.ProfileActivity
-
-class ShowEventViewModelFactory(private val repository: Repository) : ViewModelProvider.Factory {
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(ShowEventViewModel::class.java)) {
-            @Suppress("UNCHECKED_CAST")
-            return ShowEventViewModel(repository) as T
-        }
-        throw IllegalArgumentException("Unknown ViewModel class")
-    }
-}
+import com.gy.ecotrace.ui.more.events.showtabs.ShowEventStep1
+import com.gy.ecotrace.ui.more.events.showtabs.ShowEventStep2
+import com.gy.ecotrace.ui.more.events.showtabs.ShowEventStep3
+import com.gy.ecotrace.ui.more.events.showtabs.ShowEventStep4
+import com.gy.ecotrace.ui.more.events.showtabs.ShowEventViewModelFactory
+import com.yandex.mapkit.MapKitFactory
+import com.yandex.mapkit.map.Map
 
 class ShowEventActivity : AppCompatActivity() {
     private lateinit var eventViewModel: ShowEventViewModel
@@ -37,89 +34,91 @@ class ShowEventActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
+        if (!Globals.getInstance().getBool("ShowEvent_initMap")) {
+            val key = "f3d745ad-1974-4793-978d-52b3a165865c"
+            MapKitFactory.setApiKey(key)
+            MapKitFactory.initialize(this)
+            Globals.getInstance().setBool("ShowEvent_initMap", true)
+        }
+
         setContentView(R.layout.activity_show_event)
+        val currentEvent = Globals.getInstance().getString("CurrentlyWatchingEvent")
+        val currentUser = Globals.getInstance().getString("CurrentlyLogged")
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-        val currentEvent = Globals.getInstance().getString("CurrentlyWatchingEvent")
-
         val repository = Repository(DatabaseMethods.UserDatabaseMethods(), DatabaseMethods.ApplicationDatabaseMethods())
         val factory = ShowEventViewModelFactory(repository)
         eventViewModel = ViewModelProvider(this, factory)[ShowEventViewModel::class.java]
-
         val toolbar: Toolbar = findViewById(R.id.toolbar3)
-        val backIcon = ContextCompat.getDrawable(applicationContext, R.drawable.baseline_arrow_back_24)
-        backIcon?.setColorFilter(ContextCompat.getColor(applicationContext, R.color.ok_green), PorterDuff.Mode.SRC_ATOP)
-        toolbar.navigationIcon = backIcon
+        Globals().initToolbarIconBack(toolbar, applicationContext)
         toolbar.setNavigationOnClickListener {
             onBackPressed()
         }
+        val tabTitles = arrayOf("Основное", "Подробно", "Карта", "Участники")
 
+        val viewPager: ViewPager2 = findViewById(R.id.viewPager)
+        viewPager.adapter = ShowAdapter(this, 4)
+        viewPager.isUserInputEnabled = false
+        val tabView: TabLayout = findViewById(R.id.tabLayout)
+        TabLayoutMediator(tabView, viewPager) { tab, pos ->
+            tab.text = tabTitles[pos]
+        }.attach()
         eventViewModel.getEvent(currentEvent)
         eventViewModel.event.observe(this, Observer {
-                findViewById<TextView>(R.id.eventName).text = it.eventName
-                findViewById<TextView>(R.id.eventAbout).text = it.eventAbout
-                findViewById<TextView>(R.id.eventCountMembers).text = it.eventCountMembers.toString()
+            if (currentUser == it.eventCreatorId) {
+                toolbar.inflateMenu(R.menu.popup_menu_event)
+                toolbar.setOnMenuItemClickListener {
+                    when (it.itemId) {
+                        R.id.action_settings -> {
+                            Globals.getInstance().setString("CurrentlyEditingEvent", currentEvent)
+                            val myIntent = Intent(this, CreateEventActivity::class.java)
+                            startActivity(myIntent)
+                            true
+                        }
+                        R.id.action_logout -> {
+                            val builder = AlertDialog.Builder(this)
+                            builder.setTitle("Удаление мероприятия")
 
-            eventViewModel.getEventMembers(currentEvent, it)
-        })
-
-
-        eventViewModel.members.observe(this, Observer { member ->
-//            for (member in members) {
-                val userOneLayoutInEvent = layoutInflater.inflate(R.layout.layout_user_in_event, null)
-                userOneLayoutInEvent.findViewById<TextView>(R.id.username_user_in_event_layout).text = member.username
-                userOneLayoutInEvent.findViewById<TextView>(R.id.user_role_in_event_user_in_event_layout).text = DatabaseMethods.DataClasses.EventRoles[member.userRole]
-                userOneLayoutInEvent.findViewById<TextView>(R.id.user_group_user_in_event_layout).text = member.userBestGroupName
-                userOneLayoutInEvent.findViewById<TextView>(R.id.user_rank_user_in_event_layout).text = member.userRank
-                userOneLayoutInEvent.findViewById<TextView>(R.id.user_experience_user_in_event_layout).text = member.userExperience.toString()
-
-                Glide.with(this@ShowEventActivity)
-                    .load(Globals().getImgUrl("users", member.userId))
-                    .placeholder(R.drawable.baseline_person_24)
-                    .into(userOneLayoutInEvent.findViewById(R.id.user_img_user_in_event_layout))
-
-
-                userOneLayoutInEvent.findViewById<LinearLayout>(R.id.profile_open).setOnClickListener {
-                    Globals.getInstance().setString("CurrentlyWatching", member.userId)
-                    this@ShowEventActivity.startActivity(Intent(this@ShowEventActivity, ProfileActivity::class.java))
+                            builder.setMessage("Вы действительно хотите безвозвратно удалить это мероприятие?")
+                            builder.setPositiveButton("Подтвердить") { dialog, which ->
+                                // delete
+                                finish()
+                            }
+                            builder.setNegativeButton("Отмена") { dialog, which ->
+                                dialog.dismiss()
+                            }
+                            val dialog = builder.create()
+                            dialog.show()
+                            true
+                        }
+                        else -> {
+                            super.onOptionsItemSelected(it)
+                        }
+                    }
                 }
-
-                findViewById<LinearLayout>(R.id.users_in_event_layout).addView(userOneLayoutInEvent)
-//            }
+            }
         })
+    }
 
-//        findViewById<TextView>(R.id.eventName).text = eventData.eventInfo.eventName
-//        findViewById<TextView>(R.id.eventAbout).text = eventData.eventInfo.eventAbout
-//        findViewById<TextView>(R.id.eventCountMembers).text = eventData.eventInfo.eventCountMembers.toString()
-//
-//        eventData.eventInfo.eventUsersToTheirNames!!.forEach {(key, value) ->
-//            val userOneLayoutInEvent = layoutInflater.inflate(R.layout.layout_user_in_event, null)
-//            userOneLayoutInEvent.findViewById<TextView>(R.id.username_user_in_event_layout).text = value.username
-//            userOneLayoutInEvent.findViewById<TextView>(R.id.user_role_in_event_user_in_event_layout).text = DatabaseMethods.DataClasses.EventRoles[value.role]
-//
-//            Glide.with(this@ShowEventActivity)
-//                .load(Globals().getImgUrl("users", key))
-//                .placeholder(R.drawable.baseline_person_24)
-//                .into(userOneLayoutInEvent.findViewById(R.id.user_img_user_in_event_layout))
-//
-//
-//            userOneLayoutInEvent.findViewById<LinearLayout>(R.id.profile_open).setOnClickListener {
-//                Globals.getInstance().setString("CurrentlyWatching", key)
-//                this@ShowEventActivity.startActivity(Intent(this@ShowEventActivity, ProfileActivity::class.java))
-//            }
-//
-//            findViewById<LinearLayout>(R.id.users_in_event_layout).addView(userOneLayoutInEvent)
-//        }
+    class ShowAdapter(fragmentActivity: FragmentActivity, private val totalTabs: Int) : FragmentStateAdapter(fragmentActivity) {
+        override fun createFragment(position: Int): Fragment {
+            return when (position) {
+                0 -> ShowEventStep1()
+                1 -> ShowEventStep2()
+                2 -> ShowEventStep3()
+                else -> ShowEventStep4()
+            }
+        }
 
-        Glide.with(this@ShowEventActivity)
-            .load(Globals().getImgUrl("events", currentEvent))
-            .placeholder(R.drawable.round_family_restroom_24)
-            .into(findViewById(R.id.eventImage))
-
-
-
+        override fun getItemCount(): Int {
+            return totalTabs
+        }
+        override fun getItemViewType(position: Int): Int {
+            return position
+        }
     }
 }

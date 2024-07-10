@@ -78,6 +78,26 @@ class ProfileViewModel(private val repository: Repository) : ViewModel() {
         }
     }
 
+    fun observeEvents(userId: String) {
+        val eventsMap = mutableMapOf<String, DatabaseMethods.UserDatabaseMethods.UserActivity>()
+        viewModelScope.launch {
+            val data = repository.getEvents(userId)
+            for (event in data) {
+                eventsMap[event.eventInfo.eventId] = event
+            }
+            _events.postValue(eventsMap.values.toMutableList().sortedBy { it.eventInfo.eventCountMembers }.reversed().toMutableList())
+            for (event in data) {
+                repository.observeEventMembers(event.eventInfo.eventId) { updatedEventInfo ->
+                    val userEventClass = repository._event()
+                    userEventClass.isUserInEvent = event.isUserInEvent
+                    userEventClass.eventInfo = updatedEventInfo!!
+                    eventsMap[event.eventInfo.eventId] = userEventClass
+                    _events.postValue(eventsMap.values.toMutableList().sortedBy { it.eventInfo.eventCountMembers }.reversed().toMutableList())
+                }
+            }
+        }
+    }
+
     fun getFriends(userId: String) {
         viewModelScope.launch {
             val friends = repository.getFriends(userId)

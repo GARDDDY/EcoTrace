@@ -173,6 +173,7 @@ class ProfileFragment : Fragment() {
 
         Glide.with(this@ProfileFragment)
             .load(Globals().getImgUrl("users", currentUser))
+            .placeholder(R.drawable.baseline_person_24)
             .into(view.findViewById(R.id.profile_image_profile_menu))
 
 
@@ -190,38 +191,47 @@ class ProfileFragment : Fragment() {
             }
         })
         val eventRoles = DatabaseMethods.DataClasses.EventRoles
-        userViewModel.getEvents(currentUser)
+        userViewModel.observeEvents(currentUser)
         userViewModel.events.observe(viewLifecycleOwner, Observer { events ->
+            events?.let{
             if (events.size > 0) {
-            view.findViewById<TextView>(R.id.text_warning_no_activity).visibility = View.GONE
-            view.findViewById<HorizontalScrollView>(R.id.events_scroll_view_profile).visibility = View.VISIBLE
-            val activitiesLayout: LinearLayout = view.findViewById(R.id.activities_layout)
-            activitiesLayout.removeAllViews()
-            for (act in events) {
-                val activityOneLayout = layoutInflater.inflate(R.layout.layout_user_event, null)
-                activityOneLayout.findViewById<TextView>(R.id.event_name).text = act.eventInfo.eventName
-                val eventStatusString: String = when (act.eventInfo.eventStatus) {
-                    0 -> "Еще не началось!"
-                    1 -> "Уже проходит!"
-                    2 -> "Закончилось"
-                    else -> "error-unreal-status"
+                view.findViewById<TextView>(R.id.text_warning_no_activity).visibility = View.GONE
+                view.findViewById<HorizontalScrollView>(R.id.events_scroll_view_profile).visibility =
+                    View.VISIBLE
+                val activitiesLayout: LinearLayout = view.findViewById(R.id.activities_layout)
+                activitiesLayout.removeAllViews()
+                for (act in events) {
+                    val activityOneLayout = layoutInflater.inflate(R.layout.layout_user_event, null)
+                    activityOneLayout.findViewById<TextView>(R.id.event_name).text =
+                        act.eventInfo.eventName
+                    val eventStatusString: String = when (act.eventInfo.eventStatus) {
+                        0 -> "Еще не началось!"
+                        1 -> "Уже проходит!"
+                        2 -> "Закончилось"
+                        else -> "error-unreal-status"
+                    }
+                    activityOneLayout.findViewById<TextView>(R.id.event_status).text =
+                        eventStatusString
+                    activityOneLayout.findViewById<TextView>(R.id.event_count_members).text =
+                        "${act.eventInfo.eventCountMembers} участников"
+                    activityOneLayout.findViewById<TextView>(R.id.event_user_role).text =
+                        "Роль: "//${eventRoles[act.eventInfo.eventUsersToTheirRoles!!.get(currentUser)!!]}"
+
+                    Glide.with(this@ProfileFragment)
+                        .load(Globals().getImgUrl("events", "${act.eventInfo.eventId}"))
+                        .placeholder(R.drawable.round_family_restroom_24)
+                        .into(activityOneLayout.findViewById(R.id.event_show_more))
+
+                    activityOneLayout.setOnClickListener {
+                        Globals.getInstance()
+                            .setString("CurrentlyWatchingEvent", act.eventInfo.eventId)
+                        val eventIntent = Intent(requireActivity(), ShowEventActivity::class.java)
+                        eventIntent.putExtra("eInfo", Gson().toJson(act))
+                        this@ProfileFragment.startActivity(eventIntent)
+                    }
+
+                    activitiesLayout.addView(activityOneLayout)
                 }
-                activityOneLayout.findViewById<TextView>(R.id.event_status).text = eventStatusString
-                activityOneLayout.findViewById<TextView>(R.id.event_count_members).text = "${act.eventInfo.eventCountMembers} участников"
-                activityOneLayout.findViewById<TextView>(R.id.event_user_role).text = "Роль: ${eventRoles[act.eventUserRole]}"
-
-                Glide.with(this@ProfileFragment)
-                    .load(Globals().getImgUrl("events", "${act.eventInfo.eventId}"))
-                    .into(activityOneLayout.findViewById(R.id.event_show_more))
-
-                activityOneLayout.setOnClickListener {
-                    Globals.getInstance().setString("CurrentlyWatchingEvent", act.eventInfo.eventId)
-                    val eventIntent = Intent(requireActivity(), ShowEventActivity::class.java)
-                    eventIntent.putExtra("eInfo", Gson().toJson(act))
-                    this@ProfileFragment.startActivity(eventIntent)
-                }
-
-                activitiesLayout.addView(activityOneLayout)
             }
         }
 
@@ -247,6 +257,7 @@ class ProfileFragment : Fragment() {
 
                         Glide.with(this@ProfileFragment)
                             .load(Globals().getImgUrl("users", "${fr.userId}"))
+                            .placeholder(R.drawable.baseline_person_24)
                             .into(friendOneLayout.findViewById(R.id.user_img_friend_layout))
 
                         friendsLayout.addView(friendOneLayout)

@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <LinearLayout android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_margin="20dp"
+        android:gravity="center">
+
+        <TextView
+            android:id="@+id/textView40"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Подробно о целях мероприятия"
+            android:textColor="@color/black"
+            android:textSize="20sp" />
+
+        <ScrollView
+            android:id="@+id/goalsScrollViewCreateEvent"
+            android:layout_width="match_parent"
+            android:layout_height="128dp"
+            android:visibility="gone">
+
+            <LinearLayout
+                android:id="@+id/goalsLayoutCreateEvent"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" />
+        </ScrollView>
+
+        <Button
+            android:id="@+id/addEventGoal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:backgroundTint="@color/ok_green"
+            android:text="Добавить цель"
+            android:textColor="@color/dirt_white" />
+
+        <TextView
+            android:id="@+id/textView41"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="План действий по времени"
+            android:textColor="@color/black"
+            android:textSize="20sp" />
+
+        <ScrollView
+            android:id="@+id/timesScrollViewCreateEvent"
+            android:layout_width="match_parent"
+            android:layout_height="128dp"
+            android:visibility="gone">
+
+            <LinearLayout
+                android:id="@+id/timesLayoutCreateEvent"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" />
+        </ScrollView>
+
+        <Button
+            android:id="@+id/addEventTime"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:backgroundTint="@color/ok_green"
+            android:text="Добавить время"
+            android:textColor="@color/dirt_white" />
+
+    </LinearLayout>
+</FrameLayout>

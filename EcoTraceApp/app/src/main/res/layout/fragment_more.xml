@@ -4,124 +4,339 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/dirt_white"
     tools:context=".ui.more.MoreFragment">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/dirt_white"
+        android:layout_height="0dp"
         android:orientation="vertical"
+        android:gravity="center"
+        android:layout_marginTop="@dimen/default_PaddingMargin"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <Button
-            android:id="@+id/my_profile_button"
+        <LinearLayout
+            android:id="@+id/profileOpenLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:backgroundTint="@color/ok_green"
-            android:text="@string/profile"
-            android:textColor="@color/dirt_white" />
+            android:layout_marginHorizontal="@dimen/default_PaddingMargin"
+            android:clickable="true"
+            android:background="?attr/selectableItemBackground"
+            android:orientation="horizontal">
 
-        <Button
-            android:id="@+id/eco_calc_btn"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:backgroundTint="@color/ok_green"
-            android:text="@string/ecocalc"
-            android:textColor="@color/dirt_white" />
+            <ImageView
+                android:layout_width="64dp"
+                android:layout_height="64dp"
+                android:layout_marginEnd="@dimen/default_PaddingMargin"
+                android:src="@drawable/baseline_person_24"
+                app:tint="@color/ok_green" />
 
-        <Button
-            android:id="@+id/button2"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:backgroundTint="@color/ok_green"
-            android:text="@string/messages"
-            android:textColor="@color/dirt_white" />
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
 
-        <Button
-            android:id="@+id/see_users_button_more_menu"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:backgroundTint="@color/ok_green"
-            android:text="@string/friends"
-            android:textColor="@color/dirt_white" />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Мой профиль"
+                    android:textColor="@color/black"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
 
-        <TextView
-            android:id="@+id/textView5"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingLeft="30dp"
-            android:text="Активности"
-            android:textColor="@color/black"
-            android:textStyle="bold" />
+                <TextView
+                    android:id="@+id/openProfileDescriptionText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Ваш профиль"
+                    android:textColor="@color/black" />
+            </LinearLayout>
 
-        <Button
-            android:id="@+id/button4"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:backgroundTint="@color/ok_green"
-            android:text="@string/showall"
-            android:textColor="@color/dirt_white" />
+        </LinearLayout>
 
-        <Button
-            android:id="@+id/button5"
+        <View
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:backgroundTint="@color/ok_green"
-            android:text="@string/createown"
-            android:textColor="@color/dirt_white" />
+            android:layout_height="1dp"
+            android:layout_marginHorizontal="@dimen/default_PaddingMargin"
+            android:layout_marginBottom="@dimen/default_PaddingMargin"
+            android:background="@color/ok_green" />
 
-        <TextView
-            android:id="@+id/textView6"
+        <LinearLayout
+            android:id="@+id/ecologicalCalculatorOpenLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingLeft="30dp"
-            android:text="Группы"
-            android:textColor="@color/black"
-            android:textStyle="bold" />
+            android:layout_marginHorizontal="@dimen/default_PaddingMargin"
+            android:clickable="true"
+            android:orientation="horizontal">
 
-        <Button
-            android:id="@+id/button7"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:backgroundTint="@color/ok_green"
-            android:text="@string/showall"
-            android:textColor="@color/dirt_white" />
+            <ImageView
+                android:layout_width="64dp"
+                android:layout_height="64dp"
+                android:layout_marginEnd="@dimen/default_PaddingMargin"
+                android:src="@drawable/baseline_calculate_24"
+                app:tint="@color/ok_green" />
 
-        <Button
-            android:id="@+id/button8"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:backgroundTint="@color/ok_green"
-            android:text="@string/createown"
-            android:textColor="@color/dirt_white" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/textView11"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingLeft="30dp"
-            android:text="Настройки"
-            android:textColor="@color/black"
-            android:textStyle="bold" />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Экологический калькулятор"
+                    android:textColor="@color/black"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
 
-        <TextView
-            android:id="@+id/textView13"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingLeft="30dp"
-            android:text="Прочее"
-            android:textColor="@color/black"
-            android:textStyle="bold" />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Хотите узнать о вашем влиянии на окружающую среду?"
+                    android:textColor="@color/black" />
+            </LinearLayout>
 
-        <Button
-            android:id="@+id/button6"
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginHorizontal="@dimen/default_PaddingMargin"
+            android:layout_marginBottom="@dimen/default_PaddingMargin"
+            android:background="@color/ok_green" />
+
+        <LinearLayout
+            android:id="@+id/friendsOpenLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:backgroundTint="@color/ok_green"
-            android:text="@string/howtouse"
-            android:textColor="@color/dirt_white" />
+            android:layout_marginHorizontal="@dimen/default_PaddingMargin"
+            android:clickable="true"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="64dp"
+                android:layout_height="64dp"
+                android:layout_marginEnd="@dimen/default_PaddingMargin"
+                android:src="@drawable/baseline_people_24"
+                app:tint="@color/ok_green" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Друзья"
+                    android:textColor="@color/black"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Отличный способ быстро посмотреть список своих друзей и найти новых!"
+                    android:textColor="@color/black" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginHorizontal="@dimen/default_PaddingMargin"
+            android:layout_marginBottom="@dimen/default_PaddingMargin"
+            android:background="@color/ok_green" />
+
+
+<!--        <Button-->
+<!--            android:id="@+id/button2"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:backgroundTint="@color/ok_green"-->
+<!--            android:text="@string/messages"-->
+<!--            android:textColor="@color/dirt_white" />-->
+
+        <LinearLayout
+            android:id="@+id/allEventsOpenLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/default_PaddingMargin"
+            android:clickable="true"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="64dp"
+                android:layout_height="64dp"
+                android:layout_marginEnd="@dimen/default_PaddingMargin"
+                android:src="@drawable/round_family_restroom_24"
+                app:tint="@color/ok_green" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Мероприятия"
+                    android:textColor="@color/black"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Найдите подходящее для себя мероприятие или создайте новое!"
+                    android:textColor="@color/black" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginHorizontal="@dimen/default_PaddingMargin"
+            android:layout_marginBottom="@dimen/default_PaddingMargin"
+            android:background="@color/ok_green" />
+
+        <LinearLayout
+            android:id="@+id/allGroupsOpenLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/default_PaddingMargin"
+            android:clickable="true"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="64dp"
+                android:layout_height="64dp"
+                android:layout_marginEnd="@dimen/default_PaddingMargin"
+                android:src="@drawable/baseline_reduce_capacity_24"
+                app:tint="@color/ok_green" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Группы"
+                    android:textColor="@color/black"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Вступите в группу или создайте свою!"
+                    android:textColor="@color/black" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginHorizontal="@dimen/default_PaddingMargin"
+            android:layout_marginBottom="@dimen/default_PaddingMargin"
+            android:background="@color/ok_green" />
+
+        <LinearLayout
+            android:id="@+id/settingsOpenLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/default_PaddingMargin"
+            android:clickable="true"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="64dp"
+                android:layout_height="64dp"
+                android:layout_marginEnd="@dimen/default_PaddingMargin"
+                android:src="@drawable/baseline_settings_24"
+                app:tint="@color/ok_green" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Настройки"
+                    android:textColor="@color/black"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Найстройте параметры приложения под себя!"
+                    android:textColor="@color/black" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginHorizontal="@dimen/default_PaddingMargin"
+            android:layout_marginBottom="@dimen/default_PaddingMargin"
+            android:background="@color/ok_green" />
+
+        <LinearLayout
+            android:id="@+id/howToUseOpenLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/default_PaddingMargin"
+            android:clickable="true"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="64dp"
+                android:layout_height="64dp"
+                android:layout_marginEnd="@dimen/default_PaddingMargin"
+                android:src="@drawable/baseline_question_mark_24"
+                app:tint="@color/ok_green" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Как пользоваться?"
+                    android:textColor="@color/black"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Вы новичок или забыли, что и как работает? Этот раздел поможет!"
+                    android:textColor="@color/black" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginHorizontal="@dimen/default_PaddingMargin"
+            android:layout_marginBottom="@dimen/default_PaddingMargin"
+            android:background="@color/ok_green" />
+
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

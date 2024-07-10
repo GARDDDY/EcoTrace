@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="purple_200">#FFBB86FC</color>
-    <color name="purple_500">#FF6200EE</color>
-    <color name="purple_700">#FF3700B3</color>
-    <color name="teal_200">#FF03DAC5</color>
-    <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+
+    <color name="blue">#0000ff</color>
 
     <color name="dirt_white">#F8E9DD</color>
     <color name="dirt2_white">#F4D8C1</color>
@@ -15,4 +13,27 @@
     <color name="red_no">#961717</color>
 
     <color name="transparent">#00000000</color>
+
+
+    <color name="pair1Color1">#E8F5E9</color>
+    <color name="pair1Color2">#388E3C</color>
+
+    <color name="pair2Color1">#F1F8E9</color>
+    <color name="pair2Color2">#4CAF50</color>
+
+    <color name="pair3Color1">#E0F2F1</color>
+    <color name="pair3Color2">#00796B</color>
+
+    <color name="pair4Color1">#E3F2FD</color>
+    <color name="pair4Color2">#1E88E5</color>
+
+    <color name="pair5Color1">#FFFDE7</color>
+    <color name="pair5Color2">#FBC02D</color>
+
+    <color name="pair6Color1">#FFEBEE</color>
+    <color name="pair6Color2">#E53935</color>
+
+    <color name="pair7Color1">#ECEFF1</color>
+    <color name="pair7Color2">#607D8B</color>
+
 </resources>

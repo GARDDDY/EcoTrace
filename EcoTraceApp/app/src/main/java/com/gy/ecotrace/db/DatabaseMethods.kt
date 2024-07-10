@@ -1,12 +1,15 @@
 package com.gy.ecotrace.db
 
 import android.content.Context
+import android.provider.ContactsContract.Data
 import android.text.BoringLayout
 import android.util.Log
 import com.google.common.reflect.TypeToken
+import com.google.firebase.database.ChildEventListener
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.Exclude
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.GenericTypeIndicator
 import com.google.firebase.database.ValueEventListener
@@ -16,6 +19,7 @@ import com.google.firebase.database.snapshots
 import com.google.firebase.database.values
 import com.google.gson.Gson
 import com.gy.ecotrace.Globals
+import com.yandex.mapkit.geometry.Point
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -32,6 +36,7 @@ import java.security.MessageDigest
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 import kotlin.math.floor
+import kotlin.reflect.full.memberProperties
 
 object DatabaseMethods {
 
@@ -78,7 +83,7 @@ object DatabaseMethods {
 
         data class UserActivity(
             var username: String = "error-username",
-            var role: Int = 0 // 0 - участник 1 - старейшна 2 - соруководитель 3 - глава
+            var role: Int = 0 // 0 - участник 1 - старейшна 2 - соруководитель 3 - глава // todo
         )
 
         data class Friendship(
@@ -96,19 +101,22 @@ object DatabaseMethods {
         )
 
         data class Event(
-            var eventId: String = "error-eventId",
-            var eventName: String = "error-event_name",
+            @get:Exclude var eventId: String = "error-eventId",
+            var eventName: String = "-",
             var eventAbout: String = "",
-            var eventTags: HashMap<String, String>? = null,
+            var eventTags: String = "",
             var eventStatus: Int = 0 /* 0 - Предстоит 1 - Проходит 2 - Закончилось*/,
             var eventCountMembers: Int = 0,
-            var eventUsersToTheirNames: HashMap<String, UserActivity>? = null
+            var eventUsersToTheirRoles: HashMap<String, Int>? = null,
+            var eventStart: String = "0;0",
+            var eventCreatorId: String = "",
+            @get:Exclude var eventCreatorName: String = "",
+            var filters: String = ""
         )
 
-
         data class Group(
-            var groupId: String = "error-groupId",
-            var groupName: String = "error-group_name",
+            @get:Exclude var groupId: String = "error-groupId",
+            var groupName: String = "-",
             var groupAbout: String = "",
             var groupExperience: Int = 0,
             var groupRank: Int = 0,
@@ -118,18 +126,55 @@ object DatabaseMethods {
             var groupUsersToTheirRoles: HashMap<String, UserActivity>? = null
         )
 
+        data class ObjectRelation(
+            var isWithGoal: Boolean = false,
+            var relationValue: Int = -1
+        )
+
+        data class MapObject(
+            var objectName: String = "",
+            var objectType: Int = 0, // 0 - Circle  1 - Area  2 - Dot
+            var objectRelation: ObjectRelation = ObjectRelation(),
+            var objectCenter: Point = Point(),
+
+            var fillColor: String = "#00000000",
+            var strokeColor: String = "#00000000",
+
+            var circleRadius: Float? = null,
+
+
+        )
+
 
 
         companion object {
             val EventRoles = arrayOf("Глава", "Помощник", "Исполняющий")
             val UserRanks = arrayOf("Крутой", "Очень крутой")
+            val UserFiltersSearchBy = arrayOf(
+                Pair("Активный", "\"Активный\" пользователь всегдат\nготов присоединиться к новым мероприятиям"),
+                Pair("Веселый", "\"Веселый\" пользователь"),
+                Pair("Ветеран", "Пользователь, зарегистрировавшийся довольно давно (награда)"),
+                Pair("В сети", "Пользователь часто бывает в сети"))
+            val EventFiltersSearchBy = arrayOf(
+                Pair("На улице", "Часть или все мероприятие проходит на улице"),
+                Pair("В помещении", "Часть или все мероприятие проходит в помещении")
+            )
+
+            val filterColors = arrayOf(
+                Pair("#00FA9A", "#1A3329"), // main, text
+                Pair("#FF7F50", "#33201A"),
+                Pair("#00CED1", "#1A3333"),
+                Pair("#DA70D6", "#331A32"),
+                Pair("", ""),
+                Pair("", ""),
+            )
         }
     }
 
     class UserDatabaseMethods {
         class UserInfo(
-            var username: String = "error-username",
-            var fullname: String = "error-fullname",
+            var username: String = "-",
+            var fullname: String = "-",
             var gender: Int = 0,
             var country: DataClasses.Country = DataClasses.Country(),
             var aboutMe: String = "",
@@ -149,7 +194,7 @@ object DatabaseMethods {
 
         class UserActivity(
             var eventInfo: DataClasses.Event = DataClasses.Event(),
-            var eventUserRole: Int = 0
+            var isUserInEvent: Boolean = false
         )
 
         class UserGroups(
@@ -173,6 +218,34 @@ object DatabaseMethods {
 
                     override fun onCancelled(error: DatabaseError) {}
                 })
+            }
+        }
+
+        suspend fun getUsernameOnly(userId: String): String {
+            return FirebaseDatabase.getInstance().getReference("users/$userId/username").get().await().getValue(String::class.java) ?: ""
+        }
+
+        suspend fun joinEvent(eventId: String, userId: String) {
+            val userEvent = FirebaseDatabase.getInstance().getReference("users/$userId/events")
+            userEvent.child(eventId).setValue(true)
+            val event = FirebaseDatabase.getInstance().getReference("events/$eventId")
+            val currentCount = event.child("eventCountMembers").get().await().getValue(Int::class.java)!!
+            if (!event.child("eventUsersToTheirRoles").get().await()
+                .getValue(object : GenericTypeIndicator<HashMap<String, Int>>() {})!!.contains(userId)) {
+                    event.child("eventCountMembers").setValue(currentCount + 1)
+                    event.child("eventUsersToTheirRoles/$userId")
+                        .setValue(DataClasses.EventRoles.size - 1)
+            }
+        }
+        suspend fun leaveEvent(eventId: String, userId: String) {
+            val userEvent = FirebaseDatabase.getInstance().getReference("users/$userId/events")
+            userEvent.child(eventId).removeValue()
+            val event = FirebaseDatabase.getInstance().getReference("events/$eventId")
+            val currentCount = event.child("eventCountMembers").get().await().getValue(Int::class.java)!!
+            if (event.child("eventUsersToTheirRoles").get().await()
+                .getValue(object : GenericTypeIndicator<HashMap<String, Int>>() {})!!.contains(userId)) {
+                    event.child("eventCountMembers").setValue(currentCount - 1)
+                    event.child("eventUsersToTheirRoles/$userId").removeValue()
             }
         }
 
@@ -258,74 +331,35 @@ object DatabaseMethods {
             return null
         }
 
-        suspend fun getUserEvents(userId: String): MutableList<UserActivity> {
-            val localEvents = getLocalEvents(userId)
-            if (localEvents != null) {
-                Log.d("UserEventClassGET", "Got Info Local!")
-                return localEvents
-            }
+        suspend fun getUserEvents(userId: String): MutableMap<String, Boolean> {
             return suspendCoroutine {
-                val database: DatabaseReference =
-                    FirebaseDatabase.getInstance().getReference("users/$userId/activities")
-                database.addListenerForSingleValueEvent(object : ValueEventListener {
-                    override fun onDataChange(snapshot: DataSnapshot) {
-                        val allActs = mutableListOf<UserActivity>()
-                        val scope = CoroutineScope(Dispatchers.IO)
-                        val tasks = snapshot.children.map { act ->
-                            scope.async {
-                                val currentAct = UserActivity()
-                                currentAct.eventUserRole =
-                                    act.child("eventUserRole").getValue(Int::class.java)!!
-                                val events: DatabaseReference =
-                                    FirebaseDatabase.getInstance()
-                                        .getReference("events/${act.key.toString()}")
-                                val eventSnapshot = events.get().await()
-                                val eventData =
-                                    eventSnapshot.getValue(DataClasses.Event::class.java)
-                                currentAct.eventInfo = eventData!!
-                                currentAct.eventInfo.eventId = act.key.toString()
-                                currentAct
+                val localEvents = Tech().getLocal("events", userId)
+                var eventIds = mutableMapOf<String, Boolean>()
+                if (localEvents != null) {
+                    eventIds = Gson().fromJson(
+                        localEvents,
+                        object : TypeToken<MutableMap<String, Boolean>>() {}.type
+                    )
+                    it.resume(eventIds)
+                    Tech().saveLocally(eventIds, "events", userId)
+                } else {
+                    FirebaseDatabase.getInstance().getReference("users/$userId/events")
+                        .addListenerForSingleValueEvent(object : ValueEventListener {
+                            override fun onDataChange(snapshot: DataSnapshot) {
+                                for (ev in snapshot.children) {
+                                    eventIds[ev.key.toString()] =
+                                        ev.getValue(Boolean::class.java)!!
+                                }
+                                it.resume(eventIds)
+                                Tech().saveLocally(eventIds, "events", userId)
                             }
-                        }
-                        scope.launch {
-                            val results = tasks.awaitAll()
-                            allActs.addAll(results)
-                            it.resume(allActs)
-                            Tech().saveLocally(allActs, "events", userId)
-                        }
-                    }
-
-                    override fun onCancelled(error: DatabaseError) {}
-                })
+                            override fun onCancelled(error: DatabaseError) {}
+                        })
+                }
             }
         }
 
-
-//        private fun getLocalFriends(userId: String): MutableList<Pair<String, String>>? {
-//            // получить userId, потом локально проверить userinfo(userid)
-//            val file = File(Tech().context().filesDir, "${userId}_friends.json")
-//            if (file.exists()) {
-//                val reader = BufferedReader(FileReader(file))
-//                val stringBuilder = StringBuilder()
-//                var line: String?
-//                while (reader.readLine().also { line = it } != null) {
-//                    stringBuilder.append(line)
-//                }
-//                reader.close()
-//                return Gson().fromJson(
-//                    stringBuilder.toString(),
-//                    object : TypeToken<MutableList<Pair<String, String>>>() {}.type
-//                )
-//            }
-//            return null
-//        }
-
         suspend fun getUserFriends(userId: String): MutableList<DataClasses.Friendship> {
-//            val localFriends = getLocalFriends(userId)
-//            if (localFriends != null) {
-//                Log.d("UserFriendsClassGET", "Got Info Local!")
-//                return localFriends
-//            }
             return suspendCoroutine {
                 val database: DatabaseReference =
                     FirebaseDatabase.getInstance().getReference("users/$userId/friends")
@@ -395,24 +429,81 @@ object DatabaseMethods {
 
 
     class ApplicationDatabaseMethods {
+        class EventMore(
+            var eventGoals: MutableMap<String, String> = mutableMapOf(),
+            var eventTimes: MutableMap<String, String> = mutableMapOf(),
+            var eventCoords: MutableMap<String, DataClasses.MapObject> = mutableMapOf()
+        )
+
+
         suspend fun getEvent(eventId: String): DataClasses.Event {
             return suspendCoroutine {
                 FirebaseDatabase.getInstance().getReference("events/$eventId")
                     .addListenerForSingleValueEvent(object : ValueEventListener {
-                    override fun onDataChange(snapshot: DataSnapshot) {
-                        val eventData = snapshot.getValue(DataClasses.Event::class.java)!!
-                        it.resume(eventData)
-                        Tech().saveLocally(eventData, "event", eventId)
-                    }
+                        override fun onDataChange(snapshot: DataSnapshot) {
+                            Log.d("AAtest", snapshot.toString())
+                            val eventData = snapshot.getValue(DataClasses.Event::class.java)!!
+                            Log.d("AAtest", eventData.toString())
+                            eventData.eventId = eventId
+                            it.resume(eventData)
+                            Tech().saveLocally(eventData, "EVENT", eventId)
+                        }
 
-                    override fun onCancelled(error: DatabaseError) {}
-                })
+                        override fun onCancelled(error: DatabaseError) {}
+                    })
+            }
+        }
+
+        fun observeEvent(eventId: String, callback: (DataClasses.Event) -> Unit) {
+            val databaseReference = FirebaseDatabase.getInstance().getReference("events/$eventId")
+            databaseReference.addValueEventListener(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    val saved = Gson().fromJson(
+                        Tech().getLocal("EVENT", eventId),
+                        DataClasses.Event::class.java
+                    )
+                    Log.d("xxx", saved.toString())
+                    if (snapshot.exists()) {
+                        val membersCount =
+                            snapshot.child("eventCountMembers").getValue(Int::class.java)!!
+                        val usersHashMap = snapshot.child("eventUsersToTheirRoles")
+                            .getValue(object :
+                                GenericTypeIndicator<HashMap<String, Int>>() {})!!
+                        val eventStatus = snapshot.child("eventStatus").getValue(Int::class.java)!!
+                        saved.eventCountMembers = membersCount
+                        saved.eventUsersToTheirRoles = usersHashMap
+                        saved.eventStatus = eventStatus
+                        callback(saved)
+                    } else {
+                        callback(saved)
+                    }
+                }
+
+                override fun onCancelled(error: DatabaseError) {}
+            })
+        }
+
+        suspend fun getEventMore(eventId: String): EventMore {
+            return suspendCoroutine {
+                FirebaseDatabase.getInstance().getReference("events/$eventId")
+                    .addListenerForSingleValueEvent(object : ValueEventListener {
+                        override fun onDataChange(snapshot: DataSnapshot) {
+                            var snapshotEM = EventMore()
+                            if (snapshot.exists()) {
+                                snapshotEM = snapshot.getValue(EventMore::class.java)!!
+                            }
+                            it.resume(snapshotEM)
+                        }
+
+                        override fun onCancelled(error: DatabaseError) {}
+                    })
             }
         }
 
         suspend fun getGroup(groupId: String): DataClasses.Group {
             return suspendCoroutine {
-                val databaseReference = FirebaseDatabase.getInstance().getReference("groups/$groupId")
+                val databaseReference =
+                    FirebaseDatabase.getInstance().getReference("groups/$groupId")
                 databaseReference.addListenerForSingleValueEvent(object : ValueEventListener {
                     override fun onDataChange(snapshot: DataSnapshot) {
                         if (snapshot.exists()) {
@@ -429,14 +520,21 @@ object DatabaseMethods {
                 })
             }
         }
+
         fun observeGroup(groupId: String, callback: (DataClasses.Group) -> Unit) {
             val databaseReference = FirebaseDatabase.getInstance().getReference("groups/$groupId")
             databaseReference.addValueEventListener(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
-                    val saved = Gson().fromJson(Tech().getLocal("GROUP", groupId), DataClasses.Group::class.java)
+                    val saved = Gson().fromJson(
+                        Tech().getLocal("GROUP", groupId),
+                        DataClasses.Group::class.java
+                    )
                     if (snapshot.exists()) {
-                        val membersCount = snapshot.child("groupCountMembers").getValue(Int::class.java)!!
-                        val usersHashMap = snapshot.child("groupUsersToTheirRoles").getValue(object : GenericTypeIndicator<HashMap<String, DataClasses.UserActivity>>() {})!!
+                        val membersCount =
+                            snapshot.child("groupCountMembers").getValue(Int::class.java)!!
+                        val usersHashMap = snapshot.child("groupUsersToTheirRoles")
+                            .getValue(object :
+                                GenericTypeIndicator<HashMap<String, DataClasses.UserActivity>>() {})!!
                         saved.groupCountMembers = membersCount
                         saved.groupUsersToTheirRoles = usersHashMap
                         callback(saved)
@@ -449,7 +547,10 @@ object DatabaseMethods {
             })
         }
 
-        suspend fun findUsersWithFilters(filters: MutableList<Int>, lastUserId: String?): Pair<String?, MutableList<DataClasses.FiltersFriendship>> {
+        suspend fun findUsersWithFilters(
+            filters: MutableList<Int>,
+            lastUserId: String?
+        ): Pair<String?, MutableList<DataClasses.FiltersFriendship>> {
             return suspendCoroutine {
                 val foundUsers = mutableListOf<DataClasses.FiltersFriendship>()
                 val reference = FirebaseDatabase.getInstance().getReference("users")
@@ -459,37 +560,123 @@ object DatabaseMethods {
                     reference.orderByKey()
                 }
                 query.addListenerForSingleValueEvent(object : ValueEventListener {
-                        override fun onDataChange(snapshot: DataSnapshot) {
-                            if (snapshot.children.last().key != lastUserId){
-                                for (user in snapshot.children) {
-                                    if (user.key == lastUserId) continue
-                                    val userFilters =
-                                        user.child("filters").getValue(String::class.java)!!
-                                            .split(",").map { it.toInt() - 1 }
-                                    val userFiltersSame =
-                                        userFilters.intersect(filters.toSet()).toMutableList()
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        if (snapshot.children.last().key != lastUserId) {
+                            for (user in snapshot.children) {
+                                if (user.key == lastUserId) continue
+                                val userFilters =
+                                    user.child("filters").getValue(String::class.java)!!
+                                        .split(",").map { it.toInt() - 1 }
+                                val userFiltersSame =
+                                    userFilters.intersect(filters.toSet()).toMutableList()
 
-                                    if (filters == userFiltersSame) {//if (filters.size - userFiltersSame.size <= floor(filters.size / 2.0)) {
-                                        val userClass =
-                                            user.getValue(DataClasses.FiltersFriendship::class.java)!!
-                                        userClass.userId = user.key.toString()
-                                        foundUsers.add(userClass)
-                                    }
-
-                                    if (foundUsers.size == 4) {
-                                        it.resume(Pair(user.key.toString(), foundUsers))
-                                        return
-                                    }
-
+                                if (filters == userFiltersSame) {//if (filters.size - userFiltersSame.size <= floor(filters.size / 2.0)) {
+                                    val userClass =
+                                        user.getValue(DataClasses.FiltersFriendship::class.java)!!
+                                    userClass.userId = user.key.toString()
+                                    foundUsers.add(userClass)
                                 }
-                            }
-                            it.resume(Pair(snapshot.children.last().key.toString(), foundUsers))
-                        }
 
-                        override fun onCancelled(error: DatabaseError) {}
-                    })
+                                if (foundUsers.size == 4) {
+                                    it.resume(Pair(user.key.toString(), foundUsers))
+                                    return
+                                }
+
+                            }
+                        }
+                        it.resume(Pair(snapshot.children.last().key.toString(), foundUsers))
+                    }
+
+                    override fun onCancelled(error: DatabaseError) {}
+                })
             }
         }
 
+        suspend fun createEvent(event: DataClasses.Event, eventmore: EventMore): String {
+            return suspendCoroutine {
+                val eventsChild = FirebaseDatabase.getInstance().getReference("events")
+                val unique = eventsChild.push().key!!
+                eventsChild.child(unique).setValue(event)
+                for (comp in EventMore::class.memberProperties) {
+                    eventsChild.child("$unique/${comp.name}").setValue(comp.get(eventmore))
+                }
+                FirebaseDatabase.getInstance().getReference("users")
+                    .child("${event.eventUsersToTheirRoles!!.keys.first()}/events/$unique")
+                    .setValue(true)
+
+                it.resume(unique)
+            }
+        }
+
+        suspend fun findEventsWithFilters(
+            filters: MutableList<Int>,
+            lastEventId: Pair<Boolean, String?>,
+            string: String?,
+        ): Pair<MutableList<DataClasses.Event>, Pair<Boolean, String?>> {
+            return suspendCoroutine {
+                val foundEvents = mutableListOf<DataClasses.Event>()
+                val reference = FirebaseDatabase.getInstance().getReference("events")
+                var query = reference.orderByKey()
+                Log.d("lastEventIdData", lastEventId.toString())
+                if (lastEventId.first) {
+                    if (lastEventId.second != null) {
+                        query = query.startAfter(lastEventId.second)
+                    }
+                } else {
+                    it.resume(Pair(foundEvents, lastEventId))
+                    return@suspendCoroutine
+                }
+                query.addListenerForSingleValueEvent(object : ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        val lastDBvalueKey = snapshot.children.last().key.toString()
+                        Log.d("guyfgywe", snapshot.toString())
+                        for (event in snapshot.children) {
+                            val currentDBvalueKey = event.key.toString()
+                                val eventData = event.getValue(DataClasses.Event::class.java)!!
+                                eventData.eventId = currentDBvalueKey
+                                var isOk = false
+                                if (string.isNullOrEmpty()) {
+                                    val eventFilters =
+                                        event.child("filters").getValue(String::class.java)!!
+                                            .split(",").map { it.toInt() - 1 }.sorted()
+                                    val eventFiltersSame =
+                                        eventFilters.intersect(filters.toSet()).toMutableList()
+                                            .sorted()
+
+                                    if (filters == eventFiltersSame) isOk = true
+                                } else {
+                                    if (eventData.eventName.lowercase()
+                                            .startsWith(string.lowercase())
+                                        ||
+                                        eventData.eventAbout.lowercase()
+                                            .contains(string.lowercase())
+                                    ) isOk = true
+                                }
+                                if (isOk) {
+                                    foundEvents.add(eventData)
+                                    Log.d(
+                                        "added event",
+                                        "${currentDBvalueKey == lastDBvalueKey} $currentDBvalueKey $lastDBvalueKey"
+                                    )
+                                    if (foundEvents.size == 3 || currentDBvalueKey == lastDBvalueKey) {
+                                        var nextDataPair =
+                                            Pair<Boolean, String?>(true, currentDBvalueKey)
+                                        if (currentDBvalueKey == lastDBvalueKey) {
+                                            nextDataPair = Pair(false, null)
+                                        }
+                                        it.resume(Pair(foundEvents, nextDataPair))
+
+                                        return
+                                    }
+                                }
+
+                        }
+                        it.resume(Pair(foundEvents, Pair(false, null)))
+                    }
+
+                    override fun onCancelled(error: DatabaseError) {}
+                })
+            }
+        }
     }
 }

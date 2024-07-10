@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:id="@+id/eventPlanAllLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="@dimen/default_PaddingMargin"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/NoPlanFound"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Организаторы не составили план мероприятия!"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:visibility="gone"
+            android:paddingVertical="@dimen/default_PaddingMargin"/>
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <LinearLayout
+                android:id="@+id/planLayoutGoals"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:paddingVertical="15dp"/>
+        </ScrollView>
+
+        <TextView
+            android:id="@+id/NoTimesFound"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Организаторы не запланировали события на это мероприятие!"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:visibility="gone"
+            android:paddingVertical="15dp"/>
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <LinearLayout
+                android:id="@+id/planLayoutTimes"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:paddingVertical="15dp"/>
+        </ScrollView>
+
+        <TextView
+            android:id="@+id/NoCoordsFound"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Организаторы не запалнировали передвмжения в течении этого мероприятия!"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:visibility="gone"
+            android:paddingVertical="15dp"/>
+
+    </LinearLayout>
+
+</LinearLayout>

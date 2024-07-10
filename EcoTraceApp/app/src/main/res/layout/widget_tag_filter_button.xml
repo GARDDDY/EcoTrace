@@ -7,6 +7,8 @@
     android:text="tag_filter"
     android:textColor="#1A331F"
     app:backgroundTint="#7DB388"
+    app:strokeColor="@color/transparent"
+    style="@style/Widget.Material3.Button.OutlinedButton"
     app:cornerRadius="30dp">
 
 </com.google.android.material.button.MaterialButton>

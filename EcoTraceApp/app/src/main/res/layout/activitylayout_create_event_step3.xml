@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/main"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/default_PaddingMargin"
+        android:orientation="vertical">
+
+        <Button
+            android:id="@+id/editMap"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/ok_green"
+            android:textColor="@color/dirt_white"
+            android:text="Редактировать карту" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <Button
+                android:id="@+id/addCircle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/ok_green"
+                android:textColor="@color/dirt_white"
+                android:text="Окружность" />
+            <Button
+                android:id="@+id/addRect"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/ok_green"
+                android:textColor="@color/dirt_white"
+                android:text="Зона по точкам"/>
+            <Button
+                android:id="@+id/addPlacemark"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/ok_green"
+                android:textColor="@color/dirt_white"
+                android:text="Точка" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <com.yandex.mapkit.mapview.MapView
+        android:id="@+id/createMapPoints"
+        android:layout_width="match_parent"
+        android:layout_height="350dp">
+
+    </com.yandex.mapkit.mapview.MapView>
+</LinearLayout>

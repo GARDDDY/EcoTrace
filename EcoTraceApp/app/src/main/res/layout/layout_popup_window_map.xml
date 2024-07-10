@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="200dp"
+    android:layout_height="200dp"
+    android:background="@drawable/layout_map_popup_window"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/addCircle"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:gravity="center"
+        android:text="Р"
+        android:textColor="@color/silver"
+        android:layout_marginTop="20dp"
+        android:layout_marginStart="10dp"/>
+    <TextView
+        android:id="@+id/addRect"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:gravity="center"
+        android:text="П"
+        android:textColor="@color/silver"
+        android:layout_marginTop="20dp"
+        android:layout_marginStart="10dp"/>
+    <TextView
+        android:id="@+id/addPlacemark"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:gravity="center"
+        android:text="Т"
+        android:textColor="@color/silver"
+        android:layout_marginTop="20dp"
+        android:layout_marginStart="10dp"/>
+</LinearLayout>

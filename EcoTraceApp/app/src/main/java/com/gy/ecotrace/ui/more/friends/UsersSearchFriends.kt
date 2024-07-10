@@ -62,7 +62,7 @@ class UsersSearchFriends : AppCompatActivity() {
     private lateinit var searcherViewModel: SearcherViewModel
     private var loggedUser = Globals.getInstance().getString("CurrentlyLogged")
 
-    fun caesarEnc(text: String, shift: Int = 12): String {
+    private fun caesarEnc(text: String, shift: Int = 12): String {
         val result = StringBuilder()
 
         for (char in text) {
@@ -77,12 +77,14 @@ class UsersSearchFriends : AppCompatActivity() {
 
         return result.toString()
     }
-    fun caesarDec(text: String, shift: Int = 12): String {
+    private fun caesarDec(text: String, shift: Int = 12): String {
         return caesarEnc(text, 26 - shift)
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
-    @SuppressLint("ClickableViewAccessibility")
+    private fun generateNewColors(amount: Int) {
+
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -99,15 +101,15 @@ class UsersSearchFriends : AppCompatActivity() {
         }
 
         if (loggedUser == "0") {
-            val builder = AlertDialog.Builder(applicationContext)
-            builder.setTitle("Требуется вход в аккаунт")
-
-            builder.setMessage("Для использования этого раздела надо войти в свой аккаунт или создать новый")
-            builder.setPositiveButton("Подтвердить") { dialog, which ->
-                startActivity(Intent(this@UsersSearchFriends, ProfileActivity::class.java))
-            }
-            val dialog = builder.create()
-            dialog.show()
+//            val builder = AlertDialog.Builder(applicationContext)
+//            builder.setTitle("Требуется вход в аккаунт")
+//
+//            builder.setMessage("Для использования этого раздела надо войти в свой аккаунт или создать новый")
+//            builder.setPositiveButton("Подтвердить") { dialog, which ->
+//                startActivity(Intent(this@UsersSearchFriends, ProfileActivity::class.java))
+//            }
+//            val dialog = builder.create()
+//            dialog.show()
             finish()
         }
 
@@ -182,10 +184,14 @@ class UsersSearchFriends : AppCompatActivity() {
             }
         })
         // теги
-        val tags = searcherViewModel.tags
+        val tags = DatabaseMethods.DataClasses.UserFiltersSearchBy
+        val colors = DatabaseMethods.DataClasses.filterColors
         val filtersLayout: LinearLayout = findViewById(R.id.search_by_filters)
         lateinit var layout: LinearLayout
-        for (i in 0..<tags.size) {
+        if (tags.size > colors.size) {
+            generateNewColors(colors.size - tags.size)
+        }
+        for (i in tags.indices) {
             if (i % 3 == 0) {
                 layout = LinearLayout(applicationContext)
                 layout.orientation = LinearLayout.HORIZONTAL
@@ -195,9 +201,9 @@ class UsersSearchFriends : AppCompatActivity() {
             val filter = layoutInflater.inflate(R.layout.widget_tag_filter_button, null) as MaterialButton
             filter.text = tags[i].first
             filter.textSize = 18F
-            filter.setTextColor(Color.parseColor(tags[i].third.second))
+            filter.setTextColor(Color.parseColor(colors[i].second))
             filter.setBackgroundColor(ContextCompat.getColor(this, R.color.transparent))
-            filter.rippleColor = ColorStateList.valueOf(Color.parseColor(tags[i].third.second))
+            filter.rippleColor = ColorStateList.valueOf(Color.parseColor(colors[i].second))
             filter.isClickable = true
             filter.tooltipText = tags[i].second
             layout.addView(filter)
@@ -206,7 +212,7 @@ class UsersSearchFriends : AppCompatActivity() {
                 filter.isActivated = !filter.isActivated
                 searcherViewModel.reapplyFilter(i)
                 if(!filter.isActivated) filter.setBackgroundColor(ContextCompat.getColor(this, R.color.transparent))
-                else filter.setBackgroundColor(Color.parseColor(tags[i].third.first))
+                else filter.setBackgroundColor(Color.parseColor(colors[i].first))
             }
 
         }
@@ -265,8 +271,8 @@ class UsersSearchFriends : AppCompatActivity() {
                             tagFilter.text = tags[f].first
                             tagFilter.textSize = 16F
                             tagFilter.tooltipText = tags[f].second
-                            tagFilter.setTextColor(Color.parseColor(tags[f].third.second))
-                            tagFilter.setBackgroundColor(Color.parseColor(tags[f].third.first))
+                            tagFilter.setTextColor(Color.parseColor(colors[f].second))
+                            tagFilter.setBackgroundColor(Color.parseColor(colors[f].first))
                             filtersLayout.addView(tagFilter)
                         }
 

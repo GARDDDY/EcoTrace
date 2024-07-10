@@ -1,5 +1,6 @@
 package com.gy.ecotrace.db
 
+import android.text.BoringLayout
 import android.util.Log
 import kotlin.math.floor
 
@@ -46,10 +47,32 @@ class Repository(
 
     }
 
-
+    fun _event(): DatabaseMethods.UserDatabaseMethods.UserActivity {
+        return DatabaseMethods.UserDatabaseMethods.UserActivity()
+    }
 
     suspend fun getEvents(userId: String): MutableList<DatabaseMethods.UserDatabaseMethods.UserActivity> {
-        return userDatabase.getUserEvents(userId)
+        val eventsIds = userDatabase.getUserEvents(userId)
+        val groups = mutableListOf<DatabaseMethods.UserDatabaseMethods.UserActivity>()
+        for ((key, value) in eventsIds) {
+            val userEventClass = _event()
+            val eventInfo = appDatabase.getEvent(key)
+            userEventClass.eventInfo = eventInfo
+            userEventClass.isUserInEvent = value
+            groups.add(userEventClass)
+        }
+        return groups
+    }
+
+    fun observeEventMembers(groupId: String,
+                            callback: (DatabaseMethods.DataClasses.Event?) -> Unit) {
+
+        return appDatabase.observeEvent(groupId, callback)
+
+    }
+
+    suspend fun getUsernameOnly(userId: String): String {
+        return userDatabase.getUsernameOnly(userId)
     }
 
 
@@ -100,6 +123,7 @@ class Repository(
             var username: String = "error-username",
             var userRole: Int = 0,
             var userBestGroupName: String = "error-group",
+            var userBestGroup: String = "0",
             var userRank: String = "error-rank",
 
             var userExperience: Int = 0
@@ -110,7 +134,7 @@ class Repository(
             val userInfo = userDatabase.getUserInfo(userId)
             userClass.userId = userId
             userClass.username = userInfo.username
-            userClass.userRank = DatabaseMethods.DataClasses.UserRanks[floor(userInfo.experience / 1000.0).toInt()]
+            userClass.userRank = DatabaseMethods.DataClasses.UserRanks[0]
             userClass.userExperience = userInfo.experience
 
             val userGroupsIds = userDatabase.getUserGroups(userId)
@@ -121,7 +145,10 @@ class Repository(
             }
 
             val bestGroupInExperience = userGroups.maxByOrNull { it.groupExperience }
-            if (bestGroupInExperience != null) userClass.userBestGroupName = bestGroupInExperience.groupName
+            if (bestGroupInExperience != null) {
+                userClass.userBestGroupName = bestGroupInExperience.groupName
+                userClass.userBestGroup = bestGroupInExperience.groupId
+            }
             else userClass.userBestGroupName = "Группа не найдена"
 //
             return userClass
@@ -135,4 +162,19 @@ class Repository(
             return appDatabase.findUsersWithFilters(filters, lastUser)
         }
 
+        suspend fun findEventsWithFilters(filters: MutableList<Int>, lastEventId: Pair<Boolean, String?>, string: String?): Pair<MutableList<DatabaseMethods.DataClasses.Event>, Pair<Boolean, String?>> {
+            return appDatabase.findEventsWithFilters(filters, lastEventId, string)
+        }
+
+
+        suspend fun getEventMore(eventId: String): DatabaseMethods.ApplicationDatabaseMethods.EventMore {
+            return appDatabase.getEventMore(eventId)
+        }
+
+        suspend fun joinEvent(eventId: String, userId: String) {
+            userDatabase.joinEvent(eventId, userId)
+        }
+        suspend fun leaveEvent(eventId: String, userId: String) {
+            userDatabase.leaveEvent(eventId, userId)
+        }
 }

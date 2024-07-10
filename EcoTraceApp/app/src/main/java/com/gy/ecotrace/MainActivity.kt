@@ -13,6 +13,9 @@ import androidx.navigation.ui.setupWithNavController
 import com.gy.ecotrace.databinding.ActivityMainBinding
 import com.imagekit.android.ImageKit
 import com.imagekit.android.entity.TransformationPosition
+import com.yandex.mapkit.MapKitFactory
+import com.yandex.maps.mobile.BuildConfig
+import java.util.Properties
 
 
 class MainActivity : AppCompatActivity() {
@@ -50,13 +53,15 @@ class MainActivity : AppCompatActivity() {
         }
         Globals.getInstance().setString("CurrentlyLogged", localSettings.getString("loggedId", "0")!!)
         Globals.getInstance().setString("CurrentlyWatching", localSettings.getString("loggedId", "0")!!)
-        startService(Intent(this, Globals::class.java))
+        startService(Intent(this, AppService::class.java))
 
         ImageKit.init(
             applicationContext,
             "public_tRIdzX7zcMC4IdUKnQkmL9sZoWY=",
             "https://ik.imagekit.io/ecoimagetracekit",
             TransformationPosition.PATH,
-        );
+        )
+        val key = "f3d745ad-1974-4793-978d-52b3a165865c"
+        MapKitFactory.setApiKey(key)
     }
 }

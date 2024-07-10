@@ -10,10 +10,10 @@ android {
 
     defaultConfig {
         applicationId = "com.gy.ecotrace"
-        minSdk = 21
-        targetSdk = 34
+        minSdk = 29 // 29 Q -- android 10
+        targetSdk = 34 // android 14
         versionCode = 1
-        versionName = "1.0"
+        versionName = "1.3"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -95,4 +95,8 @@ dependencies {
     implementation("com.google.firebase:firebase-messaging:24.0.0")
     implementation("com.github.bumptech.glide:glide:4.11.0")
     implementation("com.github.imagekit-developer.imagekit-android:imagekit-android:3.0.1")
+    implementation("com.yandex.android:maps.mobile:4.1.0-full")
+    implementation("com.google.android.material:material:1.5.0")
+    implementation("androidx.core:core-ktx:1.3.2")
+    implementation("androidx.appcompat:appcompat:1.2.0")
 }

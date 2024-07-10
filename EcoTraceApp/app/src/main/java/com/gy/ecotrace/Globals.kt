@@ -3,6 +3,7 @@ package com.gy.ecotrace
 import android.app.Application
 import android.content.Context
 import android.graphics.PorterDuff
+import android.util.Log
 import android.widget.Toolbar
 import androidx.core.content.ContextCompat
 
@@ -63,10 +64,12 @@ class Globals : Application() {
     }
 
     fun getString(key: String): String {
+        Log.d("Globals get value", "Got $key")
         return if (variablesMapStr[key] != null) variablesMapStr[key]!! else "0"
     }
 
     fun setString(key: String, value: String) {
+        Log.d("Globals set value", "Set $key ${variablesMapStr[key]} -> $value")
         variablesMapStr[key] = value
     }
 

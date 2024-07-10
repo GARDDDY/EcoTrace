@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:background="@color/dirt2_white"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:paddingTop="25dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/boldtextfilteradd"
+            android:layout_width="70dp"
+            android:layout_height="wrap_content"
+            android:text="Ж"
+            android:backgroundTint="@color/ok_green"
+            android:textColor="@color/dirt_white"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/italictextfilteradd"
+            android:layout_width="70dp"
+            android:layout_height="wrap_content"
+            android:text="К"
+            android:backgroundTint="@color/ok_green"
+            android:textColor="@color/dirt_white"
+            android:textStyle="italic" />
+
+        <ImageButton
+            android:id="@+id/colorchangefilteradd"
+            android:layout_width="70dp"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/transparent"
+            android:src="@drawable/baseline_settings_24"
+            android:textColor="@color/dirt_white" />
+
+        <Button
+            android:id="@+id/underscoretextfilteradd"
+            android:layout_width="70dp"
+            android:layout_height="wrap_content"
+            android:text="__"
+            android:backgroundTint="@color/ok_green"
+            android:textColor="@color/dirt_white"/>
+
+        <Button
+            android:id="@+id/crosstextfilteradd"
+            android:layout_width="70dp"
+            android:layout_height="wrap_content"
+            android:text="—"
+            android:backgroundTint="@color/ok_green"
+            android:textColor="@color/dirt_white"/>
+    </LinearLayout>
+
+    <EditText
+        android:id="@+id/editTextGoal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:gravity="start|top"
+        android:textSize="20sp"
+        android:inputType="textMultiLine"
+        android:textColorHint="@color/silver"
+        android:textColor="@color/black"
+        android:backgroundTint="@color/transparent"
+        android:hint="Опишите свои цели"/>
+
+    <ImageButton
+        android:id="@+id/enablepreview"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_gravity="start"
+        android:background="@color/transparent"
+        android:src="@drawable/baseline_remove_red_eye_24" />
+
+    <TextView
+        android:id="@+id/textPreviewGoal"
+        android:layout_width="match_parent"
+        android:textSize="20sp"
+        android:layout_marginHorizontal="10dp"
+        android:layout_height="wrap_content" />
+
+    <ImageButton
+        android:id="@+id/confirmGoal"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_gravity="end"
+        app:tint="@color/ok_green"
+        android:background="@color/transparent"
+        android:src="@drawable/baseline_check_24" />
+</LinearLayout>

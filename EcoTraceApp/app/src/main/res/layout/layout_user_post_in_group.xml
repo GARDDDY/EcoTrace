@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <LinearLayout
+        android:id="@+id/upperInfoPost"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/postCreatorImage"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginHorizontal="@dimen/default_PaddingMargin"
+            app:srcCompat="@drawable/baseline_person_24" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/postCreatorName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="postCreator"
+                android:textColor="@color/ok_green"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/postCreateTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="postTimeCreate"
+                android:textColor="@color/silver" />
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/postStatus"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginStart="5dp"
+            android:visibility="gone"
+            app:srcCompat="@drawable/eye_close" />
+
+        <ImageButton
+            android:id="@+id/expandPost"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:scaleType="fitEnd"
+            android:backgroundTint="@color/transparent"
+            app:srcCompat="@drawable/outline_arrow_outward_24" />
+
+        <ImageButton
+            android:id="@+id/postSettings"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:backgroundTint="@color/transparent"
+            android:scaleType="fitEnd"
+            app:srcCompat="@drawable/outline_more_vert_24" />
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/postContentText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/default_PaddingMargin"
+        android:layout_marginTop="@dimen/default_PaddingMargin"
+        android:layout_below="@+id/upperInfoPost"
+        android:text="WMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWM" />
+
+    <ImageView
+        android:id="@+id/postContentImage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/postContentText"
+        android:layout_marginHorizontal="@dimen/default_PaddingMargin"
+        android:layout_marginTop="@dimen/default_PaddingMargin"
+        android:scaleType="centerInside"
+        tools:srcCompat="@tools:sample/avatars" />
+
+    <LinearLayout
+        android:id="@+id/bottomInfoPost"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/postContentImage"
+        android:layout_marginHorizontal="@dimen/default_PaddingMargin"
+        android:layout_marginTop="@dimen/default_PaddingMargin"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:id="@+id/likeThisPost"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/default_PaddingMargin"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    app:srcCompat="@drawable/baseline_favorite_24"
+                    app:tint="@color/ok_green" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:text="Нравится"
+                    android:textColor="@color/black" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/copyThisPostText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/default_PaddingMargin"
+                android:gravity="end"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/imageView12"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    app:srcCompat="@drawable/baseline_alternate_email_24" />
+
+                <TextView
+                    android:id="@+id/textView47"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:text="Копировать"
+                    android:textColor="@color/black" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <ScrollView
+            android:id="@+id/allPostComments"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginVertical="@dimen/default_PaddingMargin">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"/>
+        </ScrollView>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/currentUserImage"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                app:srcCompat="@drawable/baseline_person_24" />
+
+            <EditText
+                android:id="@+id/postCreateCommentEntry"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:ems="10"
+                android:gravity="start|top"
+                android:hint="Оставить комментарий..."
+                android:inputType="textMultiLine"
+                android:textColorHint="@color/silver" />
+
+            <ImageButton
+                android:id="@+id/postSendComment"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:backgroundTint="@color/transparent"
+                app:srcCompat="@drawable/baseline_check_24" />
+        </LinearLayout>
+
+    </LinearLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/ok_green"
+        android:layout_marginVertical="@dimen/default_PaddingMargin"
+        android:layout_marginHorizontal="@dimen/default_PaddingMargin"
+        android:layout_below="@+id/bottomInfoPost"/>
+</RelativeLayout>

@@ -1,10 +1,15 @@
 package com.gy.ecotrace.ui.more.groups
 
+import android.animation.ArgbEvaluator
+import android.animation.ValueAnimator
 import android.graphics.PorterDuff
+import android.graphics.Rect
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.ScrollView
 import android.widget.TextView
 import android.widget.Toolbar
 import androidx.activity.enableEdgeToEdge
@@ -17,10 +22,21 @@ import com.google.gson.Gson
 import com.gy.ecotrace.Globals
 import com.gy.ecotrace.R
 import com.gy.ecotrace.db.DatabaseMethods
+import com.yandex.mapkit.search.Line
 import java.sql.Time
 import java.util.Locale
 
 class ShowGroupActivity : AppCompatActivity() {
+    private lateinit var toolbar: Toolbar
+    private fun animationColorChange(colorFrom: Int, colorTo: Int) {
+        val colorAnimation = ValueAnimator.ofObject(ArgbEvaluator(), colorFrom, colorTo)
+        colorAnimation.duration = 300
+        colorAnimation.addUpdateListener { animator ->
+            toolbar.setBackgroundColor(animator.animatedValue as Int)
+        }
+        colorAnimation.start()
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -30,47 +46,64 @@ class ShowGroupActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-        val toolbar: Toolbar = findViewById(R.id.toolbar4)
+        toolbar = findViewById(R.id.toolbar4)
         val backIcon = ContextCompat.getDrawable(applicationContext, R.drawable.baseline_arrow_back_24)
-        backIcon?.setColorFilter(ContextCompat.getColor(applicationContext, R.color.ok_green), PorterDuff.Mode.SRC_ATOP)
+        backIcon?.setColorFilter(ContextCompat.getColor(applicationContext, R.color.black), PorterDuff.Mode.SRC_ATOP)
         toolbar.navigationIcon = backIcon
         toolbar.setNavigationOnClickListener {
             onBackPressed()
         }
 
         val currentGroup = Globals.getInstance().getString("CurrentlyWatchingGroup")
-        val group = intent.getStringExtra("gInfo")
-        val groupData = Gson().fromJson(group, DatabaseMethods.UserDatabaseMethods.UserGroups::class.java)
-
-        findViewById<TextView>(R.id.groupName).text = groupData.groupInfo.groupName
-        findViewById<TextView>(R.id.groupAbout).text = groupData.groupInfo.groupAbout
-//        findViewById<TextView>(R.id.groupCountMembers).text = eventData.eventInfo.eventCountMembers.toString()
-
-
-
-
+        val currentUser = Globals.getInstance().getString("CurrentlyLogged")
 
         Glide.with(this@ShowGroupActivity)
             .load(Globals().getImgUrl("groups", currentGroup))
             .placeholder(R.drawable.round_family_restroom_24)
             .into(findViewById(R.id.groupImage))
 
-        val sections: MutableList<MutableList<Int>> = arrayListOf(
-            arrayListOf(R.id.group_news_section, R.id.group_news_layout),
-            arrayListOf(R.id.group_chat_section, R.id.group_chat_layout),
-            arrayListOf(R.id.group_members_section, R.id.group_members_layout)
-        )
+        val allPostsLayout: LinearLayout = findViewById(R.id.groupNewsLayout) //// test
+        for (i in 1..10) {
+            val postLayout = layoutInflater.inflate(R.layout.layout_user_post_in_group, null)
+            if (currentUser == "0") {
+                postLayout.findViewById<LinearLayout>(R.id.bottomInfoPost).visibility = View.GONE
+            } else {
+                Glide.with(this)
+                    .load(Globals().getImgUrl("users", currentUser))
+                    .circleCrop()
+                    .into(postLayout.findViewById(R.id.currentUserImage))
+            }
 
-        for (i in 0..2) {
-            findViewById<Button>(sections[i][0]).setOnClickListener {
-                findViewById<Button>(sections[i][0]).text = System.currentTimeMillis().toString()
-                findViewById<Button>(sections[(i-1)%3 + if (i-1 == -1) 3 else 0][0]).setBackgroundResource(R.color.ok_green)
-                findViewById<Button>(sections[(i+1)%3][0]).setBackgroundResource(R.color.ok_green)
 
-                sections.forEach {
+            allPostsLayout.addView(postLayout)
+        }
 
+        val separator: View = findViewById(R.id.separatorColor)
+        val scrollView: ScrollView = findViewById(R.id.mainScrollViewGroupNews)
+        var fHideTSee = false
+        scrollView.viewTreeObserver.addOnScrollChangedListener {
+            val scrollBounds = Rect()
+            scrollView.getHitRect(scrollBounds)
+            if (!separator.getLocalVisibleRect(scrollBounds)) {
+                if (!fHideTSee) {
+                    animationColorChange(
+                        ContextCompat.getColor(this, R.color.transparent),
+                        ContextCompat.getColor(this, R.color.dirt_white)
+                    )
+                    toolbar.title = currentGroup
+                    fHideTSee = true
+                }
+            } else {
+                if (fHideTSee) {
+                    animationColorChange(
+                        ContextCompat.getColor(this, R.color.dirt_white),
+                        ContextCompat.getColor(this, R.color.transparent)
+                    )
+                    toolbar.title = ""
+                    fHideTSee = false
                 }
             }
         }
+
     }
 }

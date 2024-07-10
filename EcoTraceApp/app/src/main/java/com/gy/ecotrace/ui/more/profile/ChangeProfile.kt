@@ -3,6 +3,7 @@ package com.gy.ecotrace.ui.more.profile
 import android.content.Intent
 import android.graphics.PorterDuff
 import android.os.Bundle
+import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
@@ -10,8 +11,14 @@ import android.widget.Spinner
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.lifecycleScope
+import com.bumptech.glide.Glide
 import com.gy.ecotrace.Globals
 import com.gy.ecotrace.R
+import com.gy.ecotrace.db.DatabaseMethods
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.Locale
 
 class ChangeProfile : AppCompatActivity() {
@@ -38,14 +45,33 @@ class ChangeProfile : AppCompatActivity() {
             onBackPressed()
         }
 
-        val currentUser = Globals().getString("CurrentlyLogged")
-
+        val currentUser = Globals.getInstance().getString("CurrentlyLogged")
         val profileImage : ImageButton = findViewById(R.id.profile_image_change_menu)
-        val savePublic : Button = findViewById(R.id.save_public_info)
+        Glide.with(this)
+            .load(Globals().getImgUrl("users", currentUser))
+            .placeholder(R.drawable.baseline_person_24)
+            .into(profileImage)
         val usernameChange: EditText = findViewById(R.id.newUsername_change_menu)
         val realnameChnage: EditText = findViewById(R.id.newFullname_change_menu)
         val countryChange: Spinner = findViewById(R.id.newCountry_change_menu)
         val aboutmeChange: EditText = findViewById(R.id.aboutme_change_menu)
+        lifecycleScope.launch {
+            val userData = withContext(Dispatchers.IO) { DatabaseMethods.UserDatabaseMethods().getUserInfo(currentUser) }
+            usernameChange.setText(userData.username)
+            realnameChnage.setText(userData.fullname)
+            aboutmeChange.setText(userData.aboutMe)
+
+            countryChange.setSelection(countriesToTheirCodes.keys.toList().sorted().indexOf(userData.country.name))
+            val adapter = ArrayAdapter(applicationContext, R.layout.widget_custom_spinner_item, countriesToTheirCodes.keys.toList().sorted())
+            adapter.setDropDownViewResource(R.layout.widget_custom_spinner_dropdown_item)
+            countryChange.adapter = adapter
+        }
+
+
+
+
+
+        val savePublic : Button = findViewById(R.id.save_public_info)
 //        val f = DatabaseMethods()
 //        lifecycleScope.launch {
 //            f.appCont(applicationContext)
