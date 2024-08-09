@@ -1,0 +1,155 @@
+{
+  "tests": {
+    "1": {
+      "qNoData": "Сколько граммов мяса вы потребляете в день в среднем? Укажите среднее значение за неделю или месяц.",
+      "qNoDataInTime": "Вы не проходили тест %d %s! Оцените свое среднее потребление граммов мяса в день за прошедшее время с учетом сегодня.",
+      "qData": "Сколько примерно граммов мяса вы потребили сегодня?",
+
+      "specify": {
+        "1": {
+          "name": "Говядина",
+          "value": 0
+        },
+        "2": {
+          "name": "Свинина",
+          "value": 0
+        },
+        "3": {
+          "name": "Курица",
+          "value": 0
+        },
+        "4": {
+          "name": "Баранина",
+          "value": 0
+        },
+        "5": {
+          "name": "Индейка",
+          "value": 0
+        },
+        "6": {
+          "name": "Утка",
+          "value": 0
+        },
+        "7": {
+          "name": "Кролик",
+          "value": 0
+        },
+        "8": {
+          "name": "Рыба",
+          "value": 0
+        },
+        "9": {
+          "name": "Морепродукты",
+          "value": 0
+        }
+      },
+      "sliders": {
+        "minValue": 0,
+        "maxValue": 10000,
+        "valueType": "гр."
+      }
+    },
+
+    "2": {
+      "qNoData": "",
+      "qNoDataInTime": "",
+      "qData": "Сколько граммов овощей и фруктов вы потребили сегодня?",
+
+      "specify": {
+        "1": {
+          "name":"Овощи",
+          "value": 0
+        },
+        "2": {
+          "name": "Фрукты",
+          "value": 0
+        }
+      },
+      "sliders": {
+        "minValue": 0,
+        "maxValue": 10000,
+        "valueType": "гр."
+      }
+    },
+
+    "3": {
+      "qNoData": "",
+      "qNoDataInTime": "",
+      "qData": "Сколько процентов вашего рациона составляют переработанные продукты?",
+
+      "specify": {
+        "1": {
+          "name": "Готовые продукты (консервы, фаст-фуд, замороженные блюда)",
+          "value": 0
+        },
+        "2": {
+          "name": "Закуски, кондитерские изделия",
+          "value": 0
+        },
+        "3": {
+          "name": "С добавками и улучшителями (колбасы, плавленные сыры и т.д.)",
+          "value": 0
+        }
+      },
+      "sliders": {
+        "divideSpecifiersToMax": true,
+        "minValue": 0,
+        "maxValue": 100,
+        "valueType": "%"
+      }
+    },
+
+    "4": {
+      "qNoData": "",
+      "qNoDataInTime": "",
+      "qData": "Какой процент ваших продуктов местные и сезонные?",
+
+      "sliders": {
+        "minValue": 0,
+        "maxValue": 100,
+        "valueType": "%"
+      }
+    }
+  },
+
+  "formulas": {
+    "1_carbonFootprint": {
+      "description": "Углеродные выбросы, на основе данных о потреблении мясных продуктов",
+      "formula": "0.027 * data[1].sum / 1000",
+      "valueType": "тонн"
+    },
+    "2_carbonFootprint": {
+      "description": "Углеродные выбросы, на основе данных о потреблении фруктов и овощей",
+      "formula": "0.0004 * data[2].sum / 1000",
+      "valueType": "тонн"
+    },
+    "3_carbonFootprint": {
+      "description": "Углеродные выбросы, на основе данных о потреблении переработанных продуктов",
+      "formula": "0.25 * data[3].sum",
+      "valueType": "тонн"
+    },
+    "4_carbonFootprint": {
+      "description": "Углеродные выбросы, на основе данных о потреблении местных и сезонных продуктов",
+      "formula": "0.1 * data[4].sum",
+      "valueType": "тонн"
+    },
+    "waterConsumption": {
+      "description": "Количество воды, затраченное на производство потребляемых продуктов",
+      "useSpecify": true,
+      "formula": "(15000 * data[1].specify[1] + 6000 * data[1].specify[2] + 4000 * data[1].specify[3] + 8000 * data[1].specify[4] + 5000 * data[1].specify[5] + 6000 * data[1].specify[6] + 5000 * data[1].specify[7] + 1000 * data[1].specify[8] + 2000 * data[1].specify[9] + 500 * data[2].specify[1] + 1000 * data[2].specify[2]) / 1000",
+      "valueType": "м³"
+    },
+    "energyConsumption": {
+      "description": "Количество энергии, затраченное на производство потребляемых продуктов",
+      "useSpecify": true,
+      "formula": "(60 * data[1].specify[1] + 25 * data[1].specify[2] + 12 * data[1].specify[3] + 50 * data[1].specify[4] + 20 * data[1].specify[5] + 25 * data[1].specify[6] + 20 * data[1].specify[7] + 10 * data[1].specify[8] + 15 * data[1].specify[9] + 2 * data[2].specify[1] + 3 * data[2].specify[2]) / 1000",
+      "valueType": "кВт*ч"
+    },
+    "proteinContent": {
+      "description": "Количество белков, полученных потреблением выбранных продуктов",
+      "useSpecify": true,
+      "formula": "(25 * data[1].specify[1] + 22 * data[1].specify[2] + 30 * data[1].specify[3] + 30 * data[1].specify[4] + 29 * data[1].specify[5] + 30 * data[1].specify[6] + 20 * data[1].specify[7] + 20 * data[1].specify[8] + 20 * data[1].specify[9] + 2 * data[2].specify[1] + 1 * data[2].specify[2]) / 100",
+      "valueType": "гр."
+    }
+  }
+}

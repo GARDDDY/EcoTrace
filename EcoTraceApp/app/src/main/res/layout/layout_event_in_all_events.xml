@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:foreground="@drawable/fgfgfgfg"
+        android:foreground="@drawable/bottom_rounded_border"
         android:paddingBottom="@dimen/default_PaddingMargin"
         android:clipChildren="true"
         android:clipToPadding="true"

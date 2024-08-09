@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/testQuestion"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/ok_green"
+        android:textSize="24sp"
+        android:layout_marginHorizontal="@dimen/default_PaddingMargin"
+        android:layout_alignParentTop="true"
+        android:textAlignment="center"
+        android:text="Test Question" />
+
+    <TextView
+        android:id="@+id/specifyData"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/testQuestion"
+        android:layout_centerHorizontal="true"
+        android:textColor="@color/black"
+        android:textSize="15sp"
+        android:visibility="visible"
+        android:layout_marginTop="@dimen/default_PaddingMargin"
+        android:text="Уточнить" />
+
+    <TextView
+        android:id="@+id/hintUsedSpecify"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/specifyData"
+        android:layout_marginTop="@dimen/default_PaddingMargin"
+        android:layout_centerHorizontal="true"
+        android:textColor="@color/silver"
+        android:visibility="gone"
+        android:textSize="15sp"
+        android:text="Сейчас используются уточненные данные!" />
+
+    <SeekBar
+        android:id="@+id/seekBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginHorizontal="@dimen/default_PaddingMargin"
+        android:progressTint="@color/ok_green"
+        android:thumbTint="@color/ok_green"
+        android:progressBackgroundTint="@color/ok_green"
+        android:progress="40" />
+
+    <TextView
+        android:id="@+id/minValue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@id/seekBar"
+        android:layout_below="@id/seekBar"
+        android:paddingStart="@dimen/default_PaddingMargin"
+        android:textColor="@color/silver"
+        android:textStyle="bold"
+        android:textSize="15sp"
+        android:text="min" />
+
+    <TextView
+        android:id="@+id/valueTypeToMin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="valueType"
+        android:layout_marginStart="5dp"
+        android:textColor="@color/silver"
+        android:textStyle="bold"
+        android:textSize="15sp"
+        android:layout_toEndOf="@id/minValue"
+        android:layout_below="@id/seekBar" />
+
+    <EditText
+        android:id="@+id/currentValue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/seekBar"
+        android:layout_centerHorizontal="true"
+        android:selectAllOnFocus="true"
+        android:singleLine="false"
+        android:text="current"
+        android:inputType="numberSigned"
+        android:background="@color/transparent"
+        android:textColor="@color/ok_green"
+        android:textSize="16sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/valueTypeToCurrent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="valueType"
+        android:textColor="@color/ok_green"
+        android:textStyle="bold"
+        android:textSize="16sp"
+        android:layout_marginStart="5dp"
+        android:layout_toEndOf="@id/currentValue"
+        android:layout_below="@id/seekBar" />
+
+    <TextView
+        android:id="@+id/currentValueSpecify"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/currentValue"
+        android:text="current"
+        android:textColor="@color/ok_green"
+        android:textStyle="bold"
+        android:textSize="16sp"
+        android:visibility="gone"
+        android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:id="@+id/valueTypeToCurrentSpecify"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="valueType"
+        android:textColor="@color/ok_green"
+        android:textStyle="bold"
+        android:textSize="16sp"
+        android:layout_marginStart="5dp"
+        android:visibility="gone"
+        android:layout_toEndOf="@id/currentValueSpecify"
+        android:layout_below="@id/valueTypeToCurrent" />
+
+    <TextView
+        android:id="@+id/maxValue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toStartOf="@id/valueTypeToMax"
+        android:layout_below="@id/seekBar"
+        android:textColor="@color/silver"
+        android:textStyle="bold"
+        android:textSize="15sp"
+        android:text="max" />
+
+    <TextView
+        android:id="@+id/valueTypeToMax"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="valueType"
+        android:textColor="@color/silver"
+        android:textStyle="bold"
+        android:textSize="15sp"
+        android:layout_marginStart="5dp"
+        android:paddingEnd="@dimen/default_PaddingMargin"
+        android:layout_alignEnd="@id/seekBar"
+        android:layout_below="@id/seekBar" />
+
+    <TextView
+        android:id="@+id/hintToUseGeneral"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/currentValueSpecify"
+        android:layout_marginTop="@dimen/default_PaddingMargin"
+        android:layout_centerHorizontal="true"
+        android:textColor="@color/silver"
+        android:visibility="gone"
+        android:textSize="15sp"
+        android:text="Потяните, чтобы использовать общие данные!" />
+
+
+</RelativeLayout>

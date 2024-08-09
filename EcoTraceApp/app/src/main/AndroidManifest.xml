@@ -2,8 +2,15 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="false" />
+
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.CAMERA" />
 
     <application
         android:name=".Globals"
@@ -16,8 +23,26 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.NoActionBar"
-        android:usesCleartextTraffic="true"
-        tools:targetApi="29">
+        android:usesCleartextTraffic="true">
+        <activity
+            android:name=".ui.more.ecocalculator.DailyEcoCalcResultsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.more.ecocalculator.DailyEcoCalcActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.more.ecocalculator.daily.FoodEcoCalcActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.more.ecocalculator.EcologicalCalculatorActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.more.groups.CreateGroupPostMenuActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".ui.more.groups.ShowPostWithCommentsActivity"
+            android:exported="false" />
         <activity
             android:name=".ui.more.groups.ShowGroupRulesActivity"
             android:exported="false" />
@@ -39,10 +64,10 @@
             android:name=".ui.more.groups.ShowGroupActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.more.groups.CreateOwnGroupActivity"
+            android:name=".ui.more.groups.CreateGroupActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.more.groups.AllGroupsActivity"
+            android:name=".ui.more.groups.ShowAllGroupsActivity"
             android:exported="false"
             android:theme="@style/Theme.AppCompat.NoActionBar" />
         <activity

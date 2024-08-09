@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content" >
+
+    <LinearLayout
+        android:id="@+id/main"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/dirt_white"
+        android:paddingVertical="@dimen/default_PaddingMargin"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/specifyType"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textSize="15sp"
+            android:maxEms="10"
+            android:textColor="@color/black"
+            android:layout_marginStart="@dimen/default_PaddingMargin"
+            android:text="SpecifyType" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+
+            <SeekBar
+                android:id="@+id/seekBar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/default_PaddingMargin"
+                android:progressTint="@color/ok_green"
+                android:thumbTint="@color/ok_green"
+                android:progressBackgroundTint="@color/ok_green"
+                android:progress="40" />
+
+            <TextView
+                android:id="@+id/minValue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignStart="@id/seekBar"
+                android:layout_below="@id/seekBar"
+                android:paddingStart="@dimen/default_PaddingMargin"
+                android:textColor="@color/silver"
+                android:textStyle="bold"
+                android:textSize="15sp"
+                android:text="min" />
+
+            <TextView
+                android:id="@+id/valueTypeToMin"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="valueType"
+                android:layout_marginStart="5dp"
+                android:textColor="@color/silver"
+                android:textStyle="bold"
+                android:textSize="15sp"
+                android:layout_toEndOf="@id/minValue"
+                android:layout_below="@id/seekBar" />
+
+            <TextView
+                android:id="@+id/currentValue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/seekBar"
+                android:layout_centerHorizontal="true"
+                android:textColor="@color/ok_green"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:text="current" />
+
+            <TextView
+                android:id="@+id/valueTypeToCurrent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="valueType"
+                android:textColor="@color/ok_green"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:layout_marginStart="5dp"
+                android:layout_toEndOf="@id/currentValue"
+                android:layout_below="@id/seekBar" />
+
+            <TextView
+                android:id="@+id/maxValue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toStartOf="@id/valueTypeToMax"
+                android:layout_below="@id/seekBar"
+                android:textColor="@color/silver"
+                android:textStyle="bold"
+                android:textSize="15sp"
+                android:text="max" />
+
+            <TextView
+                android:id="@+id/valueTypeToMax"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="valueType"
+                android:textColor="@color/silver"
+                android:textStyle="bold"
+                android:textSize="15sp"
+                android:layout_marginStart="5dp"
+                android:paddingEnd="@dimen/default_PaddingMargin"
+                android:layout_alignEnd="@id/seekBar"
+                android:layout_below="@id/seekBar" />
+
+        </RelativeLayout>
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@+id/main"
+        android:background="@color/dirt2_white" />
+
+</RelativeLayout>

@@ -109,7 +109,7 @@ class ShowAllEventsActivity : AppCompatActivity() {
             for (event in it) {
                 val eventLayout = layoutInflater.inflate(R.layout.layout_event_in_all_events, null)
                 eventLayout.findViewById<TextView>(R.id.eventName).text = event.eventName
-                eventLayout.findViewById<TextView>(R.id.eventDescription).text = event.eventAbout.ifEmpty { "Нет описания" }
+                eventLayout.findViewById<TextView>(R.id.eventDescription).text = event.eventAbout ?: "Нет описания"
                 eventLayout.findViewById<TextView>(R.id.eventMembers).text = event.eventCountMembers.toString()
                 eventLayout.findViewById<TextView>(R.id.eventCreator).text = event.eventCreatorName
 

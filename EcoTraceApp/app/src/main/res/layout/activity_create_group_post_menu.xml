@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/dirt_white"
+    android:fitsSystemWindows="true"
+    tools:context=".ui.more.groups.CreateGroupPostMenuActivity">
+
+    <Toolbar
+        android:id="@+id/toolbar8"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/publishPost"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Опубликовать"
+        android:layout_alignEnd="@+id/toolbar8"
+        android:clickable="false"
+        android:backgroundTint="@color/silver"
+        android:textColor="@color/dirt_white"
+        app:layout_constraintEnd_toEndOf="@+id/toolbar8"
+        android:layout_marginEnd="6dp"
+        android:layout_marginTop="6dp"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/linearLayout8"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/default_PaddingMargin"
+        android:layout_below="@+id/toolbar8"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar8">
+
+        <ImageView
+            android:id="@+id/userImage"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginEnd="10dp"
+            app:srcCompat="@drawable/baseline_person_24" />
+
+        <TextView
+            android:id="@+id/textView58"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginEnd="@dimen/default_PaddingMargin"
+            android:text="Пост в группу"
+            android:textColor="@color/black"
+            android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/currentGroupName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="groupName"
+            android:textColor="@color/ok_green"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayout7"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginHorizontal="@dimen/default_PaddingMargin"
+        android:layout_marginBottom="@dimen/default_PaddingMargin"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <LinearLayout
+            android:id="@+id/attachImage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                app:srcCompat="@drawable/baseline_image_24" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="Изображение"
+                android:textColor="@color/ok_green"
+                android:textSize="20sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/addLink"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                app:srcCompat="@drawable/baseline_add_link_24" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="Добавить ссылку"
+                android:textColor="@color/ok_green"
+                android:textSize="20sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/editLinks"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                app:srcCompat="@drawable/baseline_link_24" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:textColor="@color/ok_green"
+                android:textSize="20sp"
+                android:text="Редактировать ссылки" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/linearLayout8"
+        android:layout_above="@id/linearLayout7"
+        android:layout_margin="@dimen/default_PaddingMargin"
+        android:foreground="@drawable/nonrounded_border"
+        android:gravity="top"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout8">
+
+        <ImageView
+            android:id="@+id/postImage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/postTextContent"
+            android:layout_alignParentBottom="true"
+            android:layout_marginHorizontal="@dimen/default_PaddingMargin"
+            android:layout_marginTop="@dimen/default_PaddingMargin"
+            android:layout_marginBottom="@dimen/default_PaddingMargin"
+            android:adjustViewBounds="true"
+            android:scaleType="centerCrop"
+            android:visibility="visible"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:srcCompat="@tools:sample/backgrounds/scenic" />
+
+        <EditText
+            android:id="@+id/postTextContent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="10dp"
+            android:layout_marginVertical="10dp"
+            android:backgroundTint="@color/transparent"
+            android:ems="10"
+            android:hint="Написать что-нибудь..."
+            android:inputType="textMultiLine"
+            android:isScrollContainer="true"
+            android:padding="@dimen/default_PaddingMargin"
+            android:textColorHint="@color/silver" />
+
+
+    </RelativeLayout>
+
+</RelativeLayout>

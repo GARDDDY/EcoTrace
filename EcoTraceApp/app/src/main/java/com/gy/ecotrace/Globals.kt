@@ -4,8 +4,15 @@ import android.app.Application
 import android.content.Context
 import android.graphics.PorterDuff
 import android.util.Log
+import android.widget.Toast
 import android.widget.Toolbar
 import androidx.core.content.ContextCompat
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.auth.UserProfileChangeRequest
+import com.gy.ecotrace.db.DatabaseMethods
+import java.time.LocalDateTime
+import java.time.ZoneOffset
 
 class Globals : Application() {
     private val variablesMapInt: HashMap<String, Int> = HashMap()
@@ -64,8 +71,8 @@ class Globals : Application() {
     }
 
     fun getString(key: String): String {
-        Log.d("Globals get value", "Got $key")
-        return if (variablesMapStr[key] != null) variablesMapStr[key]!! else "0"
+        Log.d("Globals get value", "Got $key (${variablesMapStr[key] ?: '0'})")
+        return variablesMapStr[key] ?: "0"
     }
 
     fun setString(key: String, value: String) {
@@ -74,12 +81,12 @@ class Globals : Application() {
     }
 
     fun getImgUrl(folder: String, id: String): String {
-        return "https://ik.imagekit.io/ecoimagetracekit/$folder/$id.png"
+        return DatabaseMethods.ApplicationDatabaseMethods().getImageLink(folder, id)
     }
 
-    fun initToolbarIconBack(toolbar: Toolbar, context: Context) {
+    fun initToolbarIconBack(toolbar: Toolbar, context: Context, color: Int = R.color.ok_green) {
         val backIcon = ContextCompat.getDrawable(context, R.drawable.baseline_arrow_back_24)
-        backIcon?.setColorFilter(ContextCompat.getColor(context, R.color.ok_green), PorterDuff.Mode.SRC_ATOP)
+        backIcon?.setColorFilter(ContextCompat.getColor(context, color), PorterDuff.Mode.SRC_ATOP)
         toolbar.setNavigationIcon(backIcon)
     }
 }

@@ -2,35 +2,41 @@ package com.gy.ecotrace
 
 import android.app.Service
 import android.content.Intent
+import android.os.Handler
 import android.os.IBinder
+import android.os.Looper
 import android.util.Log
+import java.io.File
+import java.util.Date
 
 class AppService: Service() {
-    private val filesSuffixes = mutableListOf("info", "events", "friends", "groups", "EVENT", "GROUP")
-    override fun onDestroy() {
-        super.onDestroy()
-        deleteFiles()
+    private val handler = Handler(Looper.getMainLooper())
+    private val cleanupIntervalMillis: Long = 10 * 60 * 1000 // 10 минут
+
+    override fun onCreate() {
+        super.onCreate()
+        startCleanupTask()
     }
 
-    private fun deleteFiles() {
-        val filesDir = filesDir
-        for (file in filesDir.listFiles()!!) {
-            if (file.isFile && matchesSuffixes(file.name)) {
+    override fun onBind(p0: Intent?): IBinder? {
+        return null
+    }
+
+    private fun startCleanupTask() {
+        handler.postDelayed(object : Runnable {
+            override fun run() {
+                cleanUpCache()
+                handler.postDelayed(this, cleanupIntervalMillis)
+            }
+        }, cleanupIntervalMillis)
+    }
+
+    private fun cleanUpCache() {
+        val now = Date().time
+        filesDir.listFiles()?.forEach { file ->
+            if (now - file.lastModified() > 15 * 60 * 1000 ) {
                 file.delete()
             }
         }
-    }
-
-    private fun matchesSuffixes(fileName: String): Boolean {
-        for (suffix in filesSuffixes) {
-            if (fileName.matches(".+_$suffix\\.json$".toRegex())) {
-                return true
-            }
-        }
-        return false
-    }
-
-    override fun onBind(intent: Intent?): IBinder? {
-        return null
     }
 }

@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="#a5000000"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/username"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="username"
+            android:gravity="center"
+            android:layout_gravity="center"
+            android:textColor="@color/pair2Color1"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/toceo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:clickable="true"
+            android:visibility="visible"
+            android:paddingVertical="10dp"
+            android:background="@color/dirt2_white"
+            android:textSize="16sp"
+            android:textColor="@color/black"
+            android:text="Сделать руководителем" />
+        <View
+            android:id="@+id/extraBorder"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:visibility="gone"
+            android:background="@color/dirt_white" />
+
+        <TextView
+            android:id="@+id/tohelper"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:clickable="true"
+            android:paddingVertical="10dp"
+            android:background="@color/dirt2_white"
+            android:textSize="16sp"
+            android:textColor="@color/black"
+            android:text="Сделать помощником " />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/dirt_white" />
+
+        <TextView
+            android:id="@+id/tomember"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/dirt2_white"
+            android:textSize="16sp"
+            android:clickable="true"
+            android:paddingVertical="10dp"
+            android:gravity="center"
+            android:textColor="@color/black"
+            android:text="Сделать участником" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/dirt_white" />
+
+        <TextView
+            android:id="@+id/kick"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/dirt2_white"
+            android:textSize="16sp"
+            android:paddingVertical="10dp"
+            android:gravity="center"
+            android:clickable="true"
+            android:textColor="@color/black"
+            android:text="Выгнать" />
+    </LinearLayout>
+</LinearLayout>

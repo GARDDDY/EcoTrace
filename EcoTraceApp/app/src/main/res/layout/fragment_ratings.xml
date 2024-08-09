@@ -4,6 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    android:background="@color/dirt_white"
     tools:context=".ui.ratings.RatingsFragment">
 
     <HorizontalScrollView
@@ -17,7 +19,9 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:orientation="horizontal"></LinearLayout>
+            android:orientation="horizontal">
+
+        </LinearLayout>
     </HorizontalScrollView>
 
     <EditText
@@ -27,6 +31,7 @@
         android:ems="10"
         android:inputType="text"
         android:hint="Имя пользователя"
+        android:layout_marginTop="@dimen/default_PaddingMargin"
         android:textColorHint="@color/silver"
         android:layout_marginHorizontal="@dimen/default_PaddingMargin"
         app:layout_constraintEnd_toEndOf="parent"
@@ -44,18 +49,20 @@
         app:layout_constraintTop_toBottomOf="@+id/editTextText6">
 
         <LinearLayout
+            android:id="@+id/usersLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical" />
     </ScrollView>
 
-    <View
-        android:id="@+id/userProfileInTop"
+    <FrameLayout
+        android:id="@+id/currentUserInRating"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="wrap_content"
         android:background="@color/red_no"
         android:layout_marginBottom="5dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

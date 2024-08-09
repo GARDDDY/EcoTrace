@@ -99,13 +99,4 @@
             android:textStyle="italic" />
     </LinearLayout>
 
-    <ImageButton
-        android:id="@+id/user_more_actions_group"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:backgroundTint="@color/transparent"
-        android:src="@drawable/outline_more_vert_24"
-        android:visibility="gone" />
-
 </LinearLayout>

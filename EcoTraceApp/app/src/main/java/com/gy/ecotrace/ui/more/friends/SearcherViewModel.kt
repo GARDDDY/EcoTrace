@@ -24,13 +24,13 @@ class SearcherViewModel(private val repository: Repository) : ViewModel() {
         filteredUserFriends.value = if (query.isEmpty()) {
             friends
         } else {
-            friends.filter { it.username.startsWith(query, ignoreCase = true) }
+            friends.filter { it.userId.startsWith(query, ignoreCase = true) }
         }
     }
 
     fun getUserFriends(userId: String) {
         viewModelScope.launch {
-            val friends = repository.getFriends(userId)
+            val friends = repository.getUserFriends(userId, null)
             _userFriends.postValue(friends)
         }
     }

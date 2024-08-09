@@ -5,6 +5,12 @@
     android:layout_height="wrap_content"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <android.widget.Toolbar
+        android:id="@+id/postToolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/transparent" />
+
     <LinearLayout
         android:id="@+id/upperInfoPost"
         android:layout_width="match_parent"
@@ -19,8 +25,10 @@
             app:srcCompat="@drawable/baseline_person_24" />
 
         <LinearLayout
+            android:id="@+id/openCreatorProfileLayout"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
+            android:clickable="true"
             android:orientation="vertical">
 
             <TextView
@@ -29,13 +37,14 @@
                 android:layout_height="wrap_content"
                 android:text="postCreator"
                 android:textColor="@color/ok_green"
-                android:textSize="16sp"
+                android:textSize="17sp"
                 android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/postCreateTime"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center"
                 android:text="postTimeCreate"
                 android:textColor="@color/silver" />
         </LinearLayout>
@@ -48,22 +57,15 @@
             android:visibility="gone"
             app:srcCompat="@drawable/eye_close" />
 
-        <ImageButton
-            android:id="@+id/expandPost"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:scaleType="fitEnd"
-            android:backgroundTint="@color/transparent"
-            app:srcCompat="@drawable/outline_arrow_outward_24" />
 
-        <ImageButton
-            android:id="@+id/postSettings"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:backgroundTint="@color/transparent"
-            android:scaleType="fitEnd"
-            app:srcCompat="@drawable/outline_more_vert_24" />
+<!--        <ImageButton-->
+<!--            android:id="@+id/postSettings"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="match_parent"-->
+<!--            android:backgroundTint="@color/transparent"-->
+<!--            android:scaleType="fitEnd"-->
+<!--            android:layout_weight="1"-->
+<!--            app:srcCompat="@drawable/outline_more_vert_24" />-->
 
     </LinearLayout>
 
@@ -74,17 +76,19 @@
         android:layout_marginHorizontal="@dimen/default_PaddingMargin"
         android:layout_marginTop="@dimen/default_PaddingMargin"
         android:layout_below="@+id/upperInfoPost"
+        android:textColor="@color/black"
         android:text="WMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWM" />
 
     <ImageView
         android:id="@+id/postContentImage"
-        android:layout_width="wrap_content"
+        tools:srcCompat="@tools:sample/backgrounds/scenic"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/postContentText"
         android:layout_marginHorizontal="@dimen/default_PaddingMargin"
         android:layout_marginTop="@dimen/default_PaddingMargin"
-        android:scaleType="centerInside"
-        tools:srcCompat="@tools:sample/avatars" />
+        android:adjustViewBounds="true"
+        android:scaleType="fitCenter" />
 
     <LinearLayout
         android:id="@+id/bottomInfoPost"
@@ -104,13 +108,12 @@
                 android:id="@+id/likeThisPost"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="@dimen/default_PaddingMargin"
                 android:orientation="horizontal">
 
                 <ImageView
                     android:layout_width="32dp"
                     android:layout_height="32dp"
-                    app:srcCompat="@drawable/baseline_favorite_24"
+                    app:srcCompat="@drawable/baseline_favorite_border_24"
                     app:tint="@color/ok_green" />
 
                 <TextView
@@ -125,7 +128,6 @@
                 android:id="@+id/copyThisPostText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="@dimen/default_PaddingMargin"
                 android:gravity="end"
                 android:orientation="horizontal">
 
@@ -133,7 +135,8 @@
                     android:id="@+id/imageView12"
                     android:layout_width="32dp"
                     android:layout_height="32dp"
-                    app:srcCompat="@drawable/baseline_alternate_email_24" />
+                    app:tint="@color/ok_green"
+                    app:srcCompat="@drawable/baseline_content_copy_24" />
 
                 <TextView
                     android:id="@+id/textView47"
@@ -146,27 +149,41 @@
 
         </LinearLayout>
 
-        <ScrollView
-            android:id="@+id/allPostComments"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginVertical="@dimen/default_PaddingMargin">
+        <LinearLayout
+            android:id="@+id/showPostComments"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/default_PaddingMargin"
+            android:orientation="horizontal" >
 
-            <LinearLayout
-                android:layout_width="match_parent"
+            <TextView
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"/>
-        </ScrollView>
+                android:textSize="18sp"
+                android:layout_marginEnd="@dimen/default_PaddingMargin"
+                android:text="Посмотреть"/>
+
+            <TextView
+                android:id="@+id/commentsCountPost"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="visible"
+                android:textSize="18sp"
+                android:layout_gravity="center"
+                android:text="Комментарии" />
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginTop="@dimen/default_PaddingMargin"
             android:orientation="horizontal">
 
             <ImageView
                 android:id="@+id/currentUserImage"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
+                android:foreground="@color/silver"
                 app:srcCompat="@drawable/baseline_person_24" />
 
             <EditText
@@ -185,6 +202,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:backgroundTint="@color/transparent"
+                android:visibility="gone"
                 app:srcCompat="@drawable/baseline_check_24" />
         </LinearLayout>
 

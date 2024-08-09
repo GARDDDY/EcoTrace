@@ -1,0 +1,17 @@
+{
+    "name": "gardddy/eco-trace-server",
+    "autoload": {
+        "psr-4": {
+            "Gardddy\\EcoTraceServer\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "GARDDDY",
+            "email": "57499798+GARDDDY@users.noreply.github.com"
+        }
+    ],
+    "require": {
+        "kreait/firebase-php": "7.0"
+    }
+}

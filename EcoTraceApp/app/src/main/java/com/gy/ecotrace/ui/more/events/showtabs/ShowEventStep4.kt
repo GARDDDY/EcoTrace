@@ -46,7 +46,7 @@ class ShowEventStep4 : Fragment() {
         eventViewModel.members.observe(viewLifecycleOwner, Observer { member ->
             val userOneLayoutInEvent = layoutInflater.inflate(R.layout.layout_user_in_event, null)
             userOneLayoutInEvent.findViewById<TextView>(R.id.username_user_in_event_layout).text = member.username
-            userOneLayoutInEvent.findViewById<TextView>(R.id.user_role_in_event_user_in_event_layout).text = DatabaseMethods.DataClasses.EventRoles[member.userRole]
+//            userOneLayoutInEvent.findViewById<TextView>(R.id.user_role_in_event_user_in_event_layout).text = DatabaseMethods.DataClasses.EventRoles[member.userRole] //todo
             val openBestGroup = userOneLayoutInEvent.findViewById<TextView>(R.id.user_group_user_in_event_layout)
             openBestGroup.text = member.userBestGroupName
             userOneLayoutInEvent.findViewById<TextView>(R.id.user_rank_user_in_event_layout).text = member.userRank

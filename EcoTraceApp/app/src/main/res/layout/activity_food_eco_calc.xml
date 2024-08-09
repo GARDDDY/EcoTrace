@@ -5,6 +5,6 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.more.activities.GroupsSearchAndCreate">
+    tools:context=".ui.more.ecocalculator.daily.FoodEcoCalcActivity">
 
 </androidx.constraintlayout.widget.ConstraintLayout>

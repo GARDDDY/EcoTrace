@@ -153,7 +153,7 @@ class UsersSearchFriends : AppCompatActivity() {
                         val friendOneLayout =
                             layoutInflater.inflate(R.layout.friend_linear_layout, null)
                         friendOneLayout.findViewById<TextView>(R.id.username_friend_layout).text =
-                            fr.username
+                            fr.userId
 
                         friendOneLayout.setOnClickListener {
                             val myIntent = Intent(this, ProfileActivity::class.java)

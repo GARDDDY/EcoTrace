@@ -57,11 +57,11 @@ class ChangeProfile : AppCompatActivity() {
         val aboutmeChange: EditText = findViewById(R.id.aboutme_change_menu)
         lifecycleScope.launch {
             val userData = withContext(Dispatchers.IO) { DatabaseMethods.UserDatabaseMethods().getUserInfo(currentUser) }
-            usernameChange.setText(userData.username)
-            realnameChnage.setText(userData.fullname)
-            aboutmeChange.setText(userData.aboutMe)
+            usernameChange.setText(userData?.username ?: "none")
+            realnameChnage.setText(userData?.fullname ?: "none")
+            aboutmeChange.setText(userData?.aboutMe ?: "")
 
-            countryChange.setSelection(countriesToTheirCodes.keys.toList().sorted().indexOf(userData.country.name))
+            countryChange.setSelection(countriesToTheirCodes.keys.toList().sorted().indexOf(userData?.country!!.name))
             val adapter = ArrayAdapter(applicationContext, R.layout.widget_custom_spinner_item, countriesToTheirCodes.keys.toList().sorted())
             adapter.setDropDownViewResource(R.layout.widget_custom_spinner_dropdown_item)
             countryChange.adapter = adapter

@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <TextView
+        android:id="@+id/textOften"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp"
+        android:gravity="center"
+        android:text="Данные, которые стоит обновлять ежедневно"
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout9"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/linearLayout9"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_marginBottom="@dimen/default_PaddingMargin"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toTopOf="@id/space"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <Button
+            android:id="@+id/foodEcoCalc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/transparent"
+            android:drawableLeft="@drawable/baseline_fastfood_24"
+            android:drawableTint="@color/ok_green"
+            android:text="Пища"
+            android:foreground="@drawable/nonrounded_border"
+            android:textColor="@color/ok_green"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="1dp" />
+
+        <Button
+            android:id="@+id/waterEcoCalc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/transparent"
+            android:drawableLeft="@drawable/baseline_water_drop_24"
+            android:drawableTint="@color/ok_green"
+            android:text="Вода"
+            android:foreground="@drawable/nonrounded_border"
+            android:textColor="@color/ok_green"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="1dp" />
+
+        <Button
+            android:id="@+id/trashEcoCalc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/transparent"
+            android:drawableLeft="@drawable/baseline_compost_24"
+            android:drawableTint="@color/ok_green"
+            android:text="Отходы"
+            android:foreground="@drawable/nonrounded_border"
+            android:textColor="@color/ok_green"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="1dp" />
+
+        <Button
+            android:id="@+id/energyEcoCalc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/transparent"
+            android:drawableLeft="@drawable/baseline_energy_savings_leaf_24"
+            android:drawableTint="@color/ok_green"
+            android:text="Энергия"
+            android:foreground="@drawable/nonrounded_border"
+            android:textColor="@color/ok_green"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="1dp" />
+
+        <Button
+            android:id="@+id/transportationEcoCalc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/transparent"
+            android:drawableLeft="@drawable/baseline_directions_car_24"
+            android:drawableTint="@color/ok_green"
+            android:text="Транспорт"
+            android:foreground="@drawable/nonrounded_border"
+            android:textColor="@color/ok_green"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <Space
+        android:id="@+id/space"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingVertical="@dimen/default_PaddingMargin"
+        app:layout_constraintBottom_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="parent" />
+
+    <TextView
+        android:id="@+id/textRare"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_marginTop="@dimen/default_PaddingMargin"
+        android:text="Важные данные, которые редко меняются у людей, помогающие делать более точные выводы"
+        android:textSize="18sp"
+        android:textColor="@color/black"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/space"/>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        android:layout_marginTop="5dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textRare">
+
+        <Button
+            android:id="@+id/housingEcoCalc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:drawableLeft="@drawable/baseline_house_24"
+            android:drawableTint="@color/ok_green"
+            android:textColor="@color/ok_green"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:backgroundTint="@color/transparent"
+            android:foreground="@drawable/nonrounded_border"
+            android:text="Жилье" />
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="1dp" />
+
+        <Button
+            android:id="@+id/lifestyleEcoCalc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:drawableLeft="@drawable/baseline_emoji_people_24"
+            android:drawableTint="@color/ok_green"
+            android:textColor="@color/ok_green"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:backgroundTint="@color/transparent"
+            android:foreground="@drawable/nonrounded_border"
+            android:text="Образ жизни" />
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="1dp" />
+
+        <Button
+            android:id="@+id/moodEcoCalc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:drawableLeft="@drawable/baseline_mood_24"
+            android:drawableTint="@color/ok_green"
+            android:textColor="@color/ok_green"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:backgroundTint="@color/transparent"
+            android:foreground="@drawable/nonrounded_border"
+            android:text="Ваше настроение" />
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

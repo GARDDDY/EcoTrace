@@ -1,3 +1,6 @@
+import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
+import java.util.Properties
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
@@ -23,11 +26,22 @@ android {
 
     buildTypes {
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+
+            buildConfigField("String", "MAPKIT_API_KEY",
+                gradleLocalProperties(rootDir).getProperty("MAPKIT_API_KEY") ?: "")
+            buildConfigField("String", "SERVER_API_URI",
+                gradleLocalProperties(rootDir).getProperty("SERVER_API_URI") ?: "")
+        }
+        debug {
+            buildConfigField("String", "MAPKIT_API_KEY",
+                gradleLocalProperties(rootDir).getProperty("MAPKIT_API_KEY") ?: "")
+            buildConfigField("String", "SERVER_API_URI",
+                gradleLocalProperties(rootDir).getProperty("SERVER_API_URI") ?: "")
         }
     }
     compileOptions {
@@ -38,6 +52,7 @@ android {
         jvmTarget = "1.8"
     }
     buildFeatures {
+        buildConfig = true
         viewBinding = true
         compose = false
     }
@@ -72,6 +87,8 @@ dependencies {
     implementation("com.google.android.material:material:1.12.0-alpha03")
     implementation("androidx.activity:activity:1.8.0")
     implementation("androidx.fragment:fragment-ktx:1.5.6")
+    implementation("com.google.firebase:firebase-auth-ktx:23.0.0")
+//    implementation("com.google.android.ads:mediation-test-suite:3.0.0")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
@@ -94,9 +111,13 @@ dependencies {
     implementation("com.google.firebase:firebase-analytics")
     implementation("com.google.firebase:firebase-messaging:24.0.0")
     implementation("com.github.bumptech.glide:glide:4.11.0")
-    implementation("com.github.imagekit-developer.imagekit-android:imagekit-android:3.0.1")
     implementation("com.yandex.android:maps.mobile:4.1.0-full")
     implementation("com.google.android.material:material:1.5.0")
     implementation("androidx.core:core-ktx:1.3.2")
     implementation("androidx.appcompat:appcompat:1.2.0")
+    implementation(kotlin("reflect"))
+
+    implementation("com.squareup.okhttp3:okhttp:4.12.0")
+
+
 }

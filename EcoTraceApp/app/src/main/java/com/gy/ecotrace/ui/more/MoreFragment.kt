@@ -14,12 +14,13 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.gy.ecotrace.Globals
 import com.gy.ecotrace.R
+import com.gy.ecotrace.ui.more.ecocalculator.EcologicalCalculatorActivity
 import com.gy.ecotrace.ui.more.events.CreateEventActivity
 import com.gy.ecotrace.ui.more.events.ShowAllEventsActivity
 import com.gy.ecotrace.ui.more.friends.UsersSearchFriends
+import com.gy.ecotrace.ui.more.groups.ShowAllGroupsActivity
 import com.gy.ecotrace.ui.more.profile.ProfileActivity
-
-//import com.gy.ecotrace.ui.more.friends.UsersSearchFriends
+import com.gy.ecotrace.ui.more.profile.SignInUpHub
 
 class MoreFragment : Fragment() {
 
@@ -39,14 +40,35 @@ class MoreFragment : Fragment() {
                 "У вас еще нет аккаунта, создайте его, нажав сюда!"
         }
         view.findViewById<LinearLayout>(R.id.profileOpenLayout).setOnClickListener {
-            val openProfile = Intent(requireContext(), ProfileActivity::class.java)
-            if (Globals.getInstance().getString("CurrentlyLogged") == "0") {
-                openProfile.flags = Intent.FLAG_ACTIVITY_NO_HISTORY
+            val currentUser = Globals.getInstance().getString("CurrentlyWatching")
+            val currentLogged = Globals.getInstance().getString("CurrentlyLogged")
+            if (currentUser == "0") {
+                if (currentLogged == "0") {
+                    startActivity(Intent
+                        (
+                            requireActivity(),
+                            SignInUpHub::class.java
+                        )
+                    )
+                    return@setOnClickListener
+                } else {
+                    Globals.getInstance().setString("CurrentlyWatching", currentLogged)
+                }
             }
-            startActivity(openProfile)
+
+            startActivity(Intent
+                (
+                requireActivity(),
+                ProfileActivity::class.java
+                )
+            )
         }
         view.findViewById<LinearLayout>(R.id.ecologicalCalculatorOpenLayout).setOnClickListener {
-            Toast.makeText(context, "Экологический калькулятор", Toast.LENGTH_SHORT).show()
+            startActivity(
+                Intent(
+                    requireActivity(),
+                    EcologicalCalculatorActivity::class.java)
+            )
         }
         view.findViewById<LinearLayout>(R.id.friendsOpenLayout).setOnClickListener {
             startActivity(
@@ -63,12 +85,11 @@ class MoreFragment : Fragment() {
             )
         }
         view.findViewById<LinearLayout>(R.id.allGroupsOpenLayout).setOnClickListener {
-            Toast.makeText(context, "Друзья", Toast.LENGTH_SHORT).show()
-//            startActivity(
-//                Intent(
-//                    requireActivity(),
-//                    ShowAllGroupsActivity::class.java)
-//            )
+            startActivity(
+                Intent(
+                    requireActivity(),
+                    ShowAllGroupsActivity::class.java)
+            )
         }
         view.findViewById<LinearLayout>(R.id.settingsOpenLayout).setOnClickListener {
             Toast.makeText(context, "Настройки", Toast.LENGTH_SHORT).show()
