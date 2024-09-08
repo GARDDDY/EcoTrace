@@ -70,6 +70,7 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/layoutcolor"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="horizontal">
@@ -87,7 +88,7 @@
                 android:id="@+id/chooseFillColor"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
-                android:background="@color/red_no"/>
+                android:background="@color/red_no" />
 
             <TextView
                 android:id="@+id/textView46"
@@ -103,29 +104,28 @@
                 android:id="@+id/chooseStrokeColor"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
-                android:background="@color/ok_green"/>
+                android:background="@color/ok_green" />
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/connectLayoutWith"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:orientation="horizontal">
 
-            <Spinner
-                android:id="@+id/connectWithGoal"
+            <TextView
+                android:id="@+id/textView4"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:backgroundTint="@color/ok_green"
-                android:layout_weight="1" />
+                android:textColor="@color/black"
+                android:text="Связать со временем" />
 
             <Spinner
                 android:id="@+id/connectWithTime"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:backgroundTint="@color/ok_green"
-                android:layout_weight="1" />
-
+                android:layout_weight="1"
+                android:textAlignment="textEnd"
+                android:backgroundTint="@color/ok_green" />
         </LinearLayout>
 
         <Button

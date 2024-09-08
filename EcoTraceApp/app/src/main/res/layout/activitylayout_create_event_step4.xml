@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/main"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.yandex.mapkit.mapview.MapView
+        android:id="@+id/createMapPoints"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:id="@+id/editTypes"
+            android:layout_alignParentEnd="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <ImageButton
+                android:id="@+id/addPlacemark"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/transparent"
+                android:src="@drawable/search_layer_pin_selected_default"
+                android:text="Точка"
+                android:textColor="@color/dirt_white" />
+
+            <ImageButton
+                android:id="@+id/addCircle"
+                android:layout_width="50dp"
+                android:layout_height="62dp"
+                android:backgroundTint="@color/transparent"
+                android:src="@drawable/outline_circle_24"
+                android:text="Окружность"
+                android:textColor="@color/dirt_white"
+                android:layout_below="@id/addPlacemark"
+                app:tint="@color/ok_green" />
+
+            <View
+                android:id="@+id/selector"
+                android:layout_width="5dp"
+                android:layout_height="62dp"
+                android:layout_alignTop="@id/addPlacemark"
+                android:foreground="@drawable/layout_selector_element" />
+
+        </RelativeLayout>
+
+    </com.yandex.mapkit.mapview.MapView>
+</LinearLayout>

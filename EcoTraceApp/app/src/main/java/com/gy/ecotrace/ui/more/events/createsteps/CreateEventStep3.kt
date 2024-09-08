@@ -1,382 +1,347 @@
 package com.gy.ecotrace.ui.more.events.createsteps
 
-import android.graphics.Color
-import android.graphics.PointF
-import android.graphics.drawable.VectorDrawable
-import android.os.Build
+import android.animation.Animator
+import android.animation.ValueAnimator
+import android.app.DatePickerDialog
+import android.app.TimePickerDialog
+import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
+import android.view.animation.AccelerateDecelerateInterpolator
 import android.widget.Button
 import android.widget.EditText
-import android.widget.ImageButton
 import android.widget.LinearLayout
-import android.widget.PopupWindow
-import android.widget.SeekBar
-import android.widget.SeekBar.OnSeekBarChangeListener
-import android.widget.Spinner
+import android.widget.RelativeLayout
+import android.widget.ScrollView
 import android.widget.TextView
 import android.widget.Toast
-import androidx.annotation.RequiresApi
-import androidx.compose.material3.Text
-import androidx.core.content.res.ResourcesCompat
-import androidx.core.graphics.drawable.toBitmap
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.RecyclerView
+import androidx.fragment.app.activityViewModels
 import com.gy.ecotrace.R
-import com.gy.ecotrace.db.DatabaseMethods
-import com.gy.ecotrace.ui.more.events.CreateEventActivity
-import com.gy.ecotrace.ui.more.events.CreateEventActivity.Companion
-import com.gy.ecotrace.ui.more.events.CreateEventActivity.Companion.eventmoreClass
-import com.gy.ecotrace.ui.more.events.CreateEventActivity.Companion.viewPager
-import com.yandex.mapkit.MapKitFactory
-import com.yandex.mapkit.geometry.Circle
-import com.yandex.mapkit.geometry.LinearRing
-import com.yandex.mapkit.geometry.Point
-import com.yandex.mapkit.geometry.Polygon
-import com.yandex.mapkit.map.CircleMapObject
-import com.yandex.mapkit.map.IconStyle
-import com.yandex.mapkit.map.InputListener
-import com.yandex.mapkit.map.MapObject
-import com.yandex.mapkit.map.MapObjectCollection
-import com.yandex.mapkit.map.MapObjectDragListener
-import com.yandex.mapkit.map.MapObjectTapListener
-import com.yandex.mapkit.map.PlacemarkMapObject
-import com.yandex.mapkit.map.PolygonMapObject
-import com.yandex.mapkit.map.TextStyle
-import com.yandex.mapkit.mapview.MapView
-import com.yandex.runtime.image.ImageProvider
-import com.yandex.runtime.ui_view.ViewProvider
-import kotlin.random.Random
+import java.util.Calendar
+import java.util.TimeZone
 
 class CreateEventStep3: Fragment() {
+
+    private val sharedViewModel: CreateEventViewModel by activityViewModels()
+
+    private fun deleteLoadingFill(deleter: RelativeLayout): ValueAnimator {
+        val maxLength = deleter.width / 2
+        val loads = listOf(deleter.getChildAt(0), deleter.getChildAt(2))
+
+        return ValueAnimator.ofInt(0, maxLength).apply {
+            this.duration = 2000L
+            this.interpolator = AccelerateDecelerateInterpolator()
+            addUpdateListener { animation ->
+                for (load in loads) {
+                    val animatedValue = animation.animatedValue as Int
+                    val layoutParams = load.layoutParams as ViewGroup.LayoutParams
+                    layoutParams.width = animatedValue
+                    load.layoutParams = layoutParams
+                }
+            }
+            addListener(object : Animator.AnimatorListener {
+                override fun onAnimationStart(p0: Animator) { deleter.tag = false }
+                override fun onAnimationEnd(p0: Animator) { deleter.tag = true }
+                override fun onAnimationCancel(p0: Animator) { deleter.tag = false }
+                override fun onAnimationRepeat(p0: Animator) {}
+            })
+        }
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.activitylayout_create_event_step3, container, false)
-        mapView = view.findViewById(R.id.createMapPoints)
-        return view
+        return inflater.inflate(R.layout.activitylayout_create_event_step3, container, false)
     }
-    private lateinit var mainLayout: LinearLayout
-    private lateinit var mapView: MapView
-    private lateinit var marksCollection: MapObjectCollection
-    private var editMapState = true
-
-    private var movingObject: Any? = null
-
-    private var addRadius = false
-    private var addDot = true
-
-    private var addRect = false
-
-
-    private val mapObjects = mutableMapOf<Any, DatabaseMethods.DataClasses.MapObject>()
-
-    private fun disableButtons(layout: View, objType: Int) {
-        // 0 - Circle  1 - Area  2 - Dot
-        when (objType){
-            0 -> {
-            }
-            1 -> {
-
-            }
-            2 -> {
-                layout.findViewById<LinearLayout>(R.id.layoutradius).visibility = View.GONE
-            }
-        }
-
-    }
-
-    private fun addGoalsAndTimes(layout: View, obj: MapObject) {
-
-        val dropdownGoals: Spinner = layout.findViewById(R.id.connectWithGoal)
-        if (eventmoreClass.eventGoals != null) {
-            val values = ArrayList<String>()
-            values.add("Ничего не выбрано")
-            for (i in eventmoreClass.eventGoals!!.values) {
-                values.add("${values.size}. $i")
-            }
-
-            val adapter = ArrayAdapter(requireContext(), R.layout.widget_custom_spinner_item, values)
-            adapter.setDropDownViewResource(R.layout.widget_custom_spinner_dropdown_item)
-            dropdownGoals.adapter = adapter
-        } else {
-            dropdownGoals.visibility = View.GONE
-        }
-
-        val dropdownTimes: Spinner = layout.findViewById(R.id.connectWithTime)
-        if (eventmoreClass.eventTimes != null) {
-            val values = ArrayList<String>()
-            values.add("Ничего не выбрано")
-            for (i in eventmoreClass.eventTimes!!.values) {
-                values.add("${values.size}. $i")
-            }
-
-            val adapter = ArrayAdapter(requireContext(), R.layout.widget_custom_spinner_item, values)
-            adapter.setDropDownViewResource(R.layout.widget_custom_spinner_dropdown_item)
-            dropdownTimes.adapter = adapter
-        } else {
-            dropdownTimes.visibility = View.GONE
-        }
-        dropdownGoals.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
-                mapObjects[obj]!!.objectRelation.isWithGoal = true
-                mapObjects[obj]!!.objectRelation.relationValue = p2-1
-            }
-            override fun onNothingSelected(p0: AdapterView<*>?) {}
-        }
-        dropdownTimes.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
-                mapObjects[obj]!!.objectRelation.isWithGoal = false
-                mapObjects[obj]!!.objectRelation.relationValue = p2-1
-            }
-            override fun onNothingSelected(p0: AdapterView<*>?) {}
-        }
-
-    }
-
-
-    private lateinit var fillColor: TextView
-    private lateinit var strokeColor: TextView
-    private fun defaultFunctions(layout: View, obj: MapObject, window: PopupWindow) {
-        val objClass = mapObjects[obj]!!
-        val currentFill = objClass.fillColor
-        val currentStroke = objClass.strokeColor
-        fillColor = layout.findViewById(R.id.chooseFillColor)
-        fillColor.setBackgroundColor(Color.parseColor(currentFill))
-        fillColor.setOnClickListener {
-            val newColor = String.format("#%08X", Random.nextLong(0xFFFFFFFF + 1))
-            fillColor.setBackgroundColor(Color.parseColor(newColor))
-            if (obj is CircleMapObject) {
-                obj.fillColor = Color.parseColor(newColor)
-            }
-            if (obj is PolygonMapObject) {
-                obj.fillColor = Color.parseColor(newColor)
-            }
-            objClass.fillColor = newColor
-        }
-        strokeColor = layout.findViewById(R.id.chooseStrokeColor)
-        strokeColor.setBackgroundColor(Color.parseColor(currentStroke))
-        strokeColor.setOnClickListener {
-            val newColor = String.format("#%08X", Random.nextLong(0xFFFFFFFF + 1))
-            strokeColor.setBackgroundColor(Color.parseColor(newColor))
-            if (obj is CircleMapObject) {
-                obj.strokeColor = Color.parseColor(newColor)
-            }
-            if (obj is PolygonMapObject) {
-                obj.strokeColor = Color.parseColor(newColor)
-            }
-            objClass.strokeColor = newColor
-        }
-
-        layout.findViewById<ImageButton>(R.id.closeMenu).setOnClickListener {
-            window.dismiss()
-        }
-        layout.findViewById<Button>(R.id.deleteObject).setOnClickListener {
-            marksCollection.remove(obj)
-            window.dismiss()
-        }
-        layout.findViewById<Button>(R.id.setMoveObject).setOnClickListener {
-            movingObject = if (movingObject != obj) obj else null
-        }
-
-        val objName: EditText = layout.findViewById(R.id.mapObjectName)
-        objName.setText(objClass.objectName)
-        objName.addTextChangedListener(object : TextWatcher{
-            override fun afterTextChanged(s: Editable?) {
-                objClass.objectName = s.toString()
-            }
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-        })
-        addGoalsAndTimes(layout, obj)
-    }
-
-
-    private val circleTapListener = MapObjectTapListener { mapObject, _ ->
-        if (mapObject is CircleMapObject) {
-            val manageMenu = layoutInflater.inflate(R.layout.layout_manage_mapobject_menu, null)
-            disableButtons(manageMenu, 0)
-
-            val objClass = mapObjects[mapObject]!!
-            val radiusBar: SeekBar = manageMenu.findViewById(R.id.setObjectRadius)
-            val radiusValue = manageMenu.findViewById<TextView>(R.id.circleRadiusValue)
-            radiusBar.progress = objClass.circleRadius!!.toInt()
-            radiusBar.setOnSeekBarChangeListener(object: OnSeekBarChangeListener {
-                override fun onStartTrackingTouch(p0: SeekBar?) {}
-                override fun onStopTrackingTouch(p0: SeekBar?) {}
-                override fun onProgressChanged(p0: SeekBar?, p1: Int, p2: Boolean) {
-                    val newCircle = Circle(
-                        objClass.objectCenter,
-                        p1.toFloat()
-                    )
-                    mapObject.geometry = newCircle
-                    radiusValue.text = "$p1"
-                    objClass.circleRadius = p1.toFloat()
-                }
-            })
-            radiusValue.text = "${objClass.circleRadius!!.toInt()}"
-
-            val window = PopupWindow(manageMenu, mainLayout.width, mainLayout.height, true)
-            mainLayout.post {
-                window.showAtLocation(mainLayout, Gravity.TOP, 0, 150)
-            }
-            defaultFunctions(manageMenu, mapObject, window)
-        }
-        true
-    }
-
-    private val polygonTapListener = MapObjectTapListener { mapObject, _ ->
-        if (mapObject is PolygonMapObject) {
-            val manageMenu = layoutInflater.inflate(R.layout.layout_manage_mapobject_menu, null)
-            disableButtons(manageMenu, 1)
-            val objClass = mapObjects[mapObject]!!
-
-            val window = PopupWindow(manageMenu, mainLayout.width, mainLayout.height, true)
-            mainLayout.post {
-                window.showAtLocation(mainLayout, Gravity.TOP, 0, 150)
-            }
-            defaultFunctions(manageMenu, mapObject, window)
-        }
-        true
-    }
-    private val dotTapListener = MapObjectTapListener { mapObject, _ ->
-        if (mapObject is PlacemarkMapObject) {
-            val manageMenu = layoutInflater.inflate(R.layout.layout_manage_mapobject_menu, null)
-            disableButtons(manageMenu, 2)
-            val objClass = mapObjects[mapObject]!!
-
-            val window = PopupWindow(manageMenu, mainLayout.width, mainLayout.height, true)
-            mainLayout.post {
-                window.showAtLocation(mainLayout, Gravity.TOP, 0, 150)
-            }
-            defaultFunctions(manageMenu, mapObject, window)
-        }
-        true
-    }
-
-
-    private val mapListener = object : InputListener {
-        override fun onMapTap(map: com.yandex.mapkit.map.Map, point: Point) {
-            if (!editMapState) {
-                Log.d("testtouch", "${point.latitude} ${point.longitude}")
+//    private val allAddedTimes = mutableMapOf<String, String>()
+//    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+//        super.onViewCreated(view, savedInstanceState)
 //
-            }
-        }
-
-        override fun onMapLongTap(map: com.yandex.mapkit.map.Map, point: Point) {
-            if (!editMapState) {
-                val objClass = DatabaseMethods.DataClasses.MapObject()
-                if (addDot) {
-                    val placeMark = marksCollection.addPlacemark(point)
-                    placeMark.setIcon(ImageProvider.fromResource(context,
-                        com.yandex.maps.mobile.R.drawable.search_layer_pin_selected_default))
-                    placeMark.setIconStyle(IconStyle().apply {
-                        anchor = PointF(0.5f, 1f)
-                    })
-                    placeMark.addTapListener(dotTapListener)
-                    objClass.objectType = 2
-                    objClass.objectCenter = point
-
-                    mapObjects[placeMark] = objClass
-                }
-                else
-                    if (addRect) {
-
-                    }
-                    else
-                        if (addRadius) {
-                            val addedCircle =
-                                marksCollection.addCircle(Circle(point, 100f), Color.BLUE, 2f, 0) // stroke, strokeWidth, fill
-                            addedCircle.addTapListener(circleTapListener)
-                            objClass.objectType = 0
-                            objClass.objectCenter = point
-                            objClass.circleRadius = 100f
-
-                            mapObjects[addedCircle] = objClass
-                        }
-            }
-
-        }
-    }
-
-    private fun mapRestrictions(state: Boolean) {
-        mapView.map.isScrollGesturesEnabled = state
-        mapView.map.isZoomGesturesEnabled = state
-        mapView.map.isRotateGesturesEnabled = state
-        mapView.map.isTiltGesturesEnabled = state
-        mapView.map.isRotateGesturesEnabled = state
-        mapView.map.isScrollGesturesEnabled = state
-        mapView.map.isZoomGesturesEnabled = state
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        mainLayout = view.findViewById(R.id.main)
-        marksCollection = mapView.map.mapObjects.addCollection()
-        val editMap: Button = view.findViewById(R.id.editMap)
-        mapRestrictions(false)
-        mapView.map.addInputListener(mapListener)
-        editMap.setOnClickListener {
-            editMapState = !editMapState
-            viewPager.isUserInputEnabled = editMapState
-            mapRestrictions(!editMapState)
-            editMap.text = when (editMapState) {
-                false -> "Завершить редактирование"
-                else -> "Редактировать карту"
-            }
-        }
-
-        view.findViewById<Button>(R.id.addCircle).setOnClickListener {
-            addRadius = true
-            addRect = false
-            addDot = false
-        }
-        view.findViewById<Button>(R.id.addRect).setOnClickListener {
-            TODO("зона по точка Type 1|2")
-            addRadius = false
-            addRect = true
-            addDot = false
-            Toast.makeText(
-                context,
-                "Сначала будет установлена верхняя левая точка, затем - нижняя правая!",
-                Toast.LENGTH_LONG).show()
-        }
-        view.findViewById<Button>(R.id.addPlacemark).setOnClickListener {
-            addRadius = false
-            addRect = false
-            addDot = true
-        }
-    }
-
-    override fun onStart() {
-        super.onStart()
-        mapView.onStart()
-        MapKitFactory.getInstance().onStart()
-    }
-
-    override fun onStop() {
-        super.onStop()
-        mapView.onStop()
-        MapKitFactory.getInstance().onStop()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        mapView.map.removeInputListener(mapListener)
-    }
-
-    fun mapObj(): MutableMap<Any, DatabaseMethods.DataClasses.MapObject> {
-        return mapObjects
-    }
+//        val timesScrollView: ScrollView = view.findViewById(R.id.timesScrollViewCreateEvent)
+//        val timesLayout: LinearLayout = view.findViewById(R.id.timesLayoutCreateEvent)
+//        val addTime: Button = view.findViewById(R.id.addEventTime)
+//
+//        fun addTimes() {
+//            if (allAddedTimes.isNotEmpty() && allAddedTimes.values.all { it.isEmpty() }) return
+//            val layout = layoutInflater.inflate(R.layout.layout_event_time, null)
+//
+//            val descriptionEntry: EditText = layout.findViewById(R.id.timeDescription)
+//            val timeSetter: TextView = layout.findViewById(R.id.timeTime)
+//            val deleter: RelativeLayout = layout.findViewById(R.id.deleter)
+//
+//
+//            deleter.setOnTouchListener { view, motionEvent ->
+//                when (motionEvent.action) {
+//                    MotionEvent.ACTION_DOWN, MotionEvent.ACTION_POINTER_DOWN -> {
+//                        deleteLoadingFill(deleter).start()
+//                    }
+//                    else -> {
+//                        if (deleter.tag != null) {
+//                            if (layout.tag != null) {
+//                                Log.d("deleting", "values")
+//                                sharedViewModel.removeTime(layout.tag as String)
+//                                Toast.makeText(
+//                                    requireActivity(),
+//                                    "Время удалено!",
+//                                    Toast.LENGTH_LONG
+//                                ).show()
+//                            }
+//                            Log.d("deleting", "layout")
+//                            deleter.setOnTouchListener( null )
+//                            timesLayout.removeView(layout)
+//                            false
+//                        } else deleteLoadingFill(deleter).reverse()
+//                    }
+//                }
+//                true
+//            }
+//
+//            fun createDatePickerDialog(
+//                context: Context, year: Int, month: Int, day: Int,
+//                minYear: Int? = null, minMonth: Int? = null, minDay: Int? = null,
+//                onDateSetListener: (Int, Int, Int) -> Unit
+//            ): DatePickerDialog {
+//                val picker = DatePickerDialog(
+//                    context,
+//                    DatePickerDialog.OnDateSetListener { _, selectedYear, selectedMonth, selectedDay ->
+//                        onDateSetListener(selectedYear, selectedMonth, selectedDay)
+//                    },
+//                    year,
+//                    month,
+//                    day
+//                )
+//
+//                if (minDay != null) {
+//                    val calendar = Calendar.getInstance()
+//                    calendar.set(minYear!!, minMonth!!, minDay)
+//                    picker.datePicker.minDate = calendar.timeInMillis
+//                }
+//
+//                return picker
+//            }
+//
+//            fun createTimePickerDialog(
+//                context: Context, hour: Int, minute: Int,
+//                minHour: Int? = null, minMinute: Int? = null,
+//                year: Int? = null, month: Int? = null, day: Int? = null,
+//                minYear: Int? = null, minMonth: Int? = null, minDay: Int? = null,
+//                onTimeSetListener: (Int, Int) -> Unit
+//            ): TimePickerDialog {
+//                val picker = TimePickerDialog(
+//                    context,
+//                    TimePickerDialog.OnTimeSetListener { it, hourChosen, minuteChosen ->
+//                        if (minMinute != null) {
+//                            if (year == minYear && month == minMonth && day == minDay) {
+//                                if (hourChosen < minHour!! || (hourChosen == minHour && minuteChosen < minMinute)) {
+//                                    Log.d("bad time", "bad time, the future is the past")
+//                                    onTimeSetListener(minHour, minMinute)
+//                                } else {
+//                                    Log.d("bad time", "ok time, same day, but ok")
+//                                    onTimeSetListener(hourChosen, minuteChosen)
+//                                }
+//                            } else {
+//                                Log.d("bad time", "ok time")
+//                                onTimeSetListener(hourChosen, minuteChosen)
+//                            }
+//                        } else {
+//                            Log.d("bad time", "ok time, first pick")
+//                            onTimeSetListener(hourChosen, minuteChosen)
+//                        }
+//
+//                    },
+//                    hour,
+//                    minute,
+//                    true
+//                )
+//
+//                return picker
+//            }
+//
+//
+//
+//            fun formatDateTime(
+//                day1: Int, month1: Int, year1: Int, hour1: Int, minute1: Int, // для textview
+//                day2: Int, month2: Int, year2: Int, hour2: Int, minute2: Int
+//            ): String {
+//                return String.format(
+//                    "%02d.%02d.%d %02d:%02d - %02d.%02d.%d %02d:%02d",
+//                    day1, month1 + 1, year1, hour1, minute1,
+//                    day2, month2 + 1, year2, hour2, minute2
+//                )
+//            }
+//
+//            fun indexUTC(utc1: Long, utc2: Long): String { // для сохранения
+//                val calendar1 = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
+//                calendar1.timeInMillis = utc1
+//                val y1 = calendar1.get(Calendar.YEAR)
+//                val m1 = calendar1.get(Calendar.MONTH) + 1
+//                val d1 = calendar1.get(Calendar.DAY_OF_MONTH)
+//                val h1 = calendar1.get(Calendar.HOUR_OF_DAY)
+//                val mi1 = calendar1.get(Calendar.MINUTE)
+//
+//                val calendar2 = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
+//                calendar2.timeInMillis = utc2
+//                val y2 = calendar2.get(Calendar.YEAR)
+//                val m2 = calendar2.get(Calendar.MONTH) + 1
+//                val d2 = calendar2.get(Calendar.DAY_OF_MONTH)
+//                val h2 = calendar2.get(Calendar.HOUR_OF_DAY)
+//                val mi2 = calendar2.get(Calendar.MINUTE)
+//
+//                Log.d("testdate", "$y1 $y2")
+//
+//                return String.format(
+//                    "%02d%02d%d%02d%02d_%d%02d%02d%02d%02d",
+//                    d1,
+//                    m1,
+//                    y1,
+//                    h1,
+//                    mi1,
+//                    d2,
+//                    m2,
+//                    y2,
+//                    h2,
+//                    mi2
+//                )
+//            }
+//
+//            fun currentMillis(year: Int, month: Int, day: Int, hourOfDay: Int, minute: Int): Long {
+//                val calendar = Calendar.getInstance()
+//                calendar.set(year, month, day, hourOfDay, minute)
+//                return calendar.timeInMillis
+//            }
+//
+//            fun handleDateTimeSelection(view: View) {
+//                val calendar = Calendar.getInstance()
+//                val year = calendar.get(Calendar.YEAR)
+//                val month = calendar.get(Calendar.MONTH)
+//                val day = calendar.get(Calendar.DAY_OF_MONTH)
+//
+//                val datePickerDialog1 = createDatePickerDialog(
+//                    view.context,
+//                    year,
+//                    month,
+//                    day
+//                ) { selectedYear1, selectedMonth1, selectedDay1 ->
+//                    val timePickerDialog1 = createTimePickerDialog(
+//                        view.context, calendar.get(
+//                            Calendar.HOUR_OF_DAY
+//                        ), calendar.get(Calendar.MINUTE)
+//                    ) { hour1, minute1 ->
+//
+//                        val millis1 = currentMillis(
+//                            selectedYear1,
+//                            selectedMonth1,
+//                            selectedDay1,
+//                            hour1,
+//                            minute1
+//                        )
+//
+//                        val datePickerDialog2 = createDatePickerDialog(
+//                            view.context, year, month, day,
+//                            selectedYear1, selectedMonth1, selectedDay1
+//                        ) { selectedYear2, selectedMonth2, selectedDay2 ->
+//                            val timePickerDialog2 = createTimePickerDialog(
+//                                view.context,
+//                                calendar.get(Calendar.HOUR_OF_DAY),
+//                                calendar.get(Calendar.MINUTE),
+//                                hour1, minute1,
+//                                selectedYear2, selectedMonth2, selectedDay2,
+//                                selectedYear1, selectedMonth1, selectedDay1
+//                            ) { hourOfDay2, minute2 ->
+//
+//                                val millis2 = currentMillis(
+//                                    selectedYear2,
+//                                    selectedMonth2,
+//                                    selectedDay2,
+//                                    hourOfDay2,
+//                                    minute2
+//                                )
+//                                if (millis1 < millis2) {
+//                                    timeSetter.text = formatDateTime(
+//                                        selectedDay1,
+//                                        selectedMonth1,
+//                                        selectedYear1,
+//                                        hour1,
+//                                        minute1,
+//                                        selectedDay2,
+//                                        selectedMonth2,
+//                                        selectedYear2,
+//                                        hourOfDay2,
+//                                        minute2
+//                                    )
+//                                    val utcDateIndex = indexUTC(millis1, millis2)
+//                                    layout.tag = utcDateIndex
+//                                    sharedViewModel.addTime(utcDateIndex, "")
+//                                } else {
+//                                    Toast.makeText(
+//                                        view.context,
+//                                        "Пожалуйста, выберите правильное время!",
+//                                        Toast.LENGTH_LONG
+//                                    ).show()
+//                                }
+//
+//                            }
+//                            Toast.makeText(
+//                                view.context,
+//                                "Выберите время окончания",
+//                                Toast.LENGTH_SHORT
+//                            ).show()
+//                            timePickerDialog2.show()
+//                        }
+//                        Toast.makeText(view.context, "Выберите дату окончания", Toast.LENGTH_SHORT)
+//                            .show()
+//                        datePickerDialog2.show()
+//                    }
+//                    Toast.makeText(view.context, "Выберите время начала", Toast.LENGTH_SHORT).show()
+//                    timePickerDialog1.show()
+//                }
+//                Toast.makeText(view.context, "Выберите дату начала", Toast.LENGTH_SHORT).show()
+//                datePickerDialog1.show()
+//            }
+//
+//            descriptionEntry.addTextChangedListener(object : TextWatcher {
+//                override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+//                override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+//
+//                override fun afterTextChanged(s: Editable?) {
+//                    if (layout.tag != null) {
+//
+//                        sharedViewModel.addTime(layout.tag as String, s.toString())
+//
+//                    } else {
+//                        Toast.makeText(
+//                            view.context,
+//                            "Пожалуйста, сначала установите время!",
+//                            Toast.LENGTH_LONG
+//                        ).show()
+//                        descriptionEntry.text.clear()
+//                    }
+//                }
+//            })
+//            timeSetter.setOnClickListener {
+//                handleDateTimeSelection(it)
+//            }
+//
+//            timesLayout.addView(layout)
+//        }
+//
+//        addTime.setOnClickListener {
+//            Toast.makeText(
+//                view.context,
+//                "Установленное время автоматически подстроится под часовые пояса других пользователей!",
+//                Toast.LENGTH_LONG
+//            ).show()
+//            timesScrollView.visibility = View.VISIBLE
+//            addTimes()
+//        }
+//    }
 }

@@ -61,16 +61,20 @@
                 android:layout_toEndOf="@id/minValue"
                 android:layout_below="@id/seekBar" />
 
-            <TextView
+            <EditText
                 android:id="@+id/currentValue"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/seekBar"
                 android:layout_centerHorizontal="true"
+                android:selectAllOnFocus="true"
+                android:singleLine="false"
+                android:text="current"
+                android:inputType="numberSigned"
+                android:background="@color/transparent"
                 android:textColor="@color/ok_green"
-                android:textStyle="bold"
                 android:textSize="16sp"
-                android:text="current" />
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/valueTypeToCurrent"

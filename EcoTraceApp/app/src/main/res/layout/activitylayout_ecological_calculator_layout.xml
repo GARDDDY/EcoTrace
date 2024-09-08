@@ -22,7 +22,7 @@
         android:layout_centerHorizontal="true"
         android:textColor="@color/black"
         android:textSize="15sp"
-        android:visibility="visible"
+        android:visibility="gone"
         android:layout_marginTop="@dimen/default_PaddingMargin"
         android:text="Уточнить" />
 

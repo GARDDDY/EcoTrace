@@ -8,35 +8,735 @@
     android:background="@color/dirt_white"
     tools:context=".ui.ratings.RatingsFragment">
 
-    <HorizontalScrollView
-        android:id="@+id/horizontalScrollView2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:orientation="horizontal">
-
-        </LinearLayout>
-    </HorizontalScrollView>
-
     <EditText
         android:id="@+id/editTextText6"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:ems="10"
-        android:inputType="text"
-        android:hint="Имя пользователя"
-        android:layout_marginTop="@dimen/default_PaddingMargin"
-        android:textColorHint="@color/silver"
         android:layout_marginHorizontal="@dimen/default_PaddingMargin"
+        android:layout_marginTop="15dp"
+        android:ems="10"
+        android:hint="Имя пользователя"
+        android:inputType="text"
+        android:textColorHint="@color/silver"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/horizontalScrollView2" />
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.facebook.shimmer.ShimmerFrameLayout
+        android:id="@+id/ratingLoading"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginHorizontal="@dimen/default_PaddingMargin"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editTextText6" >
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" >
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" >
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_marginBottom="5dp"
+                    android:layout_height="wrap_content" >
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="50dp"
+                            android:layout_height="match_parent"
+                            android:gravity="center"
+                            android:textColor="@color/black"
+                            android:textSize="18sp"
+                            android:text="1" />
+
+                        <ImageView
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:scaleType="centerCrop"
+                            android:foreground="@drawable/layout_loading_shimmer" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:gravity="center"
+                            android:textColor="@color/ok_green"
+                            android:textSize="20sp"
+                            android:foreground="@drawable/layout_loading_shimmer"
+                            android:paddingHorizontal="@dimen/default_PaddingMargin"
+                            android:text="username" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:foreground="@drawable/layout_loading_shimmer"
+                            android:paddingHorizontal="@dimen/default_PaddingMargin"
+                            android:gravity="center"
+                            android:textColor="@color/ok_green"
+                            android:textSize="20sp"
+                            android:text="experience" />
+                    </LinearLayout>
+                </FrameLayout>
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_marginBottom="5dp"
+                    android:layout_height="wrap_content" >
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="50dp"
+                            android:layout_height="match_parent"
+                            android:gravity="center"
+                            android:textColor="@color/black"
+                            android:textSize="18sp"
+                            android:text="2" />
+
+                        <ImageView
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:scaleType="centerCrop"
+                            android:foreground="@drawable/layout_loading_shimmer" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:gravity="center"
+                            android:textColor="@color/ok_green"
+                            android:textSize="20sp"
+                            android:foreground="@drawable/layout_loading_shimmer"
+                            android:paddingHorizontal="@dimen/default_PaddingMargin"
+                            android:text="username" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:foreground="@drawable/layout_loading_shimmer"
+                            android:paddingHorizontal="@dimen/default_PaddingMargin"
+                            android:gravity="center"
+                            android:textColor="@color/ok_green"
+                            android:textSize="20sp"
+                            android:text="experience" />
+                    </LinearLayout>
+                </FrameLayout>
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_marginBottom="5dp"
+                    android:layout_height="wrap_content" >
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="50dp"
+                            android:layout_height="match_parent"
+                            android:gravity="center"
+                            android:textColor="@color/black"
+                            android:textSize="18sp"
+                            android:text="3" />
+
+                        <ImageView
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:scaleType="centerCrop"
+                            android:foreground="@drawable/layout_loading_shimmer" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:gravity="center"
+                            android:textColor="@color/ok_green"
+                            android:textSize="20sp"
+                            android:foreground="@drawable/layout_loading_shimmer"
+                            android:paddingHorizontal="@dimen/default_PaddingMargin"
+                            android:text="username" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:foreground="@drawable/layout_loading_shimmer"
+                            android:paddingHorizontal="@dimen/default_PaddingMargin"
+                            android:gravity="center"
+                            android:textColor="@color/ok_green"
+                            android:textSize="20sp"
+                            android:text="experience" />
+                    </LinearLayout>
+                </FrameLayout>
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_marginBottom="5dp"
+                    android:layout_height="wrap_content" >
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="50dp"
+                            android:layout_height="match_parent"
+                            android:gravity="center"
+                            android:text="4"
+                            android:textColor="@color/black"
+                            android:textSize="18sp" />
+
+                        <ImageView
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:scaleType="centerCrop"
+                            android:foreground="@drawable/layout_loading_shimmer" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:gravity="center"
+                            android:textColor="@color/ok_green"
+                            android:textSize="20sp"
+                            android:foreground="@drawable/layout_loading_shimmer"
+                            android:paddingHorizontal="@dimen/default_PaddingMargin"
+                            android:text="username" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:foreground="@drawable/layout_loading_shimmer"
+                            android:paddingHorizontal="@dimen/default_PaddingMargin"
+                            android:gravity="center"
+                            android:textColor="@color/ok_green"
+                            android:textSize="20sp"
+                            android:text="experience" />
+                    </LinearLayout>
+                </FrameLayout>
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_marginBottom="5dp"
+                    android:layout_height="wrap_content" >
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="50dp"
+                            android:layout_height="match_parent"
+                            android:gravity="center"
+                            android:text="5"
+                            android:textColor="@color/black"
+                            android:textSize="18sp" />
+
+                        <ImageView
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:scaleType="centerCrop"
+                            android:foreground="@drawable/layout_loading_shimmer" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:gravity="center"
+                            android:textColor="@color/ok_green"
+                            android:textSize="20sp"
+                            android:foreground="@drawable/layout_loading_shimmer"
+                            android:paddingHorizontal="@dimen/default_PaddingMargin"
+                            android:text="username" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:foreground="@drawable/layout_loading_shimmer"
+                            android:paddingHorizontal="@dimen/default_PaddingMargin"
+                            android:gravity="center"
+                            android:textColor="@color/ok_green"
+                            android:textSize="20sp"
+                            android:text="experience" />
+                    </LinearLayout>
+                </FrameLayout>
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_marginBottom="5dp"
+                    android:layout_height="wrap_content" >
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="50dp"
+                            android:layout_height="match_parent"
+                            android:gravity="center"
+                            android:text="6"
+                            android:textColor="@color/black"
+                            android:textSize="18sp" />
+
+                        <ImageView
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:scaleType="centerCrop"
+                            android:foreground="@drawable/layout_loading_shimmer" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:gravity="center"
+                            android:textColor="@color/ok_green"
+                            android:textSize="20sp"
+                            android:foreground="@drawable/layout_loading_shimmer"
+                            android:paddingHorizontal="@dimen/default_PaddingMargin"
+                            android:text="username" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:foreground="@drawable/layout_loading_shimmer"
+                            android:paddingHorizontal="@dimen/default_PaddingMargin"
+                            android:gravity="center"
+                            android:textColor="@color/ok_green"
+                            android:textSize="20sp"
+                            android:text="experience" />
+                    </LinearLayout>
+                </FrameLayout>
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_marginBottom="5dp"
+                    android:layout_height="wrap_content" >
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="50dp"
+                            android:layout_height="match_parent"
+                            android:gravity="center"
+                            android:text="7"
+                            android:textColor="@color/black"
+                            android:textSize="18sp" />
+
+                        <ImageView
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:scaleType="centerCrop"
+                            android:foreground="@drawable/layout_loading_shimmer" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:gravity="center"
+                            android:textColor="@color/ok_green"
+                            android:textSize="20sp"
+                            android:foreground="@drawable/layout_loading_shimmer"
+                            android:paddingHorizontal="@dimen/default_PaddingMargin"
+                            android:text="username" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:foreground="@drawable/layout_loading_shimmer"
+                            android:paddingHorizontal="@dimen/default_PaddingMargin"
+                            android:gravity="center"
+                            android:textColor="@color/ok_green"
+                            android:textSize="20sp"
+                            android:text="experience" />
+                    </LinearLayout>
+                </FrameLayout>
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_marginBottom="5dp"
+                    android:layout_height="wrap_content" >
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="50dp"
+                            android:layout_height="match_parent"
+                            android:gravity="center"
+                            android:text="8"
+                            android:textColor="@color/black"
+                            android:textSize="18sp" />
+
+                        <ImageView
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:scaleType="centerCrop"
+                            android:foreground="@drawable/layout_loading_shimmer" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:gravity="center"
+                            android:textColor="@color/ok_green"
+                            android:textSize="20sp"
+                            android:foreground="@drawable/layout_loading_shimmer"
+                            android:paddingHorizontal="@dimen/default_PaddingMargin"
+                            android:text="username" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:foreground="@drawable/layout_loading_shimmer"
+                            android:paddingHorizontal="@dimen/default_PaddingMargin"
+                            android:gravity="center"
+                            android:textColor="@color/ok_green"
+                            android:textSize="20sp"
+                            android:text="experience" />
+                    </LinearLayout>
+                </FrameLayout>
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_marginBottom="5dp"
+                    android:layout_height="wrap_content" >
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="50dp"
+                            android:layout_height="match_parent"
+                            android:gravity="center"
+                            android:text="9"
+                            android:textColor="@color/black"
+                            android:textSize="18sp" />
+
+                        <ImageView
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:scaleType="centerCrop"
+                            android:foreground="@drawable/layout_loading_shimmer" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:gravity="center"
+                            android:textColor="@color/ok_green"
+                            android:textSize="20sp"
+                            android:foreground="@drawable/layout_loading_shimmer"
+                            android:paddingHorizontal="@dimen/default_PaddingMargin"
+                            android:text="username" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:foreground="@drawable/layout_loading_shimmer"
+                            android:paddingHorizontal="@dimen/default_PaddingMargin"
+                            android:gravity="center"
+                            android:textColor="@color/ok_green"
+                            android:textSize="20sp"
+                            android:text="experience" />
+                    </LinearLayout>
+                </FrameLayout>
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_marginBottom="5dp"
+                    android:layout_height="wrap_content" >
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="50dp"
+                            android:layout_height="match_parent"
+                            android:gravity="center"
+                            android:text="10"
+                            android:textColor="@color/black"
+                            android:textSize="18sp" />
+
+                        <ImageView
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:scaleType="centerCrop"
+                            android:foreground="@drawable/layout_loading_shimmer" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:gravity="center"
+                            android:textColor="@color/ok_green"
+                            android:textSize="20sp"
+                            android:foreground="@drawable/layout_loading_shimmer"
+                            android:paddingHorizontal="@dimen/default_PaddingMargin"
+                            android:text="username" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:foreground="@drawable/layout_loading_shimmer"
+                            android:paddingHorizontal="@dimen/default_PaddingMargin"
+                            android:gravity="center"
+                            android:textColor="@color/ok_green"
+                            android:textSize="20sp"
+                            android:text="experience" />
+                    </LinearLayout>
+                </FrameLayout>
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_marginBottom="5dp"
+                    android:layout_height="wrap_content" >
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="50dp"
+                            android:layout_height="match_parent"
+                            android:gravity="center"
+                            android:text="11"
+                            android:textColor="@color/black"
+                            android:textSize="18sp" />
+
+                        <ImageView
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:scaleType="centerCrop"
+                            android:foreground="@drawable/layout_loading_shimmer" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:gravity="center"
+                            android:textColor="@color/ok_green"
+                            android:textSize="20sp"
+                            android:foreground="@drawable/layout_loading_shimmer"
+                            android:paddingHorizontal="@dimen/default_PaddingMargin"
+                            android:text="username" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:foreground="@drawable/layout_loading_shimmer"
+                            android:paddingHorizontal="@dimen/default_PaddingMargin"
+                            android:gravity="center"
+                            android:textColor="@color/ok_green"
+                            android:textSize="20sp"
+                            android:text="experience" />
+                    </LinearLayout>
+                </FrameLayout>
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_marginBottom="5dp"
+                    android:layout_height="wrap_content" >
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="50dp"
+                            android:layout_height="match_parent"
+                            android:gravity="center"
+                            android:text="12"
+                            android:textColor="@color/black"
+                            android:textSize="18sp" />
+
+                        <ImageView
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:scaleType="centerCrop"
+                            android:foreground="@drawable/layout_loading_shimmer" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:gravity="center"
+                            android:textColor="@color/ok_green"
+                            android:textSize="20sp"
+                            android:foreground="@drawable/layout_loading_shimmer"
+                            android:paddingHorizontal="@dimen/default_PaddingMargin"
+                            android:text="username" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:foreground="@drawable/layout_loading_shimmer"
+                            android:paddingHorizontal="@dimen/default_PaddingMargin"
+                            android:gravity="center"
+                            android:textColor="@color/ok_green"
+                            android:textSize="20sp"
+                            android:text="experience" />
+                    </LinearLayout>
+                </FrameLayout>
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_marginBottom="5dp"
+                    android:layout_height="wrap_content" >
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="50dp"
+                            android:layout_height="match_parent"
+                            android:gravity="center"
+                            android:text="13"
+                            android:textColor="@color/black"
+                            android:textSize="18sp" />
+
+                        <ImageView
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:scaleType="centerCrop"
+                            android:foreground="@drawable/layout_loading_shimmer" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:gravity="center"
+                            android:textColor="@color/ok_green"
+                            android:textSize="20sp"
+                            android:foreground="@drawable/layout_loading_shimmer"
+                            android:paddingHorizontal="@dimen/default_PaddingMargin"
+                            android:text="username" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:foreground="@drawable/layout_loading_shimmer"
+                            android:paddingHorizontal="@dimen/default_PaddingMargin"
+                            android:gravity="center"
+                            android:textColor="@color/ok_green"
+                            android:textSize="20sp"
+                            android:text="experience" />
+                    </LinearLayout>
+                </FrameLayout>
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_marginBottom="5dp"
+                    android:layout_height="wrap_content" >
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="50dp"
+                            android:layout_height="match_parent"
+                            android:gravity="center"
+                            android:text="14"
+                            android:textColor="@color/black"
+                            android:textSize="18sp" />
+
+                        <ImageView
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:scaleType="centerCrop"
+                            android:foreground="@drawable/layout_loading_shimmer" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:gravity="center"
+                            android:textColor="@color/ok_green"
+                            android:textSize="20sp"
+                            android:foreground="@drawable/layout_loading_shimmer"
+                            android:paddingHorizontal="@dimen/default_PaddingMargin"
+                            android:text="username" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:foreground="@drawable/layout_loading_shimmer"
+                            android:paddingHorizontal="@dimen/default_PaddingMargin"
+                            android:gravity="center"
+                            android:textColor="@color/ok_green"
+                            android:textSize="20sp"
+                            android:text="experience" />
+                    </LinearLayout>
+                </FrameLayout>
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_marginBottom="5dp"
+                    android:layout_height="wrap_content" >
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="50dp"
+                            android:layout_height="match_parent"
+                            android:gravity="center"
+                            android:text="15"
+                            android:textColor="@color/black"
+                            android:textSize="18sp" />
+
+                        <ImageView
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:scaleType="centerCrop"
+                            android:foreground="@drawable/layout_loading_shimmer" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:gravity="center"
+                            android:textColor="@color/ok_green"
+                            android:textSize="20sp"
+                            android:foreground="@drawable/layout_loading_shimmer"
+                            android:paddingHorizontal="@dimen/default_PaddingMargin"
+                            android:text="username" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:foreground="@drawable/layout_loading_shimmer"
+                            android:paddingHorizontal="@dimen/default_PaddingMargin"
+                            android:gravity="center"
+                            android:textColor="@color/ok_green"
+                            android:textSize="20sp"
+                            android:text="experience" />
+                    </LinearLayout>
+                </FrameLayout>
+            </LinearLayout>
+
+        </ScrollView>
+
+    </com.facebook.shimmer.ShimmerFrameLayout>
 
     <ScrollView
         android:layout_width="match_parent"

@@ -130,9 +130,4 @@ class ChangeProfile : AppCompatActivity() {
 
     }
 
-    override fun onBackPressed() {
-        super.onBackPressed()
-        startActivity(Intent(this@ChangeProfile, ProfileActivity::class.java))
-    }
-
 }

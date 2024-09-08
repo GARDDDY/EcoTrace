@@ -9,7 +9,7 @@
         android:layout_marginTop="15dp"
         android:orientation="vertical"
         android:layout_margin="20dp"
-        android:gravity="center">
+        android:gravity="top">
 
         <TextView
             android:id="@+id/textView36"
@@ -75,7 +75,7 @@
                 android:id="@+id/textView39"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Начало"
+                android:text="Мероприятие начнется"
             android:layout_marginTop="20dp"
                 android:textColor="@color/black"
                 android:textSize="20sp" />
@@ -88,19 +88,18 @@
 
             <Spinner
                 android:id="@+id/chooseStartWay"
-                android:layout_width="300dp"
+                android:layout_width="wrap_content"
                 android:textAlignment="center"
                 android:layout_height="match_parent"
-                android:backgroundTint="@color/transparent"
+                android:background="@color/transparent"
                 android:foregroundTint="@color/ok_green"
+                android:paddingHorizontal="@dimen/default_PaddingMargin"
                 android:entries="@array/eventStart" />
 
             <EditText
                 android:id="@+id/autostartWhenMembers"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:ems="10"
                 android:visibility="gone"
                 android:textColor="@color/ok_green"
                 android:backgroundTint="@color/ok_green"

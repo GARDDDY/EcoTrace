@@ -6,10 +6,433 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
+    android:background="@color/dirt_white"
     tools:context=".ui.more.groups.ShowAllGroupsActivity">
 
+    <android.widget.Toolbar
+        android:id="@+id/toolbar6"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ScrollView
+        android:id="@+id/allGroupsScrollView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:scrollbars="none"
+        android:layout_marginHorizontal="@dimen/default_PaddingMargin"
+        android:layout_marginVertical="7dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar6">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
 
+            <LinearLayout
+                android:id="@+id/userJoinedGroups"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone"
+                android:layout_marginBottom="@dimen/default_PaddingMargin"
+                app:layout_constraintTop_toBottomOf="@+id/groupFinderByName">
+
+                <TextView
+                    android:id="@+id/textView26"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/ok_green"
+                    android:textSize="18sp"
+                    android:text="Ваши группы" />
+
+                <TextView
+                    android:id="@+id/textView29"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/silver"
+                    android:textSize="14sp"
+                    android:text="Группы, в которых вы состоите" />
+
+                <HorizontalScrollView
+                    android:scrollbars="none"
+                    android:layout_marginTop="@dimen/default_PaddingMargin"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <LinearLayout
+                        android:id="@+id/userJoinedGroupsLayout"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal" />
+                </HorizontalScrollView>
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="10dp"
+                android:textSize="18sp"
+                android:textColor="@color/ok_green"
+                android:text="Поиск групп" />
+
+            <HorizontalScrollView
+                android:id="@+id/horizontalScrollView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/default_PaddingMargin">
+
+                <LinearLayout
+                    android:id="@+id/allTagsLayout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal" />
+            </HorizontalScrollView>
+
+            <LinearLayout
+                android:id="@+id/allGroupsLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                android:orientation="vertical" />
+            <TextView
+                android:id="@+id/noGroupsWarning"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Не найдено ни одной группы с такими тегами!"
+                android:textColor="@color/ok_green"
+                android:textAlignment="center"
+                android:textSize="18sp"
+                android:visibility="gone"/>
+            <com.facebook.shimmer.ShimmerFrameLayout
+                android:id="@+id/allGroupsLoadingLayout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" >
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical" >
+                    <FrameLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:clickable="true"
+                        android:layout_gravity="center"
+                        android:paddingBottom="@dimen/default_PaddingMargin">
+                        <RelativeLayout
+                            android:id="@+id/rl1"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:foreground="@drawable/bottom_rounded_border"
+                            android:paddingBottom="@dimen/default_PaddingMargin"
+                            android:clipChildren="true"
+                            android:clipToPadding="true"
+                            android:background="@color/dirt_white"
+                            android:orientation="vertical">
+
+                            <ImageView
+                                android:id="@+id/iv1"
+                                android:layout_width="match_parent"
+                                android:layout_height="150dp"
+                                android:scaleType="centerCrop"
+                                android:foreground="@color/silver"
+                                tools:srcCompat="@tools:sample/backgrounds/scenic" />
+                            <HorizontalScrollView
+                                android:id="@+id/hsv"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginHorizontal="@dimen/default_PaddingMargin"
+                                android:layout_below="@+id/iv1"
+                                android:layout_marginTop="@dimen/default_PaddingMargin">
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:orientation="horizontal" />
+                            </HorizontalScrollView>
+                            <TextView
+                                android:id="@+id/tv2"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@+id/hsv"
+                                android:foreground="@drawable/layout_loading_shimmer"
+                                android:layout_marginTop="@dimen/default_PaddingMargin"
+                                android:layout_marginHorizontal="@dimen/default_PaddingMargin"
+                                android:text="group-description" />
+                            <LinearLayout
+                                android:id="@+id/ll2"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:clickable="true"
+                                android:layout_below="@+id/tv2"
+                                android:orientation="horizontal">
+
+                                <ImageView
+                                    android:layout_width="32dp"
+                                    android:layout_height="32dp"
+                                    android:layout_marginStart="@dimen/default_PaddingMargin"
+                                    android:layout_marginEnd="10dp"
+                                    android:layout_marginTop="8dp"
+                                    android:clickable="true"
+                                    android:foreground="@drawable/layout_loading_shimmer"
+                                    app:srcCompat="@drawable/baseline_person_24" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="15dp"
+                                    android:clickable="true"
+                                    android:foreground="@drawable/layout_loading_shimmer"
+                                    android:text="groupCreator"
+                                    android:textSize="15sp" />
+                            </LinearLayout>
+                            <TextView
+                                android:id="@+id/tv4"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@+id/tv2"
+                                android:layout_marginStart="15dp"
+                                android:layout_marginEnd="15dp"
+                                android:layout_marginTop="15dp"
+                                android:foreground="@drawable/layout_loading_shimmer"
+                                android:layout_toEndOf="@+id/tv3"
+                                android:drawablePadding="10dp"
+                                android:drawableStart="@drawable/baseline_people_24"
+                                android:text="-1"
+                                android:textSize="15sp" />
+                            <TextView
+                                android:id="@+id/tv3"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@+id/tv2"
+                                android:layout_marginStart="@dimen/default_PaddingMargin"
+                                android:layout_marginTop="15dp"
+                                android:textSize="15sp"
+                                android:foreground="@drawable/layout_loading_shimmer"
+                                android:layout_toEndOf="@+id/ll2"
+                                android:drawablePadding="10dp"
+                                android:drawableStart="@drawable/baseline_access_time_24"
+                                android:text="groupStatus" />
+                        </RelativeLayout >
+                    </FrameLayout>
+                    <FrameLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:clickable="true"
+                        android:layout_gravity="center"
+                        android:paddingBottom="@dimen/default_PaddingMargin">
+                        <RelativeLayout
+                            android:id="@+id/rl12"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:foreground="@drawable/bottom_rounded_border"
+                            android:paddingBottom="@dimen/default_PaddingMargin"
+                            android:clipChildren="true"
+                            android:clipToPadding="true"
+                            android:background="@color/dirt_white"
+                            android:orientation="vertical">
+
+                            <ImageView
+                                android:id="@+id/iv12"
+                                android:layout_width="match_parent"
+                                android:layout_height="150dp"
+                                android:scaleType="centerCrop"
+                                android:foreground="@color/silver"
+                                tools:srcCompat="@tools:sample/backgrounds/scenic" />
+                            <HorizontalScrollView
+                                android:id="@+id/hsv2"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginHorizontal="@dimen/default_PaddingMargin"
+                                android:layout_below="@+id/iv12"
+                                android:layout_marginTop="@dimen/default_PaddingMargin">
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:orientation="horizontal" />
+                            </HorizontalScrollView>
+                            <TextView
+                                android:id="@+id/tv22"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@+id/hsv2"
+                                android:foreground="@drawable/layout_loading_shimmer"
+                                android:layout_marginTop="@dimen/default_PaddingMargin"
+                                android:layout_marginHorizontal="@dimen/default_PaddingMargin"
+                                android:text="group-description" />
+                            <LinearLayout
+                                android:id="@+id/ll22"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:clickable="true"
+                                android:layout_below="@+id/tv22"
+                                android:orientation="horizontal">
+
+                                <ImageView
+                                    android:layout_width="32dp"
+                                    android:layout_height="32dp"
+                                    android:layout_marginStart="@dimen/default_PaddingMargin"
+                                    android:layout_marginEnd="10dp"
+                                    android:layout_marginTop="8dp"
+                                    android:clickable="true"
+                                    android:foreground="@drawable/layout_loading_shimmer"
+                                    app:srcCompat="@drawable/baseline_person_24" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="15dp"
+                                    android:clickable="true"
+                                    android:foreground="@drawable/layout_loading_shimmer"
+                                    android:text="groupCreator"
+                                    android:textSize="15sp" />
+                            </LinearLayout>
+                            <TextView
+                                android:id="@+id/tv42"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@+id/tv22"
+                                android:layout_marginStart="15dp"
+                                android:layout_marginEnd="15dp"
+                                android:layout_marginTop="15dp"
+                                android:foreground="@drawable/layout_loading_shimmer"
+                                android:layout_toEndOf="@+id/tv32"
+                                android:drawablePadding="10dp"
+                                android:drawableStart="@drawable/baseline_people_24"
+                                android:text="-1"
+                                android:textSize="15sp" />
+                            <TextView
+                                android:id="@+id/tv32"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@+id/tv22"
+                                android:layout_marginStart="@dimen/default_PaddingMargin"
+                                android:layout_marginTop="15dp"
+                                android:textSize="15sp"
+                                android:foreground="@drawable/layout_loading_shimmer"
+                                android:layout_toEndOf="@+id/ll22"
+                                android:drawablePadding="10dp"
+                                android:drawableStart="@drawable/baseline_access_time_24"
+                                android:text="groupStatus" />
+                        </RelativeLayout >
+                    </FrameLayout>
+                    <FrameLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:clickable="true"
+                        android:layout_gravity="center"
+                        android:paddingBottom="@dimen/default_PaddingMargin">
+                        <RelativeLayout
+                            android:id="@+id/rl13"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:foreground="@drawable/bottom_rounded_border"
+                            android:paddingBottom="@dimen/default_PaddingMargin"
+                            android:clipChildren="true"
+                            android:clipToPadding="true"
+                            android:background="@color/dirt_white"
+                            android:orientation="vertical">
+
+                            <ImageView
+                                android:id="@+id/iv13"
+                                android:layout_width="match_parent"
+                                android:layout_height="150dp"
+                                android:scaleType="centerCrop"
+                                android:foreground="@color/silver"
+                                tools:srcCompat="@tools:sample/backgrounds/scenic" />
+                            <HorizontalScrollView
+                                android:id="@+id/hsv3"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginHorizontal="@dimen/default_PaddingMargin"
+                                android:layout_below="@+id/iv13"
+                                android:layout_marginTop="@dimen/default_PaddingMargin">
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:orientation="horizontal" />
+                            </HorizontalScrollView>
+                            <TextView
+                                android:id="@+id/tv23"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@+id/hsv3"
+                                android:foreground="@drawable/layout_loading_shimmer"
+                                android:layout_marginTop="@dimen/default_PaddingMargin"
+                                android:layout_marginHorizontal="@dimen/default_PaddingMargin"
+                                android:text="group-description" />
+                            <LinearLayout
+                                android:id="@+id/ll23"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:clickable="true"
+                                android:layout_below="@+id/tv23"
+                                android:orientation="horizontal">
+
+                                <ImageView
+                                    android:layout_width="32dp"
+                                    android:layout_height="32dp"
+                                    android:layout_marginStart="@dimen/default_PaddingMargin"
+                                    android:layout_marginEnd="10dp"
+                                    android:layout_marginTop="8dp"
+                                    android:clickable="true"
+                                    android:foreground="@drawable/layout_loading_shimmer"
+                                    app:srcCompat="@drawable/baseline_person_24" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="15dp"
+                                    android:clickable="true"
+                                    android:foreground="@drawable/layout_loading_shimmer"
+                                    android:text="groupCreator"
+                                    android:textSize="15sp" />
+                            </LinearLayout>
+                            <TextView
+                                android:id="@+id/tv43"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@+id/tv23"
+                                android:layout_marginStart="15dp"
+                                android:layout_marginEnd="15dp"
+                                android:layout_marginTop="15dp"
+                                android:foreground="@drawable/layout_loading_shimmer"
+                                android:layout_toEndOf="@+id/tv33"
+                                android:drawablePadding="10dp"
+                                android:drawableStart="@drawable/baseline_people_24"
+                                android:text="-1"
+                                android:textSize="15sp" />
+                            <TextView
+                                android:id="@+id/tv33"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@+id/tv23"
+                                android:layout_marginStart="@dimen/default_PaddingMargin"
+                                android:layout_marginTop="15dp"
+                                android:textSize="15sp"
+                                android:foreground="@drawable/layout_loading_shimmer"
+                                android:layout_toEndOf="@+id/ll23"
+                                android:drawablePadding="10dp"
+                                android:drawableStart="@drawable/baseline_access_time_24"
+                                android:text="groupStatus" />
+                        </RelativeLayout >
+                    </FrameLayout>
+
+                </LinearLayout>
+            </com.facebook.shimmer.ShimmerFrameLayout>
+        </LinearLayout>
+    </ScrollView>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fabAdd"

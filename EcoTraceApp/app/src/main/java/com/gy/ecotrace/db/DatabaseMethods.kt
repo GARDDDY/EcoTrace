@@ -2,6 +2,8 @@ package com.gy.ecotrace.db
 
 import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.provider.ContactsContract.Data
 import android.util.Log
 import android.widget.Toast
 import com.google.common.reflect.TypeToken
@@ -11,23 +13,24 @@ import com.google.firebase.auth.UserProfileChangeRequest
 import com.google.firebase.database.ChildEventListener
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.Exclude
 import java.util.concurrent.TimeUnit
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.GenericTypeIndicator
+import com.google.firebase.database.Query
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.getValue
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.storage.FirebaseStorage
 import com.google.gson.Gson
+import com.google.gson.JsonArray
 import com.google.gson.JsonObject
+import com.google.protobuf.Value
 import com.gy.ecotrace.BuildConfig
 import com.gy.ecotrace.Globals
-import com.gy.ecotrace.Globals.Companion.applicationContext
-import com.gy.ecotrace.Globals.Companion.getInstance
-import com.gy.ecotrace.db.DatabaseMethods.UserDatabaseMethods.User
 import com.yandex.mapkit.geometry.Point
-import com.yandex.mapkit.search.Goals
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.tasks.await
 import okhttp3.Call
 import okhttp3.Callback
@@ -38,8 +41,6 @@ import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.Response
 import java.io.ByteArrayOutputStream
-import java.io.File
-import java.io.FileOutputStream
 import java.io.IOException
 import java.io.UnsupportedEncodingException
 import java.net.URLDecoder
@@ -50,7 +51,6 @@ import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
-import kotlin.reflect.typeOf
 
 object DatabaseMethods {
 
@@ -132,12 +132,12 @@ object DatabaseMethods {
 
                                 val responseBody = response.body?.string() ?: ""
 
-                                Log.d("response first", "$responseBody ${response.receivedResponseAtMillis - response.sentRequestAtMillis} ms")
-                                if (responseBody.isEmpty() || responseBody == "null") {
-                                    Log.d("response is null", responseBody)
-                                    callback(null)
-                                    return
-                                }
+//                                Log.d("response first", "$responseBody ${response.receivedResponseAtMillis - response.sentRequestAtMillis} ms")
+//                                if (responseBody.isEmpty() || responseBody == "null") {
+//                                    Log.d("response is null", responseBody)
+//                                    callback(null)
+//                                    return
+//                                }
 
                                 try {
                                     val jsonObject = Gson().fromJson(responseBody, JsonObject::class.java)
@@ -151,8 +151,11 @@ object DatabaseMethods {
                                     saveInCache(pageGetName, fields, responseBody)
                                     callback(responseBody)
                                 } catch (e: Exception) {
-                                    Log.d("response parse error", "Failed to parse response: ${e.message}")
-                                    callback(null)
+                                    val jsonObject = Gson().fromJson(responseBody, JsonArray::class.java)
+
+                                    Log.d("got req", responseBody)
+                                    saveInCache(pageGetName, fields, responseBody)
+                                    callback(responseBody)
                                 }
                             }
                         }
@@ -166,7 +169,7 @@ object DatabaseMethods {
             }
         }
 
-        fun requestGET(pageGetName: String, fields: String?, callback: (String?) -> Unit) {
+        fun requestGET(pageGetName: String, fields: String?, callback: (Response?) -> Unit) {
             val client = OkHttpClient.Builder()
                 .connectTimeout(30, TimeUnit.SECONDS)
                 .writeTimeout(30, TimeUnit.SECONDS)
@@ -179,76 +182,63 @@ object DatabaseMethods {
 
             Log.d("final url", request.url.toString())
 
-                    client.newCall(request).enqueue(object : Callback {
-                        override fun onResponse(call: Call, response: Response) {
-                            response.use {
-                                if (!response.isSuccessful) {
-                                    Log.d("response", "Not successful: ${response.code}")
-                                    callback(null)
-                                    return
-                                }
-
-                                val responseBody = response.body?.string() ?: ""
-
-                                Log.d("response first", "$responseBody ${response.receivedResponseAtMillis - response.sentRequestAtMillis} ms")
-                                if (responseBody.isEmpty() || responseBody == "null") {
-                                    Log.d("response is null", responseBody)
-                                    callback(null)
-                                    return
-                                }
-
-                                try {
-//                                    val jsonObject = Gson().fromJson(responseBody, JsonObject::class.java)
-//                                    if (jsonObject.has("error")) {
-//                                        Log.d("response", "Error found: $responseBody")
-//                                        callback(null)
-//                                        return
-//                                    }
-
-                                    Log.d("got req", responseBody)
-                                    callback(responseBody)
-                                } catch (e: Exception) {
-                                    Log.d("response parse error", "Failed to parse response: ${e.message}")
-                                    callback(null)
-                                }
-                            }
-                        }
-
-                        override fun onFailure(call: Call, e: IOException) {
-                            Log.d("bad request", "Request failed: ${e.message}")
+            client.newCall(request).enqueue(object : Callback {
+                override fun onResponse(call: Call, response: Response) {
+                    response.use {
+                        if (!response.isSuccessful) {
+                            Log.d("response", "Not successful: ${response.code}")
                             callback(null)
+                            return
                         }
-                    })
 
+                        if (response.body == null) {
+                            Log.d("response", "Response body is null")
+                            callback(null)
+                            return
+                        }
 
+                        Log.d("got req", "Response received")
+                        callback(response)
+                    }
+                }
+
+                override fun onFailure(call: Call, e: IOException) {
+                    Log.d("bad request", "Request failed: ${e.message}")
+                    callback(null)
+                }
+            })
         }
 
-        fun requestPOST(pageGetName: String, fields: String?, callback: (String?) -> Unit) {
+        fun requestPOST(pageGetName: String, jsonData: String, fields: String, callback: (Boolean) -> Unit) {
             val authUser = FirebaseAuth.getInstance().currentUser
             authUser?.getIdToken(true)?.addOnCompleteListener { tokenTask ->
                 if (tokenTask.isSuccessful) {
                     val oAuth2: String? = tokenTask.result?.token
-                    val jsonRequest = "some request"
-                    val JSON = "application/json; charset=utf-8".toMediaType()
 
                     val client = OkHttpClient()
-                    val body: RequestBody = jsonRequest.toRequestBody(JSON)
+                    val body: RequestBody = jsonData.toRequestBody("application/json; charset=utf-8".toMediaType())
                     val request = Request.Builder()
-                        .url("${BuildConfig.SERVER_API_URI}$pageGetName?$fields&oauth=$oAuth2&cuid=${authUser.uid}")
-                        .post(body)
-                        .build()
+                        .url("${BuildConfig.SERVER_API_URI}$pageGetName?$fields&cuid=${authUser.uid}&oauth=$oAuth2")
+                        .post(body).build()
 
-                    try {
-                        client.newCall(request).execute().use { response ->
-                            if (!response.isSuccessful) {
-                                throw IOException("Запрос к серверу не был успешен:" +
-                                        " ${response.code} ${response.message}")
-                            }
-                            println(response.body!!.string())
+                    client.newCall(request).enqueue(object : Callback {
+                        override fun onFailure(call: Call, e: IOException) {
+                            Log.d("End", "Failed to send data ${e.message}")
+                            callback(false)
                         }
-                    } catch (e: IOException) {
-                        Log.d("server", "Ошибка подключения: $e")
-                    }
+
+                        override fun onResponse(call: Call, response: Response) {
+                            if (response.isSuccessful) {
+                                Log.d("End","Data successfully sent!")
+                                callback(true)
+                                return
+                            } else {
+                                Log.d("End", "Failed to send data ${response.code} ${response.message}")
+                                callback(false)
+                                return
+                            }
+                        }
+                    })
                 }
             }
         }
@@ -278,10 +268,9 @@ object DatabaseMethods {
             @get:Exclude var eventId: String = "0",
             var eventName: String = "",
             var eventAbout: String? = null,
-            var eventTags: String? = null,
             var eventStatus: Int = 0 /* 0 - Предстоит 1 - Проходит 2 - Закончилось*/,
-            @get:Exclude @set:Exclude var eventCountMembers: Int = 0,
-            var eventUsersToTheirRoles: HashMap<String, Int>? = null,
+            var eventCountMembers: Int = 0,
+            @get:Exclude @set:Exclude var eventUsersToTheirRoles: HashMap<String, Int>? = null,
             var eventStart: String = "0;0",
             var eventCreatorId: String = "",
             @get:Exclude @set:Exclude var eventCreatorName: String = "",
@@ -295,7 +284,7 @@ object DatabaseMethods {
             var groupExperience: Int = 0,
             var groupRank: Int = 0,
             var groupCreatorId: String = "0",
-            var groupTags: String? = null,
+            var filters: String = "",
             var groupCountMembers: Int = 0,
             var groupType: Int = 0 /* 0 - открытая  1 - по заявкам  2 - закрытая*/,
             @get:Exclude @set:Exclude var groupUsersToTheirRoles: HashMap<String, HashMap<String, Boolean>>? = null
@@ -326,8 +315,8 @@ object DatabaseMethods {
 
         data class MapObject(
             var objectName: String = "",
-            var objectType: Int = 0, // 0 - Circle  1 - Area  2 - Dot
-            var objectRelation: ObjectRelation = ObjectRelation(),
+            var objectType: Int = 0, // 0 - Dot, 1 - Circle
+            var objectRelation: String? = null,
             var objectCenter: Point = Point(),
 
             var fillColor: String = "#00000000",
@@ -383,6 +372,15 @@ object DatabaseMethods {
             var sliders: Values
         )
 
+        data class EcoCalcSaveData(
+            var question: Int = 0,
+            var value: Int = 0,
+
+            var formulaValue: Double = 0.0,
+            var specify: Map<String, Int>? = null
+
+        )
+
         data class Rating(
             var userId: String = "0",
             var experience: Int = 0,
@@ -392,7 +390,7 @@ object DatabaseMethods {
 
 
         companion object {
-            val EventRoles = arrayOf("Глава", "Помощник", "Исполняющий")
+            val EventRoles = arrayOf("Участник", "Помощник", "Создатель")
             val GroupRanks = arrayOf("Владелец", "Совладелец", "Следящий", "Участник")
             val UserRanks = arrayOf("Крутой", "Очень крутой")
             val UserFiltersSearchBy = arrayOf(
@@ -431,6 +429,13 @@ object DatabaseMethods {
 //            var friends: HashMap<String, DataClasses.Friendship>? = null
         )
 
+        class UserActivity(
+            var userId: String = "0",
+            var username: String = "",
+            var experience: Int = 0,
+            var role: Int = -1
+        )
+
         class UserPrivate(
             var email: String = "error-email",
             var password: String = "error-password"
@@ -444,7 +449,8 @@ object DatabaseMethods {
 
         class UserEvent(
             var eventInfo: DataClasses.Event = DataClasses.Event(),
-            var isUserInEvent: Boolean = false
+            var isUserInEvent: Boolean = false,
+            var isUserCreator: Boolean = false
         )
 
         class UserGroup(
@@ -454,85 +460,64 @@ object DatabaseMethods {
 
         suspend fun getUserEmail(login: String, password: String): String? {
             return suspendCoroutine {
-                Tech().requestGET("getUserEmail.php", "lgn=$login&pss=${Tech().hash256(password)}") {
+                Tech().requestGET("getUserEmail", "lgn=$login&pss=${Tech().hash256(password)}") {
                         response ->
-                    it.resume(response)
+                    it.resume(response?.body?.string())
                 }
             }
-//            val userIdSnapshot = FirebaseDatabase.getInstance().getReference("indexes/${Tech().encodeKey(login)}").get().await()
-//            if (userIdSnapshot.exists()) {
-//                val userId = userIdSnapshot.getValue(String::class.java)
-//                val userPassword = FirebaseDatabase.getInstance().getReference("users/$userId/private/password").get().await().getValue(String::class.java)
-//                val userEmail = FirebaseDatabase.getInstance().getReference("users/$userId/private/email").get().await().getValue(String::class.java)
-//
-//                return if (Tech().hash256(password) == userPassword)
-//                    userEmail
-//                else null
-//            } else {
-//                return null
-//            }
         } // servs
 
-        fun saveEcoCalc(questions:  HashMap<String, DatabaseMethods. DataClasses. EcoCalcQuestion>, formulas:  HashMap<String, DatabaseMethods. DataClasses. Formula>) {
-            val formHash = hashMapOf<String, Float>()
-
-            for (formula in formulas) {
-                if (formula.value.value != null) {
-                    formHash[formula.key] = formula.value.value!!
-                }
+        fun saveEcoCalc(data: MutableList<DatabaseMethods.DataClasses.EcoCalcSaveData>, calcType: Int, callback: (Boolean) -> Unit) {
+            val jsonData = Gson().toJson(data)
+            Tech().requestPOST("setEcoData", jsonData, "calcType=$calcType") {
+                callback(it)
             }
-
-            Log.d("end", formHash.toString())
         }
 
-    suspend fun getUsernameOnly(userId: String): String {
-        FirebaseDatabase.getInstance().getReference().orderByKey().limitToFirst(4).limitToLast(2)
-            return FirebaseDatabase.getInstance().getReference("users/$userId/username").get().await().getValue(String::class.java) ?: ""
+        suspend fun getUsernameOnly(userId: String): String {
+            return "TODO METHOD"//FirebaseDatabase.getInstance().getReference("users/$userId/username").get().await().getValue(String::class.java) ?: ""
         }
 
-        suspend fun joinEvent(eventId: String, userId: String) {
-            val userEvent = FirebaseDatabase.getInstance().getReference("users/$userId/events")
-            userEvent.child(eventId).setValue(true)
-            val event = FirebaseDatabase.getInstance().getReference("events/$eventId")
-            val currentCount = event.child("eventCountMembers").get().await().getValue(Int::class.java)!!
-            if (!event.child("eventUsersToTheirRoles").get().await()
-                .getValue(object : GenericTypeIndicator<HashMap<String, Int>>() {})!!.contains(userId)) {
-                    event.child("eventCountMembers").setValue(currentCount + 1)
-                    event.child("eventUsersToTheirRoles/$userId")
-                        .setValue(DataClasses.EventRoles.size - 1)
-            }
+        suspend fun joinEvent(eventId: String) {
+            Tech().requestPOST("joinEvent", "", "eventId=$eventId") {}
         }// servs
-        suspend fun leaveEvent(eventId: String, userId: String) {
-            val userEvent = FirebaseDatabase.getInstance().getReference("users/$userId/events")
-            userEvent.child(eventId).removeValue()
-            val event = FirebaseDatabase.getInstance().getReference("events/$eventId")
-            val currentCount = event.child("eventCountMembers").get().await().getValue(Int::class.java)!!
-            if (event.child("eventUsersToTheirRoles").get().await()
-                .getValue(object : GenericTypeIndicator<HashMap<String, Int>>() {})!!.contains(userId)) {
-                    event.child("eventCountMembers").setValue(currentCount - 1)
-                    event.child("eventUsersToTheirRoles/$userId").removeValue()
-            }
+        suspend fun leaveEvent(eventId: String) {
+            Tech().requestPOST("leaveEvent", "", "eventId=$eventId") {}
         }// servs
 
         suspend fun getUserInfo(userId: String): User? {
             return suspendCoroutine {
-                Tech().requestGETAuth("getbaseprofile.php", "uid=$userId") {
+                Tech().requestGETAuth("getUser", "uid=$userId") {
                     response ->
                     if (response == null) {
                         it.resume(null)
                         return@requestGETAuth
                     }
 
-                    it.resume(
-                        Gson().fromJson(response, User::class.java)
-                    )
+                    val userData = Gson().fromJson(response, User::class.java)
+                    userData.userId = userId
+                    it.resume(userData)
+                }
+            }
+        }
+
+        suspend fun getGraph(userId: String, time: Int, hideFilters: MutableList<Int>?): Bitmap? {
+            return suspendCoroutine { continuation ->
+                Tech().requestGET("getUserGraph", "uid=$userId&time=$time&types=${hideFilters?.joinToString(",")}") { response ->
+                    if (response == null) {
+                        continuation.resume(null)
+                        return@requestGET
+                    }
+
+                    val bitmap = BitmapFactory.decodeStream(response.body?.byteStream())
+                    continuation.resume(bitmap)
                 }
             }
         }
 
         suspend fun getUserGroups(userId: String, gGot: String?): HashMap<String, Boolean>? {
             return suspendCoroutine {
-                Tech().requestGETAuth("getUserGroups.php", "uid=$userId&block=$gGot") { response ->
+                Tech().requestGETAuth("getUserGroups", "uid=$userId&block=$gGot") { response ->
                     if (response == null) {
                         it.resume(null)
                         return@requestGETAuth
@@ -548,7 +533,7 @@ object DatabaseMethods {
 
         suspend fun getUserEvents(userId: String, eGot: String?): HashMap<String, Boolean>? {
             return suspendCoroutine {
-                Tech().requestGETAuth("getUserEvents.php", "uid=$userId&block=$eGot") { response ->
+                Tech().requestGETAuth("getUserEvents", "uid=$userId&block=$eGot") { response ->
                     if (response == null) {
                         it.resume(null)
                         return@requestGETAuth
@@ -561,10 +546,31 @@ object DatabaseMethods {
                 }
             }
         } // servs
+        suspend fun getUserEvent(eventId: String): UserEvent {
+            return suspendCoroutine {
+                Tech().requestGETAuth("getUserEventData", "eventId=$eventId") { response ->
+                    if (response == null) {
+                        return@requestGETAuth
+                    }
+                    val data = Gson().fromJson(response, UserEvent::class.java)
+
+                    it.resume(data)
+                }
+            }
+        }
+
+
+        suspend fun getUserEventsShort(startAt: String?): HashMap<String, String>? {
+            return suspendCoroutine {
+                Tech().requestGETAuth("getUserEventsShort", "block=$startAt") {
+
+                }
+            }
+        }
 
         suspend fun getUserFriends(userId: String, fGot: String?): MutableList<DataClasses.Friendship>? {
             return suspendCoroutine {
-                Tech().requestGETAuth("getUserFriends.php", "uid=$userId&block=$fGot") { response ->
+                Tech().requestGETAuth("getUserFriends", "uid=$userId&block=$fGot") { response ->
                     if (response == null) {
                         it.resume(null)
                         return@requestGETAuth
@@ -578,48 +584,67 @@ object DatabaseMethods {
             }
         }
 
+        suspend fun getUserFriendsFilterByName(username: String?, lastFoundId: String?): Pair<String?, MutableList<DatabaseMethods.DataClasses.Friendship>?> {
+            return suspendCoroutine {
+                Tech().requestGETAuth("getUserFriendsFilterByName", "filter=$username&lastId=$lastFoundId") { response ->
+                    if (response == null) {
+                        it.resume(Pair(null, null))
+                        return@requestGETAuth
+                    }
+
+                    val userFriends: Pair<String?, MutableList<DataClasses.Friendship>?> = Gson().fromJson(response, object :
+                        TypeToken<Pair<String?, MutableList<DataClasses.Friendship>?>>() {}.type)
+
+                    it.resume(userFriends)
+                }
+            }
+        }
+
         fun removeFriends(userId: String) {
-            Tech().requestPOST("removeFriend.php", "uid=$userId") {}
+            Tech().requestPOST("removeFriend", "", "uid=$userId") {}
         }// servs
         fun addFriends(userId: String) {
-            Tech().requestPOST("addFriend.php", "uid=$userId") {}
+            Tech().requestPOST("addFriend", "", "uid=$userId") {}
         }
 
 
         suspend fun isUserInGroup(userId: String, groupId: String): Boolean {
-            val isJustAMember = FirebaseDatabase.getInstance().getReference("groups/$groupId/groupUsersToTheirRoles/role3/$userId").get().await().exists() ||
-                    FirebaseDatabase.getInstance().getReference("groups/$groupId/groupUsersToTheirRoles/role2/$userId").get().await().exists() ||
-                    FirebaseDatabase.getInstance().getReference("groups/$groupId/groupUsersToTheirRoles/role1/$userId").get().await().exists()
-            val isCreator = FirebaseDatabase.getInstance().getReference("groups/$groupId/groupCreatorId").get().await().getValue(String::class.java) == userId
-            return isJustAMember || isCreator
+            return false
+//            val isJustAMember = FirebaseDatabase.getInstance().getReference("groups/$groupId/groupUsersToTheirRoles/role3/$userId").get().await().exists() ||
+//                    FirebaseDatabase.getInstance().getReference("groups/$groupId/groupUsersToTheirRoles/role2/$userId").get().await().exists() ||
+//                    FirebaseDatabase.getInstance().getReference("groups/$groupId/groupUsersToTheirRoles/role1/$userId").get().await().exists()
+//            val isCreator = FirebaseDatabase.getInstance().getReference("groups/$groupId/groupCreatorId").get().await().getValue(String::class.java) == userId
+//            return isJustAMember || isCreator
         }
 
         suspend fun joinGroup(userId: String, groupId: String): Boolean {
-            return suspendCoroutine {
-                FirebaseDatabase.getInstance().getReference("users/$userId/groups/$groupId").setValue(true)
-                    .addOnSuccessListener { _ ->
-                        val groupData = FirebaseDatabase.getInstance().getReference("groups/$groupId")
-                        groupData.child("groupUsersToTheirRoles/role3/$userId").setValue(3) // todo roles
-                        it.resume(true)
-                    }.addOnFailureListener { _ ->
-                        it.resume(false)
-                    }
-            }
+            return false
+//            return suspendCoroutine {
+//                FirebaseDatabase.getInstance().getReference("users/$userId/groups/$groupId").setValue(true)
+//                    .addOnSuccessListener { _ ->
+//                        val groupData = FirebaseDatabase.getInstance().getReference("groups/$groupId")
+//                        groupData.child("groupUsersToTheirRoles/role3/$userId").setValue(3) // todo roles
+//                        it.resume(true)
+//                    }.addOnFailureListener { _ ->
+//                        it.resume(false)
+//                    }
+//            }
         }// servs
         suspend fun leaveGroup(userId: String, groupId: String): Boolean {
-            return suspendCoroutine {
-                FirebaseDatabase.getInstance().getReference("users/$userId/groups/$groupId").removeValue()
-                    .addOnSuccessListener { _ ->
-                        val groupData = FirebaseDatabase.getInstance().getReference("groups/$groupId")
-                        for (userRole in 1..3) {
-                            groupData.child("groupUsersToTheirRoles/role$userRole/$userId")
-                                .removeValue()
-                        }
-                        it.resume(true)
-                    }.addOnFailureListener { _ ->
-                        it.resume(false)
-                    }
-            }
+            return false
+//            return suspendCoroutine {
+//                FirebaseDatabase.getInstance().getReference("users/$userId/groups/$groupId").removeValue()
+//                    .addOnSuccessListener { _ ->
+//                        val groupData = FirebaseDatabase.getInstance().getReference("groups/$groupId")
+//                        for (userRole in 1..3) {
+//                            groupData.child("groupUsersToTheirRoles/role$userRole/$userId")
+//                                .removeValue()
+//                        }
+//                        it.resume(true)
+//                    }.addOnFailureListener { _ ->
+//                        it.resume(false)
+//                    }
+//            }
         }// servs
     }
 
@@ -1030,76 +1055,247 @@ object DatabaseMethods {
             }
         }// servs
 
-        suspend fun findEventsWithFilters(
-            filters: MutableList<Int>,
-            lastEventId: Pair<Boolean, String?>,
-            string: String?,
-        ): Pair<MutableList<DataClasses.Event>, Pair<Boolean, String?>> {
+        suspend fun getObjectsFiltered(filters: String?, lastFound: String?, objName: String, filterName: String?): Pair<Pair<String?, Boolean>, MutableList<DataClasses.FiltersFriendship?>> {
             return suspendCoroutine {
-                val foundEvents = mutableListOf<DataClasses.Event>()
-                val reference = FirebaseDatabase.getInstance().getReference("events")
-                var query = reference.orderByKey()
-                Log.d("lastEventIdData", lastEventId.toString())
-                if (lastEventId.first) {
-                    if (lastEventId.second != null) {
-                        query = query.startAfter(lastEventId.second)
+                Tech().requestGETAuth("getObjectFiltered", "filters=$filters&nei=$lastFound&obj=$objName&name=$filterName") { response ->
+
+                    if (response == null) {
+                        return@requestGETAuth
                     }
-                } else {
-                    it.resume(Pair(foundEvents, lastEventId))
-                    return@suspendCoroutine
-                }
-                query.addListenerForSingleValueEvent(object : ValueEventListener {
-                    override fun onDataChange(snapshot: DataSnapshot) {
-                        val lastDBvalueKey = snapshot.children.last().key.toString()
-                        Log.d("guyfgywe", snapshot.toString())
-                        for (event in snapshot.children) {
-                            val currentDBvalueKey = event.key.toString()
-                                val eventData = event.getValue(DataClasses.Event::class.java)!!
-                                eventData.eventId = currentDBvalueKey
-                                var isOk = false
-                                if (string.isNullOrEmpty()) {
-                                    val eventFilters =
-                                        event.child("filters").getValue(String::class.java)!!
-                                            .split(",").map { it.toInt() - 1 }.sorted()
-                                    val eventFiltersSame =
-                                        eventFilters.intersect(filters.toSet()).toMutableList()
-                                            .sorted()
 
-                                    if (filters == eventFiltersSame) isOk = true
-                                } else {
-                                    if (eventData.eventName.lowercase()
-                                            .startsWith(string.lowercase())
-                                        ||
-                                        (eventData.eventAbout ?: "").lowercase()
-                                            .contains(string.lowercase())
-                                    ) isOk = true
-                                }
-                                if (isOk) {
-                                    foundEvents.add(eventData)
-                                    Log.d(
-                                        "added event",
-                                        "${currentDBvalueKey == lastDBvalueKey} $currentDBvalueKey $lastDBvalueKey"
-                                    )
-                                    if (foundEvents.size == 3 || currentDBvalueKey == lastDBvalueKey) {
-                                        var nextDataPair =
-                                            Pair<Boolean, String?>(true, currentDBvalueKey)
-                                        if (currentDBvalueKey == lastDBvalueKey) {
-                                            nextDataPair = Pair(false, null)
-                                        }
-                                        it.resume(Pair(foundEvents, nextDataPair))
 
-                                        return
-                                    }
-                                }
+                    Log.d("parseing", response)
+                    val dataList: Array<Any> = Gson().fromJson(response, Array<Any>::class.java)
 
+                    val nextObjAndFlag: Pair<String?, Boolean> = (dataList[0] as List<*>).let {
+                        Pair(it[0] as? String, it[1] as? Boolean ?: false)
+                    }
+
+                    Log.d("tesdt1", dataList[0].toString())
+                    Log.d("tesdt12", dataList[1].toString())
+
+                    val foundObjects: MutableList<DataClasses.FiltersFriendship?> = (dataList[1] as? List<*>)?.map {
+                        val obj = it as? Map<*, *>
+                        obj?.let {
+                            DataClasses.FiltersFriendship(
+                                userId = obj["objectId"] as? String ?: "0",
+                                username = obj["name"] as? String ?: "",
+                                filters = obj["filters"] as? String ?: ""
+                            )
                         }
-                        it.resume(Pair(foundEvents, Pair(false, null)))
-                    }
+                    }?.toMutableList() ?: mutableListOf()
 
-                    override fun onCancelled(error: DatabaseError) {}
-                })
+                    it.resume(Pair(nextObjAndFlag, foundObjects))
+                }
             }
         }
+
+        private suspend fun getFirst(filter: String): String? {
+            Log.d("searching", filter)
+            return try {
+                FirebaseDatabase.getInstance().getReference("events")
+                    .orderByChild("filters").equalTo(filter).limitToFirst(1)
+                    .get().await().children.first().key
+            } catch (e: Exception) {
+                null
+            }
+        }
+        private suspend fun getLast(filter: String): String? {
+            return try {
+                FirebaseDatabase.getInstance().getReference("events")
+                    .orderByChild("filters").equalTo(filter).limitToLast(1)
+                    .get().await().children.first().key
+            } catch (e: Exception) {
+                null
+            }
+        }
+
+        private suspend fun getFilterValue(key: String): String {
+            return FirebaseDatabase.getInstance().getReference("events/$key/filters")
+                .get().await().getValue(String::class.java)!!
+        }
+
+        private suspend fun getNextKey(key: String, value: String, default: String, filterByFilters: Boolean): String? {
+            Log.wtf("getNext", "$key  $value")
+
+            val nextSnapshot = when (filterByFilters) {
+                true -> FirebaseDatabase.getInstance().getReference("events")
+                    .orderByChild("filters").startAfter(value, key).limitToFirst(1)
+                    .get().await()
+                else -> FirebaseDatabase.getInstance().getReference("events")
+                    .orderByKey().startAfter(key).limitToFirst(1)
+                    .get().await()
+            }
+
+            val nextValueFilter = try {
+                nextSnapshot.children.first().getValue(DataClasses.Event::class.java)?.filters ?: ""
+            } catch (e: Exception) {
+                return null
+            }
+            return if (nextValueFilter.contains(default) || !filterByFilters) nextSnapshot.children.first().key else null
+        }
+
+        private fun addOneFilter(filter: String, lastAdded: Int = 0): Pair<String, Int> {
+            val currentFilter = filter.split(',')//Regex("\\d+:([\\d,]+)").find(filter)!!.groupValues[1]
+                .map { it.toInt() }.toMutableList()
+
+            var nextFilter = lastAdded + 1
+            if (nextFilter > 0 && currentFilter.size < DataClasses.EventFiltersSearchBy.size) {
+                while (currentFilter.contains(nextFilter) && nextFilter <= DataClasses.EventFiltersSearchBy.size) {
+                    nextFilter++
+                }
+                if (nextFilter > DataClasses.EventFiltersSearchBy.size) {
+                    return Pair(filter, lastAdded)
+                }
+                currentFilter.add(nextFilter)
+            }
+            val resultFilter = "${currentFilter.size}:${currentFilter.sorted().joinToString(",")}"
+
+            return Pair(resultFilter, nextFilter)
+        }
+
+        suspend fun findEventsWithFilters(
+            filters: String,
+            newEventId: String?
+        ): Pair<Pair<String?, Boolean>, MutableList<DataClasses.Event>> {
+
+            return suspendCoroutine {
+                Tech().requestGET("getAllEvents", "filters=$filters&nei=$newEventId") { response ->
+                    if (response == null) {
+                        return@requestGET
+                    }
+
+                    val responseBody = response.body?.string() ?: ""
+
+                    Log.d("jfijgf", responseBody)
+
+
+                    val type = object : TypeToken<Array<Any>>() {}.type
+                    val dataList: Array<Any> = Gson().fromJson(responseBody, type)
+
+                    val objects = dataList[1] as? MutableList<*> ?: emptyList()
+                    val eventsType = object : TypeToken<Array<DataClasses.Event>>() {}.type
+                    val eventsJsonString = Gson().toJson(objects)
+                    val events: Array<DataClasses.Event> = Gson().fromJson(eventsJsonString, eventsType)
+                    val last = events.last().eventId
+
+                    it.resume(Pair(Pair(last, dataList[0] as? Boolean ?: false), events.toMutableList()))
+                }
+            }
+        }
+        suspend fun findGroupsWithFilters(
+            filters: String,
+            newGroupId: String?
+        ): Pair<Pair<String?, Boolean>, MutableList<DataClasses.Group>> {
+
+            return suspendCoroutine {
+                Tech().requestGET("getAllGroups", "filters=$filters&nei=$newGroupId") { response ->
+                    if (response == null) {
+                        return@requestGET
+                    }
+
+                    val responseBody = response.body?.string() ?: ""
+
+                    val type = object : TypeToken<Array<Any>>() {}.type
+                    val dataList: Array<Any> = Gson().fromJson(responseBody, type)
+
+                    val objects = dataList[1] as? MutableList<*> ?: emptyList()
+                    val groupsType = object : TypeToken<Array<DataClasses.Group>>() {}.type
+                    val groupsJsonString = Gson().toJson(objects)
+                    val events: Array<DataClasses.Group> = Gson().fromJson(groupsJsonString, groupsType)
+                    val last = events.last().groupId
+
+                    it.resume(Pair(Pair(last, dataList[0] as? Boolean ?: false), events.toMutableList()))
+                }
+            }
+        }
+
+
+        suspend fun getEventGoals(eventId: String): MutableList<String> {
+            return suspendCoroutine {
+                Tech().requestGET("getEventGoals", "eventId=$eventId") { response ->
+                    if (response == null) {
+                        return@requestGET
+                    }
+
+                    val responseBody = response.body?.string() ?: ""
+
+
+                    Log.d("parseing", responseBody)
+                    val dataList: Array<String> = Gson().fromJson(responseBody, Array<String>::class.java)
+
+                    it.resume(dataList.toMutableList())
+                }
+            }
+        }
+        suspend fun getEventTimes(eventId: String): HashMap<String, String> {
+            return suspendCoroutine {
+                Tech().requestGET("getEventTimes", "eventId=$eventId") { response ->
+                    if (response == null) {
+                        return@requestGET
+                    }
+
+                    val responseBody = response.body?.string() ?: ""
+
+
+                    Log.d("parseing", responseBody)
+                    val dataList: HashMap<String, String> = Gson().fromJson(responseBody, object : TypeToken<HashMap<String, String>>() {}.type)
+
+                    it.resume(dataList)
+                }
+            }
+        }
+        suspend fun getEventCoords(eventId: String): MutableList<DataClasses.MapObject> {
+            return suspendCoroutine {
+                Tech().requestGET("getEventCoords", "eventId=$eventId") { response ->
+                    if (response == null) {
+                        return@requestGET
+                    }
+
+                    val responseBody = response.body?.string() ?: ""
+
+
+                    Log.d("parseing", responseBody)
+                    val dataList: Array<DataClasses.MapObject> = Gson().fromJson(responseBody, Array<DataClasses.MapObject>::class.java)
+
+                    it.resume(dataList.toMutableList())
+                }
+            }
+        }
+        suspend fun getEventMembers(eventId: String, startAfter: String?, username: String?): MutableList<UserDatabaseMethods.UserActivity> {
+            return suspendCoroutine {
+                Tech().requestGET("getEventMembers", "eventId=$eventId&startAfter=$startAfter&username=$username") { response ->
+                    if (response == null) {
+                        return@requestGET
+                    }
+
+                    val responseBody = response.body?.string() ?: ""
+
+
+                    Log.d("parseing", responseBody)
+                    val dataList: Array<UserDatabaseMethods.UserActivity> = Gson().fromJson(responseBody, Array<UserDatabaseMethods.UserActivity>::class.java)
+
+                    it.resume(dataList.toMutableList())
+                }
+            }
+        }
+        suspend fun isUserModerInEvent(eventId: String): Boolean {
+            return suspendCoroutine {
+                Tech().requestGETAuth("isUserModerInEvent", "eventId=$eventId") { response ->
+                    if (response == null) {
+                        return@requestGETAuth
+                    }
+
+
+                    Log.d("parseing", response)
+                    val dataList: Array<Boolean> = Gson().fromJson(response, Array<Boolean>::class.java)
+
+                    it.resume(dataList[0])
+                }
+            }
+        }
+
+
 
         /*suspend*/ fun getImageLink(folder: String, imageId: String): String {
             return "https://firebasestorage.googleapis.com/v0/b/ecotrace-cf2be.appspot.com/o/$folder%2F$imageId.png?alt=media"
@@ -1133,7 +1329,7 @@ object DatabaseMethods {
 
         suspend fun getUserRating(userId: String): MutableList<DataClasses.Rating> {
             return suspendCoroutine {
-                Tech().requestGETAuth("getUserRating.php", "uid=$userId") { response ->
+                Tech().requestGETAuth("getUserRating", "uid=$userId") { response ->
 
                     if (response == null) {
                         return@requestGETAuth
@@ -1209,10 +1405,24 @@ object DatabaseMethods {
                     Log.d("login", "$email $password")
                     if (signInTask.isSuccessful) {
                         val user: FirebaseUser? = auth.currentUser
-                        callback(user?.uid)
-//                        getToken(user) { uid ->
-//                            callback(uid)
-//                        }
+
+                        if (user == null) {
+                            callback(null)
+                            return@addOnCompleteListener
+                        }
+                        FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
+                            if (task.isSuccessful) {
+                                val token = task.result
+                                val userDevices = FirebaseFirestore.getInstance().collection("users").document(user.uid).collection("notifications")
+                                userDevices.document(token).set(mapOf("token" to token, "timestamp" to System.currentTimeMillis()))
+                                    .addOnSuccessListener {
+                                        callback(user.uid)
+                                    }
+                                    .addOnFailureListener {
+                                        callback(null)
+                                    }
+                            }
+                        }
                     } else {
                         Toast.makeText(Tech().context(), "Вход заблокирован!", Toast.LENGTH_LONG).show()
                         callback(null) // auth error
@@ -1229,17 +1439,5 @@ object DatabaseMethods {
 
             return true
         }
-
-        fun deleteAccount() {
-
-        }
-    }
-
-    class ServerSide {
-
-        fun deleteGroup(groupId: String, userId: String) {
-            
-        }
-
     }
 }

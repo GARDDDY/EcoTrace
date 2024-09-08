@@ -14,6 +14,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
+import com.facebook.shimmer.ShimmerFrameLayout
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.gy.ecotrace.Globals
@@ -50,6 +51,7 @@ class RatingsFragment : Fragment() {
         var currentInRating = false
         ratingsViewModel.getRating(currentUser)
         ratingsViewModel.users.observe(viewLifecycleOwner, Observer { users ->
+            view.findViewById<ShimmerFrameLayout>(R.id.ratingLoading).visibility = View.GONE
             Log.d("rating", users.toString())
             usersLayout.removeAllViews()
             var currentCount = 1

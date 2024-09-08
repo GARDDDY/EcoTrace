@@ -13,15 +13,14 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.core.view.updatePadding
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.gy.ecotrace.Globals
 import com.gy.ecotrace.R
 import com.gy.ecotrace.db.DatabaseMethods
 import com.gy.ecotrace.db.Repository
-import com.gy.ecotrace.ui.more.events.ShowEventViewModel
-import com.yandex.mapkit.MapKitFactory
-import com.yandex.mapkit.mapview.MapView
+import org.w3c.dom.Text
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
@@ -29,6 +28,9 @@ import java.util.Locale
 import java.util.TimeZone
 
 class ShowEventStep2 : Fragment() {
+
+    private val sharedViewModel: ShowEventViewModel by activityViewModels()
+
     private val timeFormat: SimpleDateFormat = SimpleDateFormat("ddMMyyyyHHmm", Locale.getDefault())
     private val hoursMinutes: SimpleDateFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
     private val daysMonthsYears: SimpleDateFormat = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault())
@@ -48,103 +50,61 @@ class ShowEventStep2 : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val currentEvent = Globals.getInstance().getString("CurrentlyWatchingEvent")
-        val repository = Repository(DatabaseMethods.UserDatabaseMethods(), DatabaseMethods.ApplicationDatabaseMethods())
-        val factory = ShowEventViewModelFactory(repository)
-        val eventViewModel = ViewModelProvider(this, factory)[ShowEventViewModel::class.java]
 
-
-        eventViewModel.getEventMore(currentEvent)
-        eventViewModel.eventmore.observe(viewLifecycleOwner, Observer{
+        sharedViewModel.getTimes()
+        sharedViewModel.eventTimes.observe(viewLifecycleOwner, Observer {
             it?.let {
-                val eventGoalsLayout: LinearLayout = view.findViewById(R.id.planLayoutGoals)
-                for (goal in it.eventGoals) {
-                    val goalView = TextView(context)
-                    goalView.textSize = 16F
-                    goalView.text = Html.fromHtml(goal.value, Html.FROM_HTML_MODE_LEGACY)
-
-                    eventGoalsLayout.addView(goalView)
-                }
-
-                val eventTimesLayout: LinearLayout = view.findViewById(R.id.planLayoutTimes)
-                if (it.eventTimes != null) {
-//                    startUpdatingColors(it.eventTimes, eventTimesLayout)
-                } else {
-                    view.findViewById<TextView>(R.id.NoTimesFound).visibility = View.VISIBLE
-                    eventTimesLayout.visibility = View.GONE
-                }
+                startUpdatingColors(view.findViewById(R.id.planLayoutTimes))
             }
         })
     }
 
-    private fun parsePlannedTimePeriod(plannedTime: String): MutableList<Date> {
-        val times = plannedTime.split("_")
-        val startTimeUtc = times[0]
-        val endTimeUtc = times[1]
-        timeFormat.timeZone = TimeZone.getTimeZone("UTC")
-        val startTime = timeFormat.parse(startTimeUtc)
-        val endTime = timeFormat.parse(endTimeUtc)
-
-        return mutableListOf(startTime!!, endTime!!)
-    }
-
-    private fun applyTimeColor(plannedTime: MutableList<Date>, currentTime: Date): Pair<String, String> {
-        val timeString = "${hoursMinutes.format(plannedTime[0])}-${hoursMinutes.format(plannedTime[1])}"
-        val dayStart = daysMonthsYears.format(plannedTime[0])
-        val dayEnd = daysMonthsYears.format(plannedTime[1])
-        var days = "${dayStart}-${dayEnd}"
-        if (dayStart == dayEnd) days = dayStart
-        return Pair(when {
-            currentTime.after(plannedTime[0]) && currentTime.before(plannedTime[1]) -> {
-                "<b><font color='${String.format("#%06X", 0xFFFFFF and
-                        ContextCompat.getColor(requireContext(), R.color.ok_green))}'>$timeString</font></b>"
-            }
-            currentTime.after(plannedTime[1]) -> {
-                "<b><font color='${String.format("#%06X", 0xFFFFFF and
-                        ContextCompat.getColor(requireContext(), R.color.red_no))}'>$timeString</font></b>"
-            }
-            else -> {
-                "<b>$timeString</b>"
-            }
-        }, days)
-    }
-
-    private fun getTime(plannedTimeUtc: MutableList<Date>): MutableList<Date> {
-        val localTimes = mutableListOf<Date>()
-        plannedTimeUtc.forEach { utcTime ->
-            val calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
-            calendar.time = utcTime
-            calendar.timeZone = TimeZone.getDefault()
-            localTimes.add(calendar.time)
+    private fun parseTime(timeString: String): String {
+        val end = mutableListOf<String>()
+        for (timeStamp in timeString.split('_')) {
+            val timestampInMillis = timeStamp.toLong() * 1000
+            val date = Date(timestampInMillis)
+            val sdf = SimpleDateFormat("dd.MM.yyyy HH:mm", Locale.getDefault())
+            end.add(sdf.format(date))
         }
-        return localTimes
+        return "${end[0]} - ${end[1]}"
+    }
+
+    private fun applyTimeColor(plannedTime: String, currentTime: Long): String {
+        val dayStart = plannedTime.split('_')[0].toLong()
+        val dayEnd = plannedTime.split('_')[1].toLong()
+        return if (currentTime in dayStart..dayEnd) {
+                "<b><font color='${String.format("#%06X", 0xFFFFFF and
+                        ContextCompat.getColor(requireContext(), R.color.ok_green))}'>${parseTime(plannedTime)}</font></b>"
+            }
+            else if (dayEnd < currentTime) {
+                "<b><font color='${String.format("#%06X", 0xFFFFFF and
+                        ContextCompat.getColor(requireContext(), R.color.red_no))}'>" +
+                        "${parseTime(plannedTime)}</font></b>"
+            }
+            else {
+                "<b>${parseTime(plannedTime)}</b>"
+            }
     }
 
 
-//    private fun startUpdatingColors(eventTimes: MutableMap<String, String>, eventTimesLayout: LinearLayout) {
-//        handler.post(object : Runnable {
-//            override fun run() {
-//                eventTimesLayout.removeAllViews()
-//                for (time in eventTimes.toSortedMap()) {
-//                    val timeLinearLayout = LinearLayout(context)
-//                    timeLinearLayout.orientation = LinearLayout.HORIZONTAL
-//                    val timeViewName = TextView(context) // время
-//                    timeViewName.textSize = 16F
-//                    timeViewName.updatePadding(0,0,15,0)
-//                    val data = applyTimeColor(getTime(parsePlannedTimePeriod(time.key)), Date())
-//                    timeViewName.text = Html.fromHtml(data.first, Html.FROM_HTML_MODE_LEGACY)
-//                    timeViewName.tooltipText = data.second
-//                    val timeView = TextView(context) // описание
-//                    timeView.textSize = 16F
-//                    timeView.text = time.value
-//                    timeView.setTextColor(Color.parseColor("#000000"))
-//
-//                    timeLinearLayout.addView(timeViewName)
-//                    timeLinearLayout.addView(timeView)
-//                    eventTimesLayout.addView(timeLinearLayout)
-//                }
-//                handler.postDelayed(this, 10000)
-//            }
-//        })
-//    }
+    private fun startUpdatingColors(eventTimesLayout: LinearLayout) {
+        handler.post(object : Runnable {
+            override fun run() {
+                eventTimesLayout.removeAllViews()
+                for ((time, description) in sharedViewModel.eventTimes.value?.toSortedMap() ?: hashMapOf()) {
+                    val timeLayout = layoutInflater.inflate(R.layout.layout_event_goaltime, null)
+                    val timeData = applyTimeColor(time, System.currentTimeMillis()/1000)
+                    val oData = timeLayout.findViewById<TextView>(R.id.objectData)
+                    oData.visibility = View.VISIBLE
+                    oData.text = Html.fromHtml(timeData, Html.FROM_HTML_MODE_LEGACY)
+
+                    timeLayout.findViewById<TextView>(R.id.objectName).text = description
+
+                    eventTimesLayout.addView(timeLayout)
+                }
+                handler.postDelayed(this, 40000)
+            }
+        })
+    }
 }

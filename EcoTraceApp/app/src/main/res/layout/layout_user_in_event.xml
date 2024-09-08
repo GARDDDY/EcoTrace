@@ -1,11 +1,9 @@
-<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
+<LinearLayout android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
     android:paddingBottom="15dp"
-    android:orientation="horizontal" >
+    android:orientation="horizontal"
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
     <LinearLayout
         android:id="@+id/profile_open"
@@ -21,6 +19,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:paddingHorizontal="@dimen/default_PaddingMargin"
             android:orientation="vertical">
 
             <TextView
@@ -52,23 +51,11 @@
 
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/user_group_user_in_event_layout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:clickable="true"
-        android:paddingHorizontal="5dp"
-        android:text="user group"
-        android:visibility="visible"
-        android:textAlignment="center"
-        android:textColor="@color/black"
-        android:textSize="16sp"
-        android:textStyle="bold" />
-
     <LinearLayout
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
+        android:paddingHorizontal="@dimen/default_PaddingMargin"
         android:layout_height="wrap_content"
+        android:layout_weight="1"
         android:orientation="vertical">
 
         <TextView
@@ -98,5 +85,13 @@
             android:paddingHorizontal="7dp"
             android:textStyle="italic" />
     </LinearLayout>
+
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="end"
+        android:textAlignment="textEnd"
+        android:backgroundTint="@color/transparent"
+        android:src="@drawable/outline_more_vert_24" />
 
 </LinearLayout>

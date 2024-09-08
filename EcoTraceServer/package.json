@@ -1,0 +1,19 @@
+{
+  "name": "etserver",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "chart.js": "^3.9.1",
+    "chartjs-node-canvas": "^4.1.6",
+    "express": "^4.19.2",
+    "firebase-admin": "^12.3.1",
+    "mysql2": "^3.11.0"
+  }
+}

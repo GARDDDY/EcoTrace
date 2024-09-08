@@ -25,12 +25,12 @@ class CreateGroupViewModel(private val repository: Repository): ViewModel() {
         groupName: String? = groupClass.groupName,
         groupAbout: String? = groupClass.groupAbout,
         groupType: Int? = groupClass.groupType,
-        groupTags: String? = groupClass.groupTags
+        groupTags: String = groupClass.filters
     ) {
         groupClass.groupName = groupName ?: ""
         groupClass.groupAbout = groupAbout
         groupClass.groupType = groupType ?: 2
-        groupClass.groupTags = groupTags
+        groupClass.filters = groupTags
 
         _groupData.postValue(groupClass)
     }

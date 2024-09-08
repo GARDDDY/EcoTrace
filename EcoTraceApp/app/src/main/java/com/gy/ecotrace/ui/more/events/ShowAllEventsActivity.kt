@@ -9,6 +9,7 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
 import android.view.View
+import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -25,6 +26,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
+import com.facebook.shimmer.ShimmerFrameLayout
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.shape.ShapeAppearanceModel
@@ -57,6 +59,7 @@ class ShowAllEventsActivity : AppCompatActivity() {
         setContentView(R.layout.activity_show_all_events)
         Globals.getInstance().setString("CurrentlyWatchingEvent", "0")
         val toolbar: Toolbar = findViewById(R.id.toolbar6)
+        val allEvents: LinearLayout = findViewById(R.id.allEventsLayout)
         Globals().initToolbarIconBack(toolbar, applicationContext)
         toolbar.setNavigationOnClickListener {
             onBackPressed()
@@ -66,9 +69,6 @@ class ShowAllEventsActivity : AppCompatActivity() {
         val factory = ShowAllEventsViewModelFactory(repository)
         showAllViewModel = ViewModelProvider(this, factory)[ShowAllEventsViewModel::class.java]
 
-
-        val allEvents: LinearLayout = findViewById(R.id.allEventsLayout)
-        var loading = createLoadingLayouts(allEvents)
         val tagsLayout: LinearLayout = findViewById(R.id.allTagsLayout)
         val tagsColors = DatabaseMethods.DataClasses.filterColors
         val allEventTags = DatabaseMethods.DataClasses.EventFiltersSearchBy
@@ -76,17 +76,23 @@ class ShowAllEventsActivity : AppCompatActivity() {
             val tagButton = layoutInflater.inflate(R.layout.widget_tag_filter_button, null) as MaterialButton
             tagButton.text = allEventTags[tag].first
             tagButton.textSize = 18F
+            tagButton.isClickable = true
             tagButton.setTextColor(Color.parseColor(tagsColors[tag].second))
             tagButton.setBackgroundColor(ContextCompat.getColor(applicationContext, R.color.transparent))
             tagButton.rippleColor = ColorStateList.valueOf(Color.parseColor(tagsColors[tag].second))
             tagButton.strokeColor = ColorStateList.valueOf(Color.parseColor(tagsColors[tag].first))
 
             tagButton.setOnClickListener {
+                Log.d("btn", "clicked")
                 tagButton.isActivated = !tagButton.isActivated
+
+                findViewById<ShimmerFrameLayout>(R.id.allEventsLoadingLayout).visibility = View.VISIBLE
+                allEvents.visibility = View.GONE
+                findViewById<TextView>(R.id.noEventsWarning).visibility = View.GONE
                 allEvents.removeAllViews()
-                loading = createLoadingLayouts(allEvents)
+
                 showAllViewModel.reapplyFilter(tag)
-                showAllViewModel.getEvents(true)
+                showAllViewModel.getEvents()
                 if(!tagButton.isActivated) tagButton.setBackgroundColor(ContextCompat.getColor(applicationContext, R.color.transparent))
                 else tagButton.setBackgroundColor(Color.parseColor(tagsColors[tag].first))
             }
@@ -103,9 +109,11 @@ class ShowAllEventsActivity : AppCompatActivity() {
         fabAdd.imageTintList = getColorStateList(R.color.dirt_white)
         fabAdd.setImageResource(R.drawable.baseline_add_24)
 
+
         showAllViewModel.getEvents()
         showAllViewModel.eventsFound.observe(this, Observer {
-            allEvents.removeAllViews()
+            findViewById<ShimmerFrameLayout>(R.id.allEventsLoadingLayout).visibility = View.GONE
+            allEvents.visibility = View.VISIBLE
             for (event in it) {
                 val eventLayout = layoutInflater.inflate(R.layout.layout_event_in_all_events, null)
                 eventLayout.findViewById<TextView>(R.id.eventName).text = event.eventName
@@ -168,52 +176,48 @@ class ShowAllEventsActivity : AppCompatActivity() {
 
                 allEvents.addView(eventLayout)
             }
-            removeLoadingLayouts(allEvents, loading)
+            if (it.isEmpty()) {
+                findViewById<TextView>(R.id.noEventsWarning).visibility = View.VISIBLE
+            }
+        })
+
+        showAllViewModel.getUserEvents()
+        showAllViewModel.events.observe(this, Observer {
+            it?.let{
+                findViewById<LinearLayout>(R.id.userJoinedEvents).visibility = View.VISIBLE
+                val joinedEvents = findViewById<LinearLayout>(R.id.userJoinedEventsLayout)
+                for ((eventId, eventName) in it) {
+                    val eventLayout = layoutInflater.inflate(R.layout.layout_joined_event_short, null)
+                    eventLayout.findViewById<TextView>(R.id.eventName).text = eventName
+
+                    Glide.with(this)
+                    .load(Globals().getImgUrl("events", eventId))
+                    .into(eventLayout.findViewById(R.id.eventImage))
+
+
+                    eventLayout.setOnClickListener {
+                        Globals.getInstance().setString("CurrentlyWatchingEvent", eventId)
+                        startActivity(Intent(this@ShowAllEventsActivity, ShowEventActivity::class.java))
+                    }
+
+                    joinedEvents.addView(eventLayout)
+                    val separator = View(applicationContext)
+                    separator.layoutParams = ViewGroup.LayoutParams(resources.getDimensionPixelSize(R.dimen.default_PaddingMargin),
+                        ViewGroup.LayoutParams.WRAP_CONTENT)
+                    joinedEvents.addView(separator)
+                }
+            }
         })
 
         val eventsScrollView: ScrollView = findViewById(R.id.allEventsScrollView)
         eventsScrollView.setOnScrollChangeListener { view, _,_,_,_ ->
-            if (eventsScrollView.getChildAt(eventsScrollView.childCount-1).bottom == eventsScrollView.height+view.scrollY) {
-                loading = createLoadingLayouts(allEvents)
-                showAllViewModel.getEvents()
+            if (eventsScrollView.getChildAt(eventsScrollView.childCount-1).bottom == eventsScrollView.height+view.scrollY
+                    && !showAllViewModel.foundAll && !showAllViewModel.isUpdating) {
+                Log.d("updating", "true")
+                showAllViewModel.isUpdating = true
+                findViewById<ShimmerFrameLayout>(R.id.allEventsLoadingLayout).visibility = View.VISIBLE
+                showAllViewModel.getEvents(false)
             }
         }
-
-        val stringSearcher: EditText = findViewById(R.id.eventFinderByName)
-        stringSearcher.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(s: Editable?) {
-                if (s.isNullOrEmpty()) {
-                    Log.d("clear", "fethcing as fisrt")
-                    allEvents.removeAllViews()
-                    loading = createLoadingLayouts(allEvents)
-                    showAllViewModel.getEvents(true)
-                } else {
-                    Log.d("type", "fethcing in type")
-                    allEvents.removeAllViews()
-                    loading = createLoadingLayouts(allEvents)
-                    showAllViewModel.getEvents(true, s.toString().trim())
-                }
-            }
-
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-        })
-    }
-
-    private fun createLoadingLayouts(layoutMain: LinearLayout, num: Int = 3): MutableList<View> {
-        val layouts: MutableList<View> = mutableListOf()
-        if (!showAllViewModel.lastId.first) return layouts
-        for (i in 1..num) {
-            val loadingLayout = layoutInflater.inflate(R.layout.layout_event_in_all_events, null)
-            val lightGray = ContextCompat.getColor(applicationContext, R.color.silver)
-            loadingLayout.findViewById<RelativeLayout>(R.id.mainRootLayout).foreground = ColorDrawable(lightGray)
-            layouts.add(loadingLayout)
-
-            layoutMain.addView(loadingLayout)
-        }
-        return layouts
-    }
-    private fun removeLoadingLayouts(layoutMain: LinearLayout, layouts: MutableList<View>) {
-        for (layout in layouts) layoutMain.removeView(layout)
     }
 }

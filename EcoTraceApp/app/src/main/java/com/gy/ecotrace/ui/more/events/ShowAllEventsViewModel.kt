@@ -11,6 +11,13 @@ import com.gy.ecotrace.db.Repository
 import kotlinx.coroutines.launch
 
 class ShowAllEventsViewModel(private val repository: Repository) : ViewModel() {
+
+    var isUpdating = false
+
+    private val _events = MutableLiveData<HashMap<String, String>?>()
+    private var lastId: String? = null
+    val events: LiveData<HashMap<String, String>?> get() = _events
+
     private val filtersSearchNew = MutableList(DatabaseMethods.DataClasses.UserFiltersSearchBy.size) { false }
     fun reapplyFilter(filterIndex: Int) {
         filtersSearchNew[filterIndex] = !filtersSearchNew[filterIndex]
@@ -18,44 +25,43 @@ class ShowAllEventsViewModel(private val repository: Repository) : ViewModel() {
 
     private val _eventFoundFilter = MutableLiveData<MutableList<DatabaseMethods.DataClasses.Event>>()
     val eventsFound: LiveData<MutableList<DatabaseMethods.DataClasses.Event>> get() = _eventFoundFilter
-    var lastId: Pair<Boolean, String?> = Pair(true, null)
-    private var showedEvents: MutableList<String> = mutableListOf()
-    fun getEvents(needNew: Boolean = false, searchWithString: String? = null) {
+    private var startAtId: String? = null
+    var foundAll = false
+
+
+    fun getEvents(updateAllGot: Boolean = true) {
         viewModelScope.launch {
-            if (needNew) {
-                _eventFoundFilter.value = mutableListOf()
-                lastId = Pair(true, null)
-                showedEvents = mutableListOf()
+            if (updateAllGot) {
+                startAtId = null
+                foundAll = false
             }
 
-            val filters = mutableListOf<Int>()
-            filtersSearchNew.forEachIndexed { index, it ->
-                if (it) {
-                    filters.add(index)
-                }
-            }
+            val filters = filtersSearchNew.mapIndexedNotNull {
+                index, value -> if (value) (index + 1).toString() else null
+            }.joinToString(",")
 
-            val events = repository.findEventsWithFilters(filters, lastId, searchWithString)
-            lastId = events.second
-            val currents = _eventFoundFilter.value ?: mutableListOf()
-            val newEvents = events.first.filter { event ->
-                !showedEvents.contains(event.eventId) && !currents.any { it.eventId == event.eventId }
-            }
-            newEvents.forEach {
-                it.eventCreatorName = getUsernameOnly(it.eventCreatorId)
-            }
-            currents.addAll(newEvents)
-            val distinctList = currents.distinct()
-            currents.clear()
-            currents.addAll(distinctList)
-            _eventFoundFilter.postValue(currents)
-            showedEvents.addAll(newEvents.map { it.eventId })
+
+            val data = repository.findEventsWithFilters(filters, startAtId)
+
+            Log.d("data", data.toString())
+
+            startAtId = data.first.first
+            foundAll = data.first.second
+            val events = data.second
+
+            _eventFoundFilter.postValue(events)
         }
     }
 
-    private suspend fun getUsernameOnly(userId: String): String {
-        return repository.getUsernameOnly(userId)
+    fun getUserEvents() {
+        viewModelScope.launch {
+            Log.d("test", "1")
+            val events = repository.getUserEventsShort(lastId)
+            Log.d("test", "2")
+            lastId = events?.keys?.last()
+            Log.d("test", "3")
+            _events.postValue(events)
+        }
     }
-
 
 }

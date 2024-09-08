@@ -2,6 +2,7 @@ package com.gy.ecotrace.db
 
 import android.graphics.Bitmap
 import android.util.Log
+import com.gy.ecotrace.db.DatabaseMethods.DataClasses
 
 class Repository(
     private val userDatabase: DatabaseMethods.UserDatabaseMethods,
@@ -9,6 +10,10 @@ class Repository(
 ) {
     suspend fun getUser(userId: String): DatabaseMethods.UserDatabaseMethods.User? {
         return userDatabase.getUserInfo(userId)
+    }
+
+    suspend fun getGraph(userId: String, time: Int, hideFilters: MutableList<Int>?): Bitmap? {
+        return userDatabase.getGraph(userId, time, hideFilters)
     }
 
     suspend fun getUserEmail(login: String, password: String): String? {
@@ -58,6 +63,11 @@ class Repository(
         return eventsData
     }
 
+    suspend fun getUserEventsShort(startAt: String?): HashMap<String, String>? {
+        Log.d("test", "4")
+        return userDatabase.getUserEventsShort(startAt)
+    }
+
     fun observeEventMembers(groupId: String,
                             callback: (DatabaseMethods.DataClasses.Event?) -> Unit) {
 
@@ -73,6 +83,9 @@ class Repository(
 
     suspend fun getUserFriends(userId: String, fGot: String?): MutableList<DatabaseMethods.DataClasses.Friendship>? {
         return userDatabase.getUserFriends(userId, fGot)
+    }
+    suspend fun getObjectsFiltered(filters: String?, lastFound: String?, objName: String, filterName: String?): Pair<Pair<String?, Boolean>, MutableList<DataClasses.FiltersFriendship?>> {
+        return appDatabase.getObjectsFiltered(filters, lastFound, objName, filterName)
     }
 
 
@@ -144,19 +157,42 @@ class Repository(
         return appDatabase.findUsersWithFilters(filters, lastUser)
     }
 
-    suspend fun findEventsWithFilters(filters: MutableList<Int>, lastEventId: Pair<Boolean, String?>, string: String?): Pair<MutableList<DatabaseMethods.DataClasses.Event>, Pair<Boolean, String?>> {
-        return appDatabase.findEventsWithFilters(filters, lastEventId, string)
+//    suspend fun findEventsWithFilters(filters: MutableList<Int>, lastEventId: Pair<Boolean, String?>, string: String?): Pair<MutableList<DatabaseMethods.DataClasses.Event>, Pair<Boolean, String?>> {
+//        return appDatabase.findEventsWithFilters(filters, lastEventId, string)
+//    }
+    suspend fun findEventsWithFilters(filters: String, newEventId: String?): Pair<Pair<String?, Boolean>, MutableList<DataClasses.Event>> {
+        return appDatabase.findEventsWithFilters(filters, newEventId)
     }
 
     suspend fun getEventMore(eventId: String): DatabaseMethods.ApplicationDatabaseMethods.EventMore {
         return appDatabase.getEventMore(eventId)
     }
 
-    suspend fun joinEvent(eventId: String, userId: String) {
-        userDatabase.joinEvent(eventId, userId)
+    suspend fun getEventGoals(eventId: String): MutableList<String> {
+        return appDatabase.getEventGoals(eventId)
     }
-    suspend fun leaveEvent(eventId: String, userId: String) {
-        userDatabase.leaveEvent(eventId, userId)
+    suspend fun getEventTimes(eventId: String): HashMap<String, String> {
+        return appDatabase.getEventTimes(eventId)
+    }
+    suspend fun getEventCoords(eventId: String): MutableList<DataClasses.MapObject> {
+        return appDatabase.getEventCoords(eventId)
+    }
+    suspend fun getEventMembers(eventId: String, startAfter: String?, username: String?): MutableList<DatabaseMethods.UserDatabaseMethods.UserActivity> {
+        return appDatabase.getEventMembers(eventId, startAfter, username)
+    }
+
+    suspend fun joinEvent(eventId: String) {
+        userDatabase.joinEvent(eventId)
+    }
+    suspend fun leaveEvent(eventId: String) {
+        userDatabase.leaveEvent(eventId)
+    }
+
+    suspend fun isUserModerInEvent(eventId: String): Boolean {
+        return appDatabase.isUserModerInEvent(eventId)
+    }
+    suspend fun getUserEvent(eventId: String): DatabaseMethods.UserDatabaseMethods.UserEvent {
+        return userDatabase.getUserEvent(eventId)
     }
 
     suspend fun getGroup(groupId: String): DatabaseMethods.DataClasses.Group {
@@ -220,6 +256,9 @@ class Repository(
     }
     suspend fun getUserRating(userId: String): MutableList<DatabaseMethods.DataClasses.Rating> {
         return appDatabase.getUserRating(userId)
+    }
+    fun saveEcoData(data: MutableList<DatabaseMethods.DataClasses.EcoCalcSaveData>, calcType: Int, callback: (Boolean) -> Unit) {
+        return userDatabase.saveEcoCalc(data, calcType, callback)
     }
 
 

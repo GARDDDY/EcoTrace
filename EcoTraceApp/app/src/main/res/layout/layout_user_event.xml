@@ -8,24 +8,29 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
         <RelativeLayout
-            android:layout_width="wrap_content"
+            android:layout_width="200dp"
             android:layout_height="wrap_content"
             android:layout_marginBottom="5dp"
             android:orientation="vertical">
 
                 <ImageView
                     android:id="@+id/eventImage"
-                    android:layout_width="200dp"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_width="match_parent"
                     android:layout_height="100dp"
                     android:foreground="#75000000"
-                    android:scaleType="fitXY"
-                    tools:srcCompat="@tools:sample/backgrounds/scenic" />
+                    android:scaleType="centerCrop"
+                    android:adjustViewBounds="true"
+                    tools:srcCompat="@tools:sample/backgrounds/scenic"  />
 
                 <TextView
                     android:id="@+id/eventName"
-                    android:layout_width="200dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="center"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginHorizontal="@dimen/default_PaddingMargin"
+                    android:textAlignment="center"
                     android:layout_alignBottom="@+id/eventImage"
                     android:text="event_name"
                     android:textColor="@color/dirt_white"
@@ -53,20 +58,20 @@
                     android:orientation="horizontal" >
 
                         <TextView
-                            android:id="@+id/membersWord"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginEnd="5dp"
-                            android:textColor="@color/ok_green"
-                            android:text="Участников" />
-
-                        <TextView
                             android:id="@+id/eventCountMembers"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:gravity="center"
                             android:text="-1"
                             android:textColor="@color/ok_green" />
+
+                        <TextView
+                            android:id="@+id/membersWord"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="5dp"
+                            android:textColor="@color/ok_green"
+                            android:text="участник" />
 
                 </LinearLayout>
 

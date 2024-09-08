@@ -5,8 +5,6 @@ import android.widget.Button
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModelProvider
@@ -18,11 +16,6 @@ import com.gy.ecotrace.Globals
 import com.gy.ecotrace.R
 import com.gy.ecotrace.db.DatabaseMethods
 import com.gy.ecotrace.db.Repository
-import com.gy.ecotrace.ui.more.events.CreateEventActivity.Companion.viewPager
-import com.gy.ecotrace.ui.more.events.CreateEventActivity.CreationAdapter
-import com.gy.ecotrace.ui.more.events.createsteps.CreateEventStep1
-import com.gy.ecotrace.ui.more.events.createsteps.CreateEventStep2
-import com.gy.ecotrace.ui.more.events.createsteps.CreateEventStep3
 import com.gy.ecotrace.ui.more.groups.additional.CreateGroupViewModelFactory
 import com.gy.ecotrace.ui.more.groups.additional.GroupRepository
 import com.gy.ecotrace.ui.more.groups.createsteps.CreateGroupStep1

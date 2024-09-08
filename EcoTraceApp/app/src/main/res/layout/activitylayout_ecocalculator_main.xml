@@ -36,7 +36,7 @@
             android:drawableLeft="@drawable/baseline_fastfood_24"
             android:drawableTint="@color/ok_green"
             android:text="Пища"
-            android:foreground="@drawable/nonrounded_border"
+            android:background="?attr/selectableItemBackground"
             android:textColor="@color/ok_green"
             android:textSize="20sp"
             android:textStyle="bold" />
@@ -53,7 +53,7 @@
             android:drawableLeft="@drawable/baseline_water_drop_24"
             android:drawableTint="@color/ok_green"
             android:text="Вода"
-            android:foreground="@drawable/nonrounded_border"
+            android:background="?attr/selectableItemBackground"
             android:textColor="@color/ok_green"
             android:textSize="20sp"
             android:textStyle="bold" />
@@ -70,7 +70,7 @@
             android:drawableLeft="@drawable/baseline_compost_24"
             android:drawableTint="@color/ok_green"
             android:text="Отходы"
-            android:foreground="@drawable/nonrounded_border"
+            android:background="?attr/selectableItemBackground"
             android:textColor="@color/ok_green"
             android:textSize="20sp"
             android:textStyle="bold" />
@@ -87,7 +87,7 @@
             android:drawableLeft="@drawable/baseline_energy_savings_leaf_24"
             android:drawableTint="@color/ok_green"
             android:text="Энергия"
-            android:foreground="@drawable/nonrounded_border"
+            android:background="?attr/selectableItemBackground"
             android:textColor="@color/ok_green"
             android:textSize="20sp"
             android:textStyle="bold" />
@@ -104,7 +104,7 @@
             android:drawableLeft="@drawable/baseline_directions_car_24"
             android:drawableTint="@color/ok_green"
             android:text="Транспорт"
-            android:foreground="@drawable/nonrounded_border"
+            android:background="?attr/selectableItemBackground"
             android:textColor="@color/ok_green"
             android:textSize="20sp"
             android:textStyle="bold" />
@@ -152,7 +152,7 @@
             android:textSize="20sp"
             android:textStyle="bold"
             android:backgroundTint="@color/transparent"
-            android:foreground="@drawable/nonrounded_border"
+            android:background="?attr/selectableItemBackground"
             android:text="Жилье" />
 
         <Space
@@ -169,7 +169,7 @@
             android:textSize="20sp"
             android:textStyle="bold"
             android:backgroundTint="@color/transparent"
-            android:foreground="@drawable/nonrounded_border"
+            android:background="?attr/selectableItemBackground"
             android:text="Образ жизни" />
 
         <Space
@@ -186,7 +186,7 @@
             android:textSize="20sp"
             android:textStyle="bold"
             android:backgroundTint="@color/transparent"
-            android:foreground="@drawable/nonrounded_border"
+            android:background="?attr/selectableItemBackground"
             android:text="Ваше настроение" />
     </LinearLayout>
 

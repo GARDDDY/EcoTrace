@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/dirt_white"
+    android:fitsSystemWindows="true"
     tools:context=".ui.more.events.ShowEventActivity">
 
     <android.widget.Toolbar
@@ -16,6 +17,38 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageButton
+        android:id="@+id/eventEdit"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:visibility="invisible"
+        android:backgroundTint="@color/transparent"
+        android:src="@drawable/outline_more_vert_24"
+        app:layout_constraintBottom_toBottomOf="@+id/toolbar3"
+        app:layout_constraintEnd_toEndOf="@+id/toolbar3"
+        app:layout_constraintTop_toTopOf="@+id/toolbar3" />
+
+    <ImageButton
+        android:id="@+id/eventCreateQr"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:backgroundTint="@color/transparent"
+        android:src="@drawable/baseline_qr_code_24"
+        app:tint="@color/ok_green"
+        app:layout_constraintBottom_toBottomOf="@+id/toolbar3"
+        app:layout_constraintEnd_toStartOf="@+id/eventEdit"
+        app:layout_constraintTop_toTopOf="@+id/toolbar3" />
+    <ImageButton
+        android:id="@+id/eventScanQr"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:visibility="gone"
+        android:backgroundTint="@color/transparent"
+        android:src="@drawable/baseline_qr_code_scanner_24"
+        app:layout_constraintBottom_toBottomOf="@+id/toolbar3"
+        app:layout_constraintEnd_toStartOf="@+id/eventCreateQr"
+        app:layout_constraintTop_toTopOf="@+id/toolbar3" />
 
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tabLayout"

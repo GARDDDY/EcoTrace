@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content" >
+
+    <ImageView
+        android:id="@+id/eventImage"
+        android:layout_width="200dp"
+        android:layout_height="100dp"
+        android:adjustViewBounds="true"
+        android:scaleType="fitXY"
+        android:foreground="#75000000"
+        tools:srcCompat="@tools:sample/backgrounds/scenic" />
+
+    <TextView
+        android:id="@+id/eventName"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@id/eventImage"
+        android:layout_alignStart="@id/eventImage"
+        android:layout_alignEnd="@id/eventImage"
+        android:layout_marginStart="0dp"
+        android:text="eventName"
+        android:textAlignment="center"
+        android:textColor="@color/dirt2_white"
+        android:textSize="18sp"
+        android:textStyle="bold" />
+</RelativeLayout>

@@ -8,92 +8,493 @@
     android:background="@color/dirt_white"
     tools:context=".ui.news.NewsFragment">
 
-    <Spinner
-        android:id="@+id/dropdown_select_dates"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="1dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="1dp"
-        android:background="@color/transparent"
-        android:backgroundTint="@color/transparent"
-        android:ellipsize="marquee"
-        android:gravity="end"
-        android:singleLine="true"
-        android:textAlignment="textEnd"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginStart="1dp"
-        android:layout_marginTop="1dp"
-        android:layout_marginEnd="1dp"
-        android:layout_marginBottom="1dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/dropdown_select_dates">
+        android:layout_height="match_parent" >
 
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:paddingBottom="10dp">
+            android:orientation="vertical" >
 
-            <LinearLayout
-                android:id="@+id/news_1"
+            <RelativeLayout
+                android:id="@+id/mainGreet"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_margin="10dp"
-                android:clickable="true"
-                android:orientation="horizontal">
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/default_PaddingMargin"
+                android:layout_marginHorizontal="@dimen/default_PaddingMargin"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
-                <ImageView
-                    android:id="@+id/news_1_image"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_marginEnd="10dp"
-                    android:layout_weight="0"
-                    android:src="@drawable/icon_loading" />
-
-                <TextView
-                    android:id="@+id/mews_1_short_text"
+                <LinearLayout
+                    android:id="@+id/greeting"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="100"
-                    android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
-                    android:textColor="@color/black" />
-            </LinearLayout>
+                    android:layout_centerHorizontal="true"
+                    android:orientation="horizontal">
 
-            <LinearLayout
-                android:id="@+id/news_2"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_margin="10dp"
-                android:orientation="horizontal">
+                    <TextView
+                        android:id="@+id/greetingText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Здравствуйте, "
+                        android:textColor="@color/ok_green"
+                        android:textSize="20sp"
+                        android:textStyle="bold" />
 
-                <ImageView
-                    android:id="@+id/news_2_image"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_marginEnd="10dp"
-                    android:layout_weight="0"
-                    android:src="@drawable/icon_loading" />
+                    <TextView
+                        android:id="@+id/userNameText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="5dp"
+                        android:text="user_fullname"
+                        android:textColor="@color/ok_green"
+                        android:textSize="20sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="!"
+                        android:textColor="@color/ok_green"
+                        android:textSize="20sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
 
                 <TextView
-                    android:id="@+id/mews_2_short_text"
+                    android:id="@+id/tw1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="100"
-                    android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
-                    android:textColor="@color/black" />
+                    android:text="Пока Вас не было..."
+                    android:textColor="@color/silver"
+                    android:textSize="18sp"
+                    android:layout_marginEnd="5dp"
+                    android:layout_below="@id/greeting" />
+
+
+                <LinearLayout
+                    android:id="@+id/anything"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/tw1"
+                    android:visibility="visible"
+                    android:layout_centerHorizontal="true"
+                    android:orientation="vertical" >
+
+                    <LinearLayout
+                        android:id="@+id/eventLayout"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal" >
+
+                        <com.facebook.shimmer.ShimmerFrameLayout
+                            android:id="@+id/loadingEventStart"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:foreground="@drawable/layout_loading_shimmer"
+                                android:textColor="@color/ok_green"
+                                android:textSize="16sp"
+                                android:layout_marginEnd="5dp"
+                                android:text="0 мероприятий" />
+
+                        </com.facebook.shimmer.ShimmerFrameLayout>
+
+                        <TextView
+                            android:id="@+id/amountAndTextEventStarts"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/ok_green"
+                            android:textSize="16sp"
+                            android:visibility="gone"
+                            android:layout_marginEnd="5dp"
+                            android:text="0 мероприятий" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/silver"
+                            android:textSize="16sp"
+                            android:text="началось" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal" >
+
+                        <com.facebook.shimmer.ShimmerFrameLayout
+                            android:id="@+id/loadingEventEnd"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textColor="@color/ok_green"
+                                android:textSize="16sp"
+                                android:foreground="@drawable/layout_loading_shimmer"
+                                android:layout_marginEnd="5dp"
+                                android:text="0 мероприятий" />
+
+                        </com.facebook.shimmer.ShimmerFrameLayout>
+
+                        <TextView
+                            android:id="@+id/amountAndTextEventEnds"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/ok_green"
+                            android:textSize="16sp"
+                            android:visibility="gone"
+                            android:layout_marginEnd="5dp"
+                            android:text="0 мероприятий" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/silver"
+                            android:textSize="16sp"
+                            android:text="закончилось" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/friendRequestsLayout"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal" >
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/silver"
+                            android:textSize="16sp"
+                            android:text="Вы получили" />
+
+                        <com.facebook.shimmer.ShimmerFrameLayout
+                            android:id="@+id/loadingFriends"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textColor="@color/ok_green"
+                                android:textSize="16sp"
+                                android:foreground="@drawable/layout_loading_shimmer"
+                                android:layout_marginHorizontal="5dp"
+                                android:text="0 запросов" />
+
+                        </com.facebook.shimmer.ShimmerFrameLayout>
+
+                        <TextView
+                            android:id="@+id/amountAndTextFriendRequests"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/ok_green"
+                            android:textSize="16sp"
+                            android:visibility="gone"
+                            android:layout_marginHorizontal="5dp"
+                            android:text="0 запросов" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/silver"
+                            android:textSize="16sp"
+                            android:text="в друзья" />
+
+                    </LinearLayout>
+                    <LinearLayout
+                        android:id="@+id/groupInvitationsLayout"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal" >
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/silver"
+                            android:textSize="16sp"
+                            android:text="Вы получили" />
+
+                        <com.facebook.shimmer.ShimmerFrameLayout
+                            android:id="@+id/loadingGroups"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textColor="@color/ok_green"
+                                android:foreground="@drawable/layout_loading_shimmer"
+                                android:textSize="16sp"
+                                android:layout_marginHorizontal="5dp"
+                                android:text="0 приглашений" />
+
+                        </com.facebook.shimmer.ShimmerFrameLayout>
+
+                        <TextView
+                            android:id="@+id/amountAndTextGroupInvitations"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/ok_green"
+                            android:textSize="16sp"
+                            android:visibility="gone"
+                            android:layout_marginHorizontal="5dp"
+                            android:text="0 приглашений" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/silver"
+                            android:textSize="16sp"
+                            android:text="в группы" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+                <TextView
+                    android:id="@+id/nothing"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="ничего не случилось!"
+                    android:layout_toEndOf="@id/tw1"
+                    android:visibility="gone"
+                    android:textColor="@color/ok_green"
+                    android:textSize="18sp"
+                    android:layout_below="@id/greeting" />
+
+            </RelativeLayout>
+
+            <View
+                android:id="@+id/separator1"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/ok_green"
+                android:layout_margin="@dimen/default_PaddingMargin"
+                app:layout_constraintTop_toBottomOf="@id/mainGreet"/>
+
+            <RelativeLayout
+                android:id="@+id/mainEdu"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/default_PaddingMargin"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/separator1">
+
+                <TextView
+                    android:id="@+id/tw21"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Обучение"
+                    android:textColor="@color/ok_green"
+                    android:textSize="20sp"
+                    android:textStyle="bold"/>
+
+                <HorizontalScrollView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/tw21" >
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal" />
+
+                </HorizontalScrollView>
+
+                <com.facebook.shimmer.ShimmerFrameLayout
+                    android:id="@+id/userFriendsInformationLayoutLoading"
+                    android:layout_below="@id/tw21"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" >
+
+                    <HorizontalScrollView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:scrollbars="none" >
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:orientation="horizontal" >
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:paddingHorizontal="10dp"
+                                android:orientation="vertical">
+
+                                <ImageView
+                                    android:layout_width="52dp"
+                                    android:layout_height="52dp"
+                                    android:layout_gravity="center"
+                                    android:padding="0dp"
+                                    android:foreground="@drawable/layout_loading_shimmer"
+                                    android:src="@drawable/error"
+                                    android:backgroundTint="@color/transparent" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:textColor="@color/black"
+                                    android:textStyle="bold"
+                                    android:padding="5dp"
+                                    android:textSize="@dimen/default_PaddingMargin"
+                                    android:foreground="@drawable/layout_loading_shimmer"
+                                    android:layout_height="wrap_content"
+                                    android:text="username" />
+                            </LinearLayout>
+
+                            <View
+                                android:layout_width="@dimen/default_PaddingMargin"
+                                android:layout_height="1dp" />
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:paddingHorizontal="10dp"
+                                android:orientation="vertical">
+
+                                <ImageView
+                                    android:layout_width="52dp"
+                                    android:layout_height="52dp"
+                                    android:layout_gravity="center"
+                                    android:padding="0dp"
+                                    android:foreground="@drawable/layout_loading_shimmer"
+                                    android:src="@drawable/error"
+                                    android:backgroundTint="@color/transparent" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:textColor="@color/black"
+                                    android:textStyle="bold"
+                                    android:padding="5dp"
+                                    android:textSize="@dimen/default_PaddingMargin"
+                                    android:foreground="@drawable/layout_loading_shimmer"
+                                    android:layout_height="wrap_content"
+                                    android:text="username" />
+                            </LinearLayout>
+
+                            <View
+                                android:layout_width="@dimen/default_PaddingMargin"
+                                android:layout_height="1dp" />
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:paddingHorizontal="10dp"
+                                android:orientation="vertical">
+
+                                <ImageView
+                                    android:layout_width="52dp"
+                                    android:layout_height="52dp"
+                                    android:layout_gravity="center"
+                                    android:padding="0dp"
+                                    android:foreground="@drawable/layout_loading_shimmer"
+                                    android:src="@drawable/error"
+                                    android:backgroundTint="@color/transparent" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:textColor="@color/black"
+                                    android:textStyle="bold"
+                                    android:padding="5dp"
+                                    android:textSize="@dimen/default_PaddingMargin"
+                                    android:foreground="@drawable/layout_loading_shimmer"
+                                    android:layout_height="wrap_content"
+                                    android:text="username" />
+                            </LinearLayout>
+
+                            <View
+                                android:layout_width="@dimen/default_PaddingMargin"
+                                android:layout_height="1dp" />
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:paddingHorizontal="10dp"
+                                android:orientation="vertical">
+
+                                <ImageView
+                                    android:layout_width="52dp"
+                                    android:layout_height="52dp"
+                                    android:layout_gravity="center"
+                                    android:padding="0dp"
+                                    android:foreground="@drawable/layout_loading_shimmer"
+                                    android:src="@drawable/error"
+                                    android:backgroundTint="@color/transparent" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:textColor="@color/black"
+                                    android:textStyle="bold"
+                                    android:padding="5dp"
+                                    android:textSize="@dimen/default_PaddingMargin"
+                                    android:foreground="@drawable/layout_loading_shimmer"
+                                    android:layout_height="wrap_content"
+                                    android:text="username" />
+                            </LinearLayout>
+
+                        </LinearLayout>
+
+                    </HorizontalScrollView>
+
+                </com.facebook.shimmer.ShimmerFrameLayout>
+
+            </RelativeLayout>
+
+            <View
+                android:id="@+id/separator2"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/ok_green"
+                android:layout_margin="@dimen/default_PaddingMargin"
+                app:layout_constraintTop_toBottomOf="@id/mainEdu"/>
+
+            <RelativeLayout
+                android:id="@+id/mainNews"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/default_PaddingMargin"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/separator2">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Новости"
+                    android:textColor="@color/ok_green"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
+            </RelativeLayout>
+
+            <LinearLayout
+                android:id="@+id/allNewsLayout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical" >
+
+                <WebView
+                    android:id="@+id/webView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
             </LinearLayout>
 
         </LinearLayout>
+
     </ScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,183 +1,206 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
     android:id="@+id/root_layout_sign"
-    android:background="@color/dirt_white">
+    android:background="@color/dirt_white"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-    <LinearLayout
-        android:id="@+id/linearLayout2"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0">
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:padding="@dimen/default_PaddingMargin">
+
+        <TextView
+            android:id="@+id/tw1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Персональная информация"
+            android:textColor="@color/black"
+            android:textSize="18sp"
+            android:layout_centerHorizontal="true" />
 
         <EditText
-            android:id="@+id/login_signup_menu_entry"
-            android:layout_width="wrap_content"
+            android:id="@+id/emailData"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginStart="100dp"
-            android:layout_marginTop="180dp"
-            android:layout_marginEnd="100dp"
-            android:backgroundTint="@color/ok_green"
-            android:drawableLeft="@drawable/baseline_alternate_email_24"
-            android:drawableTint="@color/silver"
-            android:ems="10"
-            android:hint="@string/email"
-            android:inputType="text|textEmailAddress"
             android:textColor="@color/ok_green"
-            android:textColorHint="@color/silver" />
+            android:backgroundTint="@color/ok_green"
+            android:hint="Email"
+            android:inputType="textEmailAddress"
+            android:textColorHint="@color/silver"
+            android:layout_below="@id/tw1"
+            android:layout_marginHorizontal="50dp"/>
 
         <EditText
-            android:id="@+id/password_signup_menu_entry"
-            android:layout_width="wrap_content"
+            android:id="@+id/passwordData"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginStart="100dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginEnd="100dp"
-            android:backgroundTint="@color/ok_green"
-            android:drawableLeft="@drawable/baseline_password_24"
-            android:drawableTint="@color/silver"
-            android:ems="10"
-            android:hint="@string/password"
-            android:inputType="textPassword"
+            android:hint="Пароль"
+            android:textColorHint="@color/silver"
             android:textColor="@color/ok_green"
-            android:textColorHint="@color/silver" />
+            android:backgroundTint="@color/ok_green"
+            android:layout_below="@id/emailData"
+            android:layout_toStartOf="@id/showPasswordButton"
+            android:layout_marginStart="50dp"
+            android:inputType="textPassword"/>
+
+        <ImageButton
+            android:id="@+id/showPasswordButton"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:src="@drawable/eye_open"
+            app:tint="@color/silver"
+            android:background="@color/transparent"
+            android:contentDescription="Show password"
+            android:layout_above="@id/loginData"
+            android:layout_alignEnd="@id/emailData"
+            android:layout_below="@id/emailData" />
 
         <EditText
-            android:id="@+id/username_signup_menu_entry"
-            android:layout_width="wrap_content"
+            android:id="@+id/loginData"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginStart="100dp"
-            android:layout_marginTop="40dp"
-            android:layout_marginEnd="101dp"
-            android:backgroundTint="@color/ok_green"
-            android:drawableLeft="@drawable/baseline_login_24"
-            android:drawableTint="@color/silver"
-            android:ems="10"
-            android:hint="@string/login"
-            android:inputType="text"
+            android:hint="Логин"
+            android:textColorHint="@color/silver"
             android:textColor="@color/ok_green"
-            android:textColorHint="@color/silver" />
+            android:backgroundTint="@color/ok_green"
+            android:layout_below="@id/passwordData"
+            android:layout_marginHorizontal="50dp"/>
 
         <EditText
-            android:id="@+id/fullname_signup_menu_entry"
-            android:layout_width="wrap_content"
+            android:id="@+id/fullnameData"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginStart="100dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginEnd="100dp"
-            android:backgroundTint="@color/ok_green"
-            android:drawableLeft="@drawable/baseline_person_24"
-            android:drawableTint="@color/silver"
-            android:ems="10"
-            android:hint="@string/fullname"
-            android:inputType="text|textPersonName"
+            android:hint="Ваше имя"
             android:textColor="@color/ok_green"
-            android:textColorHint="@color/silver" />
+            android:backgroundTint="@color/ok_green"
+            android:textColorHint="@color/silver"
+            android:layout_below="@id/loginData"
+            android:layout_marginHorizontal="50dp"/>
 
-        <LinearLayout
-            android:id="@+id/linearLayout"
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginStart="100dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginEnd="100dp"
-            android:orientation="horizontal">
+            android:text="*"
+            android:textColor="@color/red_no"
+            android:layout_alignTop="@id/fullnameData"
+            android:layout_alignEnd="@id/fullnameData"
+            android:layout_marginEnd="@dimen/default_PaddingMargin"/>
 
-            <TextView
-                android:id="@+id/male_signup_menu_text"
+        <TextView
+            android:id="@+id/tw2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Публичная информация"
+            android:textColor="@color/black"
+            android:textSize="18sp"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@id/fullnameData"
+            android:layout_marginTop="16dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="*"
+            android:layout_alignTop="@id/tw2"
+            android:layout_toEndOf="@id/tw2"
+            android:textColor="@color/red_no"
+            android:layout_marginHorizontal="5dp" />
+
+        <RadioGroup
+            android:id="@+id/userGender"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tw2"
+            android:orientation="horizontal"
+            android:layout_centerHorizontal="true">
+
+            <androidx.appcompat.widget.AppCompatRadioButton
+                android:id="@+id/genderMale"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_weight="1"
-                android:drawableLeft="@drawable/baseline_male_24"
-                android:drawableTint="@color/silver"
-                android:gravity="right"
-                android:text="@string/male"
-                android:textColor="@color/silver"
-                tools:layout_editor_absoluteX="118dp"
-                tools:layout_editor_absoluteY="436dp" />
+                android:textColor="@color/black"
+                android:text="Мужчина"/>
 
-            <Switch
-                android:id="@+id/gender_singup_menu_choose"
+            <androidx.appcompat.widget.AppCompatRadioButton
+                android:id="@+id/genderFemale"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_weight="0"
-                android:thumbTint="@color/ok_green"
-                android:trackTint="@color/transparent"
-                tools:layout_editor_absoluteX="181dp"
-                tools:layout_editor_absoluteY="432dp" />
+                android:textColor="@color/black"
+                android:text="Женщина"/>
 
-            <TextView
-                android:id="@+id/female_signup_menu_text"
+            <com.google.android.material.radiobutton.MaterialRadioButton
+                android:id="@+id/genderNone"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_weight="1"
-                android:drawableRight="@drawable/baseline_female_24"
-                android:drawableTint="@color/silver"
-                android:gravity="left"
-                android:text="@string/female"
-                android:textColor="@color/silver"
-                tools:layout_editor_absoluteX="227dp"
-                tools:layout_editor_absoluteY="436dp" />
-        </LinearLayout>
+                android:checked="true"
+                android:drawableTint="@color/ok_green"
+                android:textColor="@color/black"
+                android:text="Не указывать пол"/>
+        </RadioGroup>
+
+        <HorizontalScrollView
+            android:id="@+id/userFilters"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/userGender"
+            android:layout_alignStart="@id/userGender"
+            android:layout_alignEnd="@id/userGender"
+            android:scrollbars="none"
+            android:layout_marginTop="@dimen/default_PaddingMargin">
+
+            <LinearLayout
+                android:id="@+id/userFiltersLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+            </LinearLayout>
+        </HorizontalScrollView>
 
         <Button
-            android:id="@+id/register_signup_menu_btn"
-            android:layout_width="wrap_content"
+            android:id="@+id/registerButton"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginStart="112dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginEnd="112dp"
+            android:text="Зарегистрироваться"
+            android:textColor="@color/dirt_white"
             android:backgroundTint="@color/ok_green"
-            android:text="@string/signup"
-            android:textColor="@color/dirt_white" />
+            android:layout_below="@id/userFilters"
+            android:layout_marginHorizontal="50dp"
+            android:layout_marginTop="16dp"/>
 
         <LinearLayout
+            android:id="@+id/ll1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
+            android:layout_below="@id/registerButton"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/default_PaddingMargin"
             android:orientation="horizontal">
 
             <TextView
-                android:id="@+id/account_signup_menu_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="92dp"
-                android:layout_marginTop="44dp"
-                android:text="@string/account"
-                android:textColor="@color/silver" />
+                android:textColor="@color/silver"
+                android:text="Есть аккаунт?"/>
 
-            <Button
-                android:id="@+id/login_register_button_transfer"
+            <TextView
+                android:id="@+id/gotoLogin"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="48dp"
-                android:layout_marginTop="28dp"
-                android:layout_weight="1"
-                android:background="#00FFFFFF"
-                android:backgroundTint="@color/ok_green"
-                android:text="@string/signin"
-                android:textColor="@color/silver" />
-
+                android:text="Войти"
+                android:textColor="@color/black"
+                android:layout_marginStart="16dp"/>
         </LinearLayout>
 
-    </LinearLayout>
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:textColor="@color/silver"
+            android:text="* - заполнение данных опционально"
+            android:layout_below="@id/ll1"
+            android:layout_marginTop="16dp"/>
+    </RelativeLayout>
+</RelativeLayout>

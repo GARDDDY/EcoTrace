@@ -11,27 +11,15 @@ import com.gy.ecotrace.db.Repository
 import kotlinx.coroutines.launch
 
 class SearcherViewModel(private val repository: Repository) : ViewModel() {
-    private val _userFriends = MutableLiveData<MutableList<DatabaseMethods.DataClasses.Friendship>>()
-    val stringUserFriendsFilter = MutableLiveData<String>()
-    val filteredUserFriends = MediatorLiveData<List<DatabaseMethods.DataClasses.Friendship>>().apply {
-        addSource(_userFriends) { filterUserFriends() }
-        addSource(stringUserFriendsFilter) { filterUserFriends() }
-    }
+    private val _userFriends = MutableLiveData<MutableList<DatabaseMethods.DataClasses.Friendship>?>()
+    val userFriends: LiveData<MutableList<DatabaseMethods.DataClasses.Friendship>?> get() = _userFriends
 
-    private fun filterUserFriends() {
-        val query = stringUserFriendsFilter.value ?: ""
-        val friends = _userFriends.value ?: mutableListOf()
-        filteredUserFriends.value = if (query.isEmpty()) {
-            friends
-        } else {
-            friends.filter { it.userId.startsWith(query, ignoreCase = true) }
-        }
-    }
-
+    private var lastFoundFriend: String? = null
+    var foundAll = false
     fun getUserFriends(userId: String) {
         viewModelScope.launch {
-            val friends = repository.getUserFriends(userId, null)
-            _userFriends.postValue(friends)
+            val dataFriends = repository.getUserFriends(userId, lastFoundFriend)
+            _userFriends.postValue(dataFriends)
         }
     }
 
@@ -40,55 +28,23 @@ class SearcherViewModel(private val repository: Repository) : ViewModel() {
         filtersSearchNew[filterIndex] = !filtersSearchNew[filterIndex]
     }
 
-    private val _userFoundFilter = MutableLiveData<MutableList<DatabaseMethods.DataClasses.FiltersFriendship>>()
-    val stringFriendsFilter = MutableLiveData<String>()
-    val filteredFriends = MediatorLiveData<List<DatabaseMethods.DataClasses.FiltersFriendship>>().apply {
-        addSource(_userFoundFilter) { filterFriends() }
-        addSource(stringFriendsFilter) { filterFriends() }
-    }
-
-    private fun filterFriends() {
-        val query = stringFriendsFilter.value ?: ""
-        val friends = _userFoundFilter.value ?: mutableListOf()
-        filteredFriends.value = if (query.isEmpty()) {
-            friends
-        } else {
-            friends.filter { it.username.startsWith(query, ignoreCase = true) }
-        }
-    }
+    private val _usersFoundFilter = MutableLiveData<MutableList<DatabaseMethods.DataClasses.FiltersFriendship?>>()
+    val usersFoundFilter: LiveData<MutableList<DatabaseMethods.DataClasses.FiltersFriendship?>> get() = _usersFoundFilter
 
     private var lastFound: String? = null
-    private var lastFilters: MutableList<Int>? = null
-    fun searchFor() {
-        val filters = mutableListOf<Int>()
-        filtersSearchNew.forEachIndexed { index, it ->
-            if (it) {
-                filters.add(index)
-            }
-        }
-
-        if (filters.size == 0) {
-            _userFoundFilter.postValue(mutableListOf())
-            return
-        }
-
-        var newTags = true
-        if (filters == lastFilters) newTags = false
-
+    var foundAllUsers = false
+    var filterName: String? = null
+    fun findAllUsers() {
         viewModelScope.launch {
-            if (newTags) lastFound = null
-            val users = repository.findUsersWithFilters(filters, lastFound)
-            lastFound = users.first
-            val currents = (if (newTags) {
-                mutableListOf()
-            } else {
-                _userFoundFilter.value ?: mutableListOf()
-            }).apply {
-                addAll(users.second)
-            }
-            Log.d("jj$newTags", currents.toString())
-            lastFilters = filters
-            _userFoundFilter.postValue(currents)
+            val filters = filtersSearchNew.mapIndexedNotNull { index, value ->
+                if (value) (index + 1).toString() else null
+            }.joinToString(",")
+
+            val data = repository.getObjectsFiltered(filters, lastFound, "users", filterName)
+            foundAllUsers = data.first.second
+            lastFound = data.first.first
+
+            _usersFoundFilter.postValue(data.second)
         }
     }
 

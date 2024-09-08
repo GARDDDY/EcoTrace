@@ -89,4 +89,9 @@ class Globals : Application() {
         backIcon?.setColorFilter(ContextCompat.getColor(context, color), PorterDuff.Mode.SRC_ATOP)
         toolbar.setNavigationIcon(backIcon)
     }
+    fun initToolbarIconBack(toolbar: androidx.appcompat.widget.Toolbar, context: Context, color: Int = R.color.ok_green) {
+        val backIcon = ContextCompat.getDrawable(context, R.drawable.baseline_arrow_back_24)
+        backIcon?.setColorFilter(ContextCompat.getColor(context, color), PorterDuff.Mode.SRC_ATOP)
+        toolbar.setNavigationIcon(backIcon)
+    }
 }

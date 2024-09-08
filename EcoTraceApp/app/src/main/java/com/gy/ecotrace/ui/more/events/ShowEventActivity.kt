@@ -2,12 +2,12 @@ package com.gy.ecotrace.ui.more.events
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
+import android.widget.ImageButton
 import android.widget.Toolbar
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.Observer
@@ -16,17 +16,19 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
+import com.google.firebase.auth.FirebaseAuth
 import com.gy.ecotrace.Globals
 import com.gy.ecotrace.R
 import com.gy.ecotrace.db.DatabaseMethods
 import com.gy.ecotrace.db.Repository
+import com.gy.ecotrace.ui.more.friends.PersonalShareActivity
 import com.gy.ecotrace.ui.more.events.showtabs.ShowEventStep1
 import com.gy.ecotrace.ui.more.events.showtabs.ShowEventStep2
 import com.gy.ecotrace.ui.more.events.showtabs.ShowEventStep3
 import com.gy.ecotrace.ui.more.events.showtabs.ShowEventStep4
+import com.gy.ecotrace.ui.more.events.showtabs.ShowEventViewModel
 import com.gy.ecotrace.ui.more.events.showtabs.ShowEventViewModelFactory
 import com.yandex.mapkit.MapKitFactory
-import com.yandex.mapkit.map.Map
 
 class ShowEventActivity : AppCompatActivity() {
     private lateinit var eventViewModel: ShowEventViewModel
@@ -36,30 +38,31 @@ class ShowEventActivity : AppCompatActivity() {
         enableEdgeToEdge()
 
         if (!Globals.getInstance().getBool("ShowEvent_initMap")) {
-            val key = "f3d745ad-1974-4793-978d-52b3a165865c"
-            MapKitFactory.setApiKey(key)
+//            val key = "f3d745ad-1974-4793-978d-52b3a165865c"
+//            if (!Globals.getInstance().getBool("mapkit")) {
+//                MapKitFactory.setApiKey(key)
+//                Globals.getInstance().setBool("mapkit", true)
+//            }
             MapKitFactory.initialize(this)
             Globals.getInstance().setBool("ShowEvent_initMap", true)
         }
 
         setContentView(R.layout.activity_show_event)
-        val currentEvent = Globals.getInstance().getString("CurrentlyWatchingEvent")
-        val currentUser = Globals.getInstance().getString("CurrentlyLogged")
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
-        }
+
         val repository = Repository(DatabaseMethods.UserDatabaseMethods(), DatabaseMethods.ApplicationDatabaseMethods())
         val factory = ShowEventViewModelFactory(repository)
         eventViewModel = ViewModelProvider(this, factory)[ShowEventViewModel::class.java]
+
+        val currentEvent = Globals.getInstance().getString("CurrentlyWatchingEvent")
+        eventViewModel.currentEvent = currentEvent
+
         val toolbar: Toolbar = findViewById(R.id.toolbar3)
         Globals().initToolbarIconBack(toolbar, applicationContext)
         toolbar.setNavigationOnClickListener {
             onBackPressed()
         }
-        val tabTitles = arrayOf("Основное", "Подробно", "Карта", "Участники")
 
+        val tabTitles = arrayOf("Основное", "План", "Карта", "Участники")
         val viewPager: ViewPager2 = findViewById(R.id.viewPager)
         viewPager.adapter = ShowAdapter(this, 4)
         viewPager.isUserInputEnabled = false
@@ -67,9 +70,37 @@ class ShowEventActivity : AppCompatActivity() {
         TabLayoutMediator(tabView, viewPager) { tab, pos ->
             tab.text = tabTitles[pos]
         }.attach()
-        eventViewModel.getEvent(currentEvent)
+
+        val createQr: ImageButton = findViewById(R.id.eventCreateQr)
+        createQr.setOnClickListener {
+            val intent = Intent(this@ShowEventActivity, PersonalShareActivity::class.java)
+            intent.putExtra("linkDest", "event?uid=${FirebaseAuth.getInstance().currentUser?.uid}&eid=${eventViewModel.currentEvent}")
+            intent.putExtra("imgFolder", "events")
+            intent.putExtra("imgId", eventViewModel.currentEvent)
+            intent.putExtra("text", "")
+            startActivity(intent)
+        }
+
+        val scanQr: ImageButton = findViewById(R.id.eventScanQr)
+
+        eventViewModel.getEvent()
         eventViewModel.event.observe(this, Observer {
-            if (currentUser == it.eventCreatorId) {
+
+            if (it.eventInfo.eventStatus == 2)
+
+
+            eventViewModel.isUserModer {
+                if (!it) {
+                    findViewById<ImageButton>(R.id.eventEdit).visibility = View.GONE
+                    return@isUserModer
+                }
+
+                createQr.visibility = View.GONE
+                scanQr.visibility = View.VISIBLE
+
+
+
+
                 toolbar.inflateMenu(R.menu.popup_menu_event)
                 toolbar.setOnMenuItemClickListener {
                     when (it.itemId) {
@@ -102,6 +133,8 @@ class ShowEventActivity : AppCompatActivity() {
                 }
             }
         })
+
+
     }
 
     class ShowAdapter(fragmentActivity: FragmentActivity, private val totalTabs: Int) : FragmentStateAdapter(fragmentActivity) {
