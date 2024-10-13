@@ -1,5 +1,4 @@
 const express = require('express');
-const admin = require('firebase-admin');
 const { checkOAuth2 } = require('../tech/oauth');
 
 const connections = require("../server")
@@ -53,7 +52,7 @@ router.get('/getUser', async (req, res) => {
         const rules = rulesRows[0] || {};
 
         const [friendRows] = await connection.execute(
-            `SELECT * FROM friends WHERE userId = "${userId}" AND friendId = "${requestFrom}"`
+            `SELECT * FROM friends WHERE userId = "${userId}" AND senderId = "${requestFrom}"`
         );
         const isFriend = friendRows.length > 0;
 

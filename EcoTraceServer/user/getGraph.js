@@ -2,7 +2,7 @@ const {
     ChartJSNodeCanvas
 } = require('chartjs-node-canvas');
 const express = require('express');
-const admin = require('firebase-admin');
+// to sql
 
 const router = express.Router();
 

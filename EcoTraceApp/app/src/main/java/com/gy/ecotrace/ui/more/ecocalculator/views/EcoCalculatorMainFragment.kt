@@ -7,8 +7,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import androidx.lifecycle.lifecycleScope
 import com.gy.ecotrace.R
+import com.gy.ecotrace.db.DatabaseMethods
 import com.gy.ecotrace.ui.more.ecocalculator.DailyEcoCalcActivity
+import kotlinx.coroutines.launch
 
 class EcoCalculatorMainFragment : Fragment() {
     override fun onCreateView(
@@ -24,13 +27,18 @@ class EcoCalculatorMainFragment : Fragment() {
 
         val dailyCalcButtons = arrayOf(R.id.foodEcoCalc, R.id.waterEcoCalc, R.id.trashEcoCalc,
             R.id.energyEcoCalc, R.id.transportationEcoCalc)
-        val nonDailyCalcButtons = arrayOf(R.id.housingEcoCalc, R.id.lifestyleEcoCalc, R.id.moodEcoCalc)
 
         for (daily in dailyCalcButtons.indices) {
             view.findViewById<Button>(dailyCalcButtons[daily]).setOnClickListener {
-                val calc = Intent(requireActivity(), DailyEcoCalcActivity::class.java)
-                calc.putExtra("calcType", daily)
-                startActivity(calc)
+                lifecycleScope.launch {
+                    val data = DatabaseMethods.UserDatabaseMethods().getEcoCalc(daily)
+                    if (data != null) {
+                        val calc = Intent(requireActivity(), DailyEcoCalcActivity::class.java)
+                        calc.putExtra("calcType", daily)
+                        calc.putExtra("calcAverages", data)
+                        startActivity(calc)
+                    }
+                }
             }
         }
     }

@@ -107,8 +107,8 @@ class CreateEventStep1: Fragment() {
                 mutableListOf()
             }
 
-            val tags = DatabaseMethods.DataClasses.EventFiltersSearchBy
-            val colors = DatabaseMethods.DataClasses.filterColors
+            val tags: Array<Pair<String, String>> = Globals.getInstance().getEventsFilters()
+            val colors: Array<Pair<String, String>> = Globals.getInstance().getFiltersColors()
             for (dat in tags.indices) {
                 val layout = LinearLayout(context)
                 layout.orientation = LinearLayout.HORIZONTAL
@@ -170,8 +170,8 @@ class CreateEventStep1: Fragment() {
 
 
             eventClass.eventCountMembers = 1
-            eventClass.eventUsersToTheirRoles = hashMapOf()
-            eventClass.eventUsersToTheirRoles!![Globals.getInstance().getString("CurrentlyLogged")] = 0
+//            eventClass.eventUsersToTheirRoles = hashMapOf()
+//            eventClass.eventUsersToTheirRoles!![Globals.getInstance().getString("CurrentlyLogged")] = 0
         })
 
 

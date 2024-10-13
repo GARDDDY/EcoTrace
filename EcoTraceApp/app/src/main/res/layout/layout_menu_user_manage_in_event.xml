@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/username"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="username"
+            android:gravity="center"
+            android:layout_gravity="center"
+            android:background="#75000000"
+            android:textColor="@color/pair2Color1"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tohelper"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:clickable="true"
+            android:visibility="visible"
+            android:paddingVertical="10dp"
+            android:background="@color/dirt2_white"
+            android:textSize="16sp"
+            android:textColor="@color/black"
+            android:text="Сделать помощником" />
+
+        <TextView
+            android:id="@+id/tomember"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:clickable="true"
+            android:visibility="visible"
+            android:paddingVertical="10dp"
+            android:background="@color/dirt2_white"
+            android:textSize="16sp"
+            android:textColor="@color/black"
+            android:text="Сделать участником" />
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

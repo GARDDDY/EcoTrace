@@ -51,14 +51,17 @@ class ProfileViewModel(private val repository: Repository) : ViewModel() {
     }
 
     private var fGot: String? = null
+    var newFriends = true
+    var updFriends = false
     fun getFriends(userId: String, new: Boolean = false) {
         viewModelScope.launch {
             if (new) {
                 fGot = null
                 _friends.value?.clear()
+                newFriends = true
             }
             val friends = repository.getUserFriends(userId, fGot)
-            fGot = friends?.last()?.userId
+            fGot = try {friends?.last()?.userId} catch (e: Exception) { null }
             if (fGot != null) {
                 val prevFriends = _friends.value ?: mutableListOf()
                 _friends.postValue(prevFriends.plus(friends!!).toMutableList())
@@ -66,25 +69,29 @@ class ProfileViewModel(private val repository: Repository) : ViewModel() {
         }
     }
 
+    fun areFriends(userId: String, callback: (Boolean) -> Unit) {
+        viewModelScope.launch {
+            callback(repository.areUsersFriends(userId))
+        }
+    }
+
     private var eGot: String? = null
+    var newEvents = true
+    var updEvents = false
     fun getEvents(userId: String, sortType: Int = 0, new: Boolean = false) {
         viewModelScope.launch {
             if (new) {
                 eGot = null
                 _events.value?.clear()
+                newEvents = true
             }
-            val events = repository.getUserEvents(userId, eGot)
-            eGot = events?.last()?.eventInfo?.eventId
+            val events = repository.getUserEvents(userId, eGot, sortType)
+
+            eGot = try {events?.last()?.eventInfo?.eventId} catch (e: Exception) { null }
             if (eGot != null) {
                 val prevEvents = _events.value ?: mutableListOf()
                 _events.postValue(prevEvents.plus(events!!).toMutableList())
             }
-        }
-    }
-
-    fun getEvent(eventId: String, callback: (DatabaseMethods.DataClasses.Event) -> Unit) {
-        viewModelScope.launch {
-            callback(repository.getEvent(eventId))
         }
     }
 
@@ -96,12 +103,12 @@ class ProfileViewModel(private val repository: Repository) : ViewModel() {
                 gGot = null
                 _groups.value?.clear()
             }
-//            val groups = repository.getUserGroups(userId, gGot)
-//            gGot = groups?.last()?.groupInfo?.groupId
-//            if (gGot != null) {
-//                val prevGroups = _groups.value ?: mutableListOf()
-//                _groups.postValue(prevGroups.plus(groups!!).toMutableList())
-//            }
+            val groups = repository.getUserGroups(userId, gGot)
+            gGot = try {groups?.last()?.groupInfo?.groupId} catch (e: Exception) { null }
+            if (gGot != null) {
+                val prevGroups = _groups.value ?: mutableListOf()
+                _groups.postValue(prevGroups.plus(groups!!).toMutableList())
+            }
         }
     }
 

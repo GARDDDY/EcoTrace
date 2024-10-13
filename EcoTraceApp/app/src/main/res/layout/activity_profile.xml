@@ -12,11 +12,23 @@
         android:id="@+id/toolbarProfile"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/dirt2_white"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:background="@color/dirt_white"
         android:titleTextColor="@color/transparent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageButton
+        android:id="@+id/setFriend"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:backgroundTint="@color/transparent"
+        app:tint="@color/ok_green"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="@id/toolbarProfile"
+        app:layout_constraintBottom_toBottomOf="@+id/toolbarProfile"
+        app:layout_constraintEnd_toEndOf="@+id/toolbarProfile"
+        app:srcCompat="@drawable/baseline_person_add_24" />
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/refreshProfile"
@@ -324,6 +336,7 @@
                             android:layout_alignParentEnd="true" />
 
                         <HorizontalScrollView
+                            android:id="@+id/allEventsScrollView"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:scrollbars="none"
@@ -540,6 +553,7 @@
                         android:text="Пользователь еще не никого не добавил в друзья или скрыл их" />
 
                     <HorizontalScrollView
+                        android:id="@+id/allFriendsScrollView"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content" >
 

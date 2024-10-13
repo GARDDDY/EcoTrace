@@ -1,72 +1,75 @@
 const express = require('express');
-const admin = require('firebase-admin');
 const { checkOAuth2 } = require('../tech/oauth');
-const { getRules } = require('../tech/getUserRules');
-const { areUsersFriends } = require('../tech/areUsersFriends');
-const { getUsernameOnly } = require('../tech/getUsernameOnly');
+
+const connections = require("../server")
+const connection1 = connections["users"]
 
 const router = express.Router();
 
 router.get('/getUserFriends', async (req, res) => {
-    let userId = req.query.uid || '0';
-    let block = req.query.block || null;
-    if (block === 'null') {
-        block = null;
-    }
-    let oAuth = req.query.oauth || '0';
-    let requestFrom = req.query.cid || '0';
-
-    res.setHeader('Content-Type', 'application/json; charset=utf-8');
-
-    if (!await checkOAuth2(oAuth, requestFrom)) {
-        return res.status(403).json({ error: "You are not signed in! Not allowed" });
-    }
-
-    async function get(block, userId, requestFrom) {
-        let isOwner = requestFrom === userId && userId !== '0';
-        let ref = admin.database().ref(`users/${userId}/friends`).orderByKey();
-
-        if (block !== null) {
-            ref = ref.startAfter(block);
-        }
-
-        let snapshot = await ref.limitToFirst(2).once('value');
-        let data = snapshot.val() || {};
-
-        let lastUid = null;
-        let friendsRule = await getRules(userId, 2);
-        let isFriend = await areUsersFriends(userId, requestFrom);
-        let filteredData = {};
-
-        for (let uid in data) {
-            let gData = data[uid];
-            let shouldKeep = isOwner ||
-                (friendsRule === 0 && gData.friend) ||
-                (friendsRule === 1 && isFriend && gData.friend);
-
-            if (shouldKeep) {
-                filteredData[uid] = gData;
-                filteredData[uid].userId = uid;
-                filteredData[uid].username = await getUsernameOnly(uid);
-            }
-
-            lastUid = uid;
-        }
-
-        if (Object.keys(filteredData).length >= 2) {
-            return filteredData;
-        } else {
-            block = lastUid;
-            let moreData = await get(block, userId, requestFrom);
-            return { ...filteredData, ...moreData };
-        }
-    }
+    const userId = req.query.uid || '0';
+    const cUserId = req.query.cid || '0';
+    const oauth = req.query.oauth || '0';
+    const block = req.query.block || null;
 
     try {
-        let dataGlobal = await get(block, userId, requestFrom);
-        res.json(dataGlobal);
+        const [rule] = await connection1.execute(`SELECT canSeeFriends FROM rules WHERE userId = ?`, [userId]);
+
+        if (!await checkOAuth2(oauth, cUserId)) {
+            return res.status(403).json({ error: 'Forbidden' });
+        }
+
+        const canSeeFriends = rule[0]?.canSeeFriends;
+
+        if (userId === cUserId) {
+            const [friends] = await connection1.execute(`
+                SELECT f.*, 
+                CASE 
+                    WHEN f.userId = ? THEN u1.username 
+                    ELSE u2.username 
+                END AS username
+                FROM friends f
+                LEFT JOIN user u1 ON u1.userId = f.senderId 
+                LEFT JOIN user u2 ON u2.userId = f.userId 
+                WHERE (f.userId = ? OR f.senderId = ?)
+                LIMIT 6
+            `, [userId, userId, userId]);
+
+            return res.json(friends)
+
+        } else if (canSeeFriends === 2) {
+            return res.json([])
+        }
+        else if (canSeeFriends === 1) {
+
+            const [friend] = await connection1.execute(`
+                SELECT isFriend 
+                FROM friends 
+                WHERE (userId = ? AND senderId = ?) OR (userId = ? AND senderId = ?)
+            `, [cUserId, userId, userId, cUserId]);
+
+            if (friend.length === 0 || friend[0].isFriend === 0) {
+                return res.json([]);
+            }
+        }
+        
+        const [friends] = await connection1.execute(`
+            SELECT f.*, 
+            CASE 
+                WHEN f.userId = ? THEN u1.username 
+                ELSE u2.username 
+            END AS username
+            FROM friends f
+            LEFT JOIN users u1 ON u1.userId = f.senderId 
+            LEFT JOIN users u2 ON u2.userId = f.userId 
+            WHERE (f.userId = ? OR f.senderId = ?) AND f.isFriend = 1 
+            LIMIT 6
+        `, [userId, userId, userId]);
+
+        return res.json(friends);
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        console.error("Error fetching user friends: ", error);
+        res.status(500).json({ error: 'Internal server error' });
     }
 });
 

@@ -36,12 +36,20 @@ android {
                 gradleLocalProperties(rootDir).getProperty("MAPKIT_API_KEY") ?: "")
             buildConfigField("String", "SERVER_API_URI",
                 gradleLocalProperties(rootDir).getProperty("SERVER_API_URI") ?: "")
+            buildConfigField("String", "TRANSLATE_WEB_PAGE",
+                gradleLocalProperties(rootDir).getProperty("TRANSLATE_WEB_PAGE") ?: "")
+            buildConfigField("String", "TRANSLATE_EXPRESSION",
+                gradleLocalProperties(rootDir).getProperty("TRANSLATE_EXPRESSION") ?: "")
         }
         debug {
             buildConfigField("String", "MAPKIT_API_KEY",
                 gradleLocalProperties(rootDir).getProperty("MAPKIT_API_KEY") ?: "")
             buildConfigField("String", "SERVER_API_URI",
                 gradleLocalProperties(rootDir).getProperty("SERVER_API_URI") ?: "")
+            buildConfigField("String", "TRANSLATE_WEB_PAGE",
+                gradleLocalProperties(rootDir).getProperty("TRANSLATE_WEB_PAGE") ?: "")
+            buildConfigField("String", "TRANSLATE_EXPRESSION",
+                gradleLocalProperties(rootDir).getProperty("TRANSLATE_EXPRESSION") ?: "")
         }
     }
     compileOptions {
@@ -92,6 +100,7 @@ dependencies {
     implementation("androidx.camera:camera-view:1.3.4")
     implementation("androidx.camera:camera-lifecycle:1.3.4")
     implementation("com.google.firebase:firebase-firestore-ktx:25.1.0")
+    implementation("androidx.core:core-animation:1.0.0")
 //    implementation("com.google.android.ads:mediation-test-suite:3.0.0")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
@@ -132,14 +141,5 @@ dependencies {
 
 
     implementation("com.squareup.okhttp3:okhttp:4.12.0")
-
-
-
-
-    androidTestDebugImplementation("androidx.test.espresso:espresso-core:3.0.2")
-    androidTestDebugImplementation("androidx.test.espresso:espresso-contrib:3.0.2")
-    androidTestDebugImplementation("androidx.test:runner:1.4.0")
-    androidTestDebugImplementation("androidx.test:rules:1.4.0")
-    androidTestDebugImplementation("junit:junit:4.13.2")
 
 }

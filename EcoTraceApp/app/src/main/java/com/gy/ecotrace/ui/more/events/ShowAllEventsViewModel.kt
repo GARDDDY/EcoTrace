@@ -6,6 +6,7 @@ import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.gy.ecotrace.Globals
 import com.gy.ecotrace.db.DatabaseMethods
 import com.gy.ecotrace.db.Repository
 import kotlinx.coroutines.launch
@@ -18,7 +19,7 @@ class ShowAllEventsViewModel(private val repository: Repository) : ViewModel() {
     private var lastId: String? = null
     val events: LiveData<HashMap<String, String>?> get() = _events
 
-    private val filtersSearchNew = MutableList(DatabaseMethods.DataClasses.UserFiltersSearchBy.size) { false }
+    private val filtersSearchNew = MutableList(Globals.getInstance().getEventsFilters().size) { false }
     fun reapplyFilter(filterIndex: Int) {
         filtersSearchNew[filterIndex] = !filtersSearchNew[filterIndex]
     }

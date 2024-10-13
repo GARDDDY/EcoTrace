@@ -80,6 +80,7 @@
             android:layout_alignEnd="@+id/view"
             android:layout_alignBottom="@+id/view"
             android:textAlignment="center"
+            android:layout_marginBottom="5dp"
             android:textSize="16sp"
             android:textColor="@color/ok_green" />
 
@@ -91,7 +92,6 @@
             android:layout_alignStart="@+id/userQrCode"
             android:layout_alignEnd="@+id/userQrCode"
             android:layout_marginVertical="@dimen/default_PaddingMargin"
-            android:text="Link"
             android:textAlignment="center"
             android:textColor="@color/ok_green"
             android:textSize="20sp" />

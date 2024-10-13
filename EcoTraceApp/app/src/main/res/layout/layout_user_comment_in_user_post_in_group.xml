@@ -1,15 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
 
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/postToolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <LinearLayout
         android:id="@+id/upperInfoPost"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="@id/postToolbar"
+        app:layout_constraintEnd_toEndOf="@id/postToolbar"
+        app:layout_constraintTop_toTopOf="@id/postToolbar"
+        app:layout_constraintBottom_toBottomOf="@id/postToolbar"
         android:orientation="horizontal">
 
         <ImageView
@@ -50,105 +62,43 @@
             android:layout_marginStart="5dp"
             android:visibility="gone" />
 
-        <ImageButton
-            android:id="@+id/postSettings"
-            app:srcCompat="@drawable/outline_more_vert_24"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:backgroundTint="@color/transparent"
-            android:scaleType="fitEnd" />
-
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/postContentText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/upperInfoPost"
-        android:layout_marginHorizontal="@dimen/default_PaddingMargin"
-        android:layout_marginTop="@dimen/default_PaddingMargin"
-        android:text="WMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWM" />
-
-    <ImageView
-        android:id="@+id/postContentImage"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/postContentText"
-        android:layout_marginHorizontal="@dimen/default_PaddingMargin"
-        android:layout_marginTop="@dimen/default_PaddingMargin"
-        android:adjustViewBounds="true"
-        android:scaleType="fitCenter"
-        tools:srcCompat="@tools:sample/backgrounds/scenic" />
-
     <LinearLayout
-        android:id="@+id/bottomInfoPost"
+        android:id="@+id/contentLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/postContentImage"
-        android:layout_marginHorizontal="@dimen/default_PaddingMargin"
-        android:layout_marginTop="@dimen/default_PaddingMargin"
+        app:layout_constraintTop_toBottomOf="@id/upperInfoPost"
         android:orientation="vertical">
 
-        <LinearLayout
+        <TextView
+            android:id="@+id/postContentText"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal">
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/upperInfoPost"
+            android:layout_marginHorizontal="@dimen/default_PaddingMargin"
+            android:layout_marginTop="@dimen/default_PaddingMargin"
+            android:text="WMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWM"
+            android:visibility="gone" />
 
-            <LinearLayout
-                android:id="@+id/likeThisPost"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="@dimen/default_PaddingMargin"
-                android:orientation="horizontal">
-
-                <ImageView
-                    app:srcCompat="@drawable/baseline_favorite_border_24"
-                    app:tint="@color/ok_green"
-                    android:layout_width="32dp"
-                    android:layout_height="32dp" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:gravity="center"
-                    android:text="Нравится"
-                    android:textColor="@color/black" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/copyThisPostText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="@dimen/default_PaddingMargin"
-                android:gravity="end"
-                android:orientation="horizontal">
-
-                <ImageView
-                    android:id="@+id/imageView12"
-                    app:srcCompat="@drawable/baseline_content_copy_24"
-                    app:tint="@color/ok_green"
-                    android:layout_width="32dp"
-                    android:layout_height="32dp" />
-
-                <TextView
-                    android:id="@+id/textView47"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:gravity="center"
-                    android:text="Копировать"
-                    android:textColor="@color/black" />
-            </LinearLayout>
-
-        </LinearLayout>
-
+        <ImageView
+            android:id="@+id/postContentImage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/postContentText"
+            android:layout_marginHorizontal="@dimen/default_PaddingMargin"
+            android:layout_marginTop="@dimen/default_PaddingMargin"
+            android:adjustViewBounds="true"
+            android:scaleType="fitCenter"
+            android:visibility="gone"
+            tools:srcCompat="@tools:sample/backgrounds/scenic" />
     </LinearLayout>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_below="@+id/bottomInfoPost"
+        app:layout_constraintTop_toBottomOf="@id/contentLayout"
         android:layout_marginHorizontal="@dimen/default_PaddingMargin"
         android:layout_marginVertical="@dimen/default_PaddingMargin"
         android:background="@color/ok_green" />
-</RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

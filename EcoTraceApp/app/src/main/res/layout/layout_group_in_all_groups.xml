@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:clickable="true"
+    android:layout_gravity="center"
+    android:paddingBottom="@dimen/default_PaddingMargin">
+    <RelativeLayout
+        android:id="@+id/mainRootLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:foreground="@drawable/bottom_rounded_border"
+        android:paddingBottom="@dimen/default_PaddingMargin"
+        android:clipChildren="true"
+        android:clipToPadding="true"
+        android:background="@color/dirt_white"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/groupImage"
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:scaleType="centerCrop"
+            android:foreground="#A0000000"
+            tools:srcCompat="@tools:sample/backgrounds/scenic" />
+
+        <TextView
+            android:id="@+id/groupName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/groupImage"
+            android:layout_marginBottom="10dp"
+            android:gravity="bottom"
+            android:text="Group-name"
+            android:textSize="18sp"
+            android:layout_marginStart="10dp"
+            android:textColor="@color/dirt_white"
+            android:textStyle="bold"/>
+
+        <HorizontalScrollView
+            android:id="@+id/groupTagsScrollView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/default_PaddingMargin"
+            android:layout_below="@+id/groupImage"
+            android:layout_marginTop="@dimen/default_PaddingMargin">
+
+            <LinearLayout
+                android:id="@+id/groupTags"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal" />
+        </HorizontalScrollView>
+
+        <TextView
+            android:id="@+id/groupDescription"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/groupTagsScrollView"
+            android:layout_marginTop="@dimen/default_PaddingMargin"
+            android:layout_marginHorizontal="@dimen/default_PaddingMargin"
+            android:text="group-description" />
+
+        <LinearLayout
+            android:id="@+id/creatorLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:layout_below="@+id/groupDescription"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/groupCreatorImage"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_marginStart="@dimen/default_PaddingMargin"
+                android:layout_marginEnd="10dp"
+                android:layout_marginTop="8dp"
+                android:clickable="true"
+                app:srcCompat="@drawable/baseline_person_24" />
+
+            <TextView
+                android:id="@+id/groupCreator"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:clickable="true"
+                android:text="groupCreator"
+                android:textSize="15sp" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/groupMembers"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/groupDescription"
+            android:layout_marginStart="15dp"
+            android:layout_marginEnd="15dp"
+            android:layout_marginTop="15dp"
+            android:layout_toEndOf="@+id/creatorLayout"
+            android:drawablePadding="10dp"
+            android:drawableStart="@drawable/baseline_people_24"
+            android:text="-1"
+            android:textSize="15sp" />
+    </RelativeLayout >
+</FrameLayout>

@@ -6,12 +6,16 @@ import android.os.Handler
 import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
+import android.view.Gravity
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
+import android.widget.ImageButton
 import android.widget.LinearLayout
+import android.widget.PopupWindow
 import android.widget.ScrollView
 import android.widget.TextView
 import androidx.fragment.app.activityViewModels
@@ -19,6 +23,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.facebook.shimmer.ShimmerFrameLayout
+import com.google.firebase.auth.FirebaseAuth
 import com.gy.ecotrace.Globals
 import com.gy.ecotrace.R
 import com.gy.ecotrace.db.DatabaseMethods
@@ -48,12 +53,14 @@ class ShowEventStep4 : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val eventRoles = DatabaseMethods.DataClasses.EventRoles
+        val eventRoles: Array<String> = Globals.getInstance().getEventRoles()
         val allMembers = view.findViewById<LinearLayout>(R.id.mainMembersLayout)
         sharedViewModel.getEventMembers()
         sharedViewModel.members.observe(viewLifecycleOwner, Observer{
+            Log.d("users", it.toString())
             it?.let {
                 view.findViewById<ScrollView>(R.id.loadingLayout).visibility = View.GONE
+                allMembers.removeAllViews()
 
                 if (it.size == 0) {
                     // no one
@@ -71,6 +78,41 @@ class ShowEventStep4 : Fragment() {
                         "none"//Globals().rankToString(user.experience)
                     userOneLayoutInEvent.findViewById<TextView>(R.id.user_experience_user_in_event_layout).text =
                         user.experience.toString()
+
+                    val manage = userOneLayoutInEvent.findViewById<ImageButton>(R.id.manageUser)
+                    if (user.role == 0 ||
+                        (sharedViewModel.event.value?.eventInfo?.eventCreatorId ?: "-") != FirebaseAuth.getInstance().currentUser?.uid){
+                        manage.visibility = View.GONE
+                    }
+
+                    manage.setOnClickListener {
+                        val popupView = layoutInflater.inflate(R.layout.layout_menu_user_manage_in_event, null)
+                        val popupWindow = PopupWindow(
+                            popupView,
+                            ViewGroup.LayoutParams.WRAP_CONTENT,
+                            ViewGroup.LayoutParams.WRAP_CONTENT,
+                            true
+                        )
+                        popupView.findViewById<TextView>(R.id.username).text = user.username
+
+                        val toMember = popupView.findViewById<TextView>(R.id.tomember)
+                        val toHelper = popupView.findViewById<TextView>(R.id.tohelper)
+
+                        if (user.role == 2) toMember.visibility = View.GONE
+                        if (user.role == 1) toHelper.visibility = View.GONE
+
+                        toMember.setOnClickListener {
+                            sharedViewModel.setUserRole(user.userId, 2)
+                        }
+                        toHelper.setOnClickListener {
+                            sharedViewModel.setUserRole(user.userId, 1)
+                        }
+
+                        val location = IntArray(2)
+                        manage.getLocationOnScreen(location)
+                        popupWindow.showAtLocation(manage, Gravity.NO_GRAVITY,
+                            location[0], location[1] + manage.height)
+                    }
 
                     Glide.with(requireActivity())
                         .load(Globals().getImgUrl("users", user.userId))
@@ -100,7 +142,6 @@ class ShowEventStep4 : Fragment() {
                 allMembers.visibility = View.GONE
                 runnable?.let { handler.removeCallbacks(it) }
                 runnable = Runnable {
-                    allMembers.removeAllViews()
                     sharedViewModel.getEventMembers(p0.toString())
                 }
                 handler.postDelayed(runnable!!, delay)

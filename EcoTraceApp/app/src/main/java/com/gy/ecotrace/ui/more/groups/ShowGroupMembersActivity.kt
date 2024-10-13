@@ -13,32 +13,99 @@ import android.widget.LinearLayout
 import android.widget.PopupWindow
 import android.widget.ScrollView
 import android.widget.TextView
+import android.widget.Toast
 import android.widget.Toolbar
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.Observer
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.bumptech.glide.Glide
+import com.google.firebase.auth.FirebaseAuth
 import com.gy.ecotrace.Globals
 import com.gy.ecotrace.R
 import com.gy.ecotrace.db.DatabaseMethods
 import com.gy.ecotrace.db.Repository
-import com.gy.ecotrace.ui.more.groups.additional.GroupRepository
 import com.gy.ecotrace.ui.more.groups.viewModels.ShowGroupMembersViewModel
 import com.gy.ecotrace.ui.more.profile.ProfileActivity
 
 
 class ShowGroupMembersActivity : AppCompatActivity() {
-    private fun imageLoadWithLoading(folder: String, imageId: String, element: ImageView, placeHolder: Int, circle: Boolean = true) {
-        var img = Glide.with(this@ShowGroupMembersActivity)
-            .load(Globals().getImgUrl(folder, imageId))
-            .placeholder(placeHolder)
-            .skipMemoryCache(true)
+    private var userRole: Int = 3
+    private fun applyRoles(user: DatabaseMethods.DataClasses.UserInGroup, userLayout: View, showGroupMembersViewModel: ShowGroupMembersViewModel) {
+        if (userRole < user.role) {
+            val menu = userLayout.findViewById<ImageButton>(R.id.userManageMenu)
+            menu.visibility = View.VISIBLE
+            menu.setOnClickListener {
+                val popupView = layoutInflater.inflate(R.layout.layout_menu_user_manage_in_group, null)
+                val popupWindow = PopupWindow(
+                    popupView,
+                    ViewGroup.LayoutParams.WRAP_CONTENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT,
+                    true
+                )
+                popupView.findViewById<TextView>(R.id.username).text = user.username
+                val makeCeo = popupView.findViewById<TextView>(R.id.toceo)
+                val makeHelper = popupView.findViewById<TextView>(R.id.tohelper)
+                val makeMember = popupView.findViewById<TextView>(R.id.tomember)
+                when (user.role) {
+                    1 -> makeCeo.visibility = View.GONE
+                    2 -> makeHelper.visibility = View.GONE
+                    3 -> makeMember.visibility = View.GONE
+                }
+                if (userRole != 0) {
+                    makeCeo.visibility = View.GONE
+                } else {
+                    makeCeo.setOnClickListener { _ ->
+                        showGroupMembersViewModel.setUserRole(
+                            user.userId,
+                            1
+                        ) {
+                            if (it) {
 
-        if (circle) img = img.circleCrop()
-        img.into(element)
-        element.foreground =
-            ColorDrawable(ContextCompat.getColor(applicationContext, R.color.transparent))
+                            } else Toast.makeText(this@ShowGroupMembersActivity, "Произошла ошибка!", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                    makeHelper.setOnClickListener {
+                        showGroupMembersViewModel.setUserRole(
+                            user.userId,
+                            2
+                        ) {
+                            if (it) {
+
+                            } else Toast.makeText(this@ShowGroupMembersActivity, "Произошла ошибка!", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                    makeMember.setOnClickListener {
+                        showGroupMembersViewModel.setUserRole(
+                            user.userId,
+                            3
+                        ) {
+                            if (it) {
+
+                            } else Toast.makeText(this@ShowGroupMembersActivity, "Произошла ошибка!", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                    val kick = popupView.findViewById<TextView>(R.id.kick)
+                    if (userRole <= 2) {
+                        popupView.findViewById<TextView>(R.id.kick).setOnClickListener {
+                            showGroupMembersViewModel.kickUser(user.userId) {
+                                if (it) {
+
+                                } else Toast.makeText(this@ShowGroupMembersActivity, "Произошла ошибка!", Toast.LENGTH_SHORT).show()
+                            }
+                        }
+                    } else {
+                        kick.visibility = View.GONE
+                    }
+
+                    val location = IntArray(2)
+                    menu.getLocationOnScreen(location)
+                    popupWindow.showAtLocation(menu, Gravity.NO_GRAVITY,
+                        location[0], location[1] + menu.height)
+                }
+            }
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -52,173 +119,142 @@ class ShowGroupMembersActivity : AppCompatActivity() {
             onBackPressed()
         }
 
-        val groupDataRepo = GroupRepository.DataStorage()
         val repository = Repository(DatabaseMethods.UserDatabaseMethods(), DatabaseMethods.ApplicationDatabaseMethods())
         val showGroupMembersViewModel = ShowGroupMembersViewModel(repository)
 
-        var userAbilities = showGroupMembersViewModel.roleToAbilities(3)
         val currentGroup = Globals.getInstance().getString("CurrentlyWatchingGroup")
-        val currentUser = Globals.getInstance().getString("CurrentlyLogged")
-        groupDataRepo.groupData.let { group ->
-            showGroupMembersViewModel.getUsername(group.groupCreatorId) {
-                findViewById<TextView>(R.id.creatorName).text = it
-                if (currentUser == group.groupCreatorId) {
-                    userAbilities = showGroupMembersViewModel.roleToAbilities(0)
-//                    findViewById<TextView>(R.id.creatorName).text = "${it} (Это вы!)"
-                }
-                imageLoadWithLoading(
-                    "users",
-                    group.groupCreatorId,
-                    findViewById(R.id.creatorImage),
-                    R.drawable.baseline_person_24
-                )
+        showGroupMembersViewModel.groupId = currentGroup
+        val currentUser = FirebaseAuth.getInstance().currentUser?.uid ?: "0"
+
+        showGroupMembersViewModel.getRole {
+            userRole = it
+
+            showGroupMembersViewModel.getCreator()
+            showGroupMembersViewModel.getCEOs()
+            showGroupMembersViewModel.getHelpers()
+            showGroupMembersViewModel.getMembers()
+        }
+
+
+
+
+        var layoutMembers: LinearLayout? = null
+
+        showGroupMembersViewModel.creator.observe(this, Observer {
+            it?.let {
+                findViewById<TextView>(R.id.creatorName).text = it.username
                 findViewById<LinearLayout>(R.id.openProfile).setOnClickListener { _ ->
-                    Globals.getInstance().setString("CurrentlyWatching", group.groupCreatorId)
-                    startActivity(
-                        Intent(this, ProfileActivity::class.java)
-                    )
+                    Globals.getInstance().setString("CurrentlyWatching", it.userId)
+                    startActivity(Intent(this@ShowGroupMembersActivity, ProfileActivity::class.java))
                 }
+                Glide.with(this@ShowGroupMembersActivity)
+                    .load(DatabaseMethods.ApplicationDatabaseMethods().getImageLink("users", it.userId))
+                    .circleCrop()
+                    .placeholder(R.drawable.baseline_person_24)
+                    .into(findViewById(R.id.creatorImage))
+            }
+        })
+
+        showGroupMembersViewModel.ceo.observe(this) { users ->
+            findViewById<TextView>(R.id.role1count).text = users.size.toString()
+            for (user in users) {
+
+                if (layoutMembers == null) {
+                    layoutMembers = LinearLayout(applicationContext)
+                    layoutMembers!!.orientation = LinearLayout.HORIZONTAL
+                    findViewById<LinearLayout>(R.id.role1).addView(layoutMembers)
+                }
+
+                val userLayout = layoutInflater.inflate(R.layout.layout_user_in_group, null)
+                userLayout.findViewById<TextView>(R.id.username).text = user.username
+                Glide.with(this@ShowGroupMembersActivity)
+                    .load(DatabaseMethods.ApplicationDatabaseMethods().getImageLink("users", user.userId))
+                    .circleCrop()
+                    .placeholder(R.drawable.baseline_person_24)
+                    .into(userLayout.findViewById(R.id.userImage))
+                userLayout.setOnClickListener {
+                    Globals.getInstance().setString("CurrentlyWatching", user.userId)
+                    startActivity(Intent(this@ShowGroupMembersActivity, ProfileActivity::class.java))
+                }
+
+                layoutMembers!!.addView(userLayout)
+
+                if (layoutMembers!!.childCount == 6) {
+                    layoutMembers = null
+                }
+
+                applyRoles(user, userLayout, showGroupMembersViewModel)
             }
         }
 
+        showGroupMembersViewModel.helpers.observe(this) { users ->
+            findViewById<TextView>(R.id.role2count).text = users.size.toString()
+            for (user in users) {
 
-
-        val showedUsers = mutableListOf<String>()
-        var removeAlls = true
-
-        fun updateUsers(){
-            showGroupMembersViewModel.lastMemberId = null
-            showedUsers.clear()
-            removeAlls = true
-            showGroupMembersViewModel.getAndObserveMembers(currentGroup)
-        }
-
-        val swipeRefresh: SwipeRefreshLayout = findViewById(R.id.swipeRefreshLayout)
-        showGroupMembersViewModel.lastMemberId = null
-        showGroupMembersViewModel.getAndObserveMembers(currentGroup)
-        showGroupMembersViewModel.users.observe(this) { usersMap ->
-            for ((role, value) in usersMap) {
-                val currentRole = role.last().toString().toInt()
-                val rolesLayout =
-                    findViewById<LinearLayout>(resources.getIdentifier(role, "id", packageName))
-                if (removeAlls) rolesLayout.removeAllViews()
-                if (value.size == 0) {
-                    Log.d("searching for warning", "${role}warningnoone")
-//                    val text = findViewById<TextView>(resources.getIdentifier("${role}warningnoone", "id", packageName))
-//                    text.visibility = View.VISIBLE
+                if (layoutMembers == null) {
+                    layoutMembers = LinearLayout(applicationContext)
+                    layoutMembers!!.orientation = LinearLayout.HORIZONTAL
+                    findViewById<LinearLayout>(R.id.role2).addView(layoutMembers)
                 }
-                findViewById<TextView>(resources.getIdentifier("${role}count", "id", packageName))
-                        .text = value.size.toString()
 
-                var oneRow = LinearLayout(applicationContext)
-                var count = 0
-                for ((member, _) in value) {
-                    Log.d("found user", member)
-//                    if (member == currentUser) userAbilities = showGroupViewModel.currentUserRules(role.last().toString().toInt())
-                    Log.d("found user1", member)
-
-                    if (count % 6 == 0) {
-                        oneRow = LinearLayout(applicationContext)
-                        oneRow.orientation = LinearLayout.HORIZONTAL
-                        rolesLayout.addView(oneRow)
-                    }
-                    Log.d("found user2", member)
-
-                    showGroupMembersViewModel.getUsername(member){ itt ->
-                        Log.d("found user3", member)
-                        if (!showedUsers.contains(member)){
-                            Log.d("found user4", member)
-                            val userLayout = layoutInflater.inflate(R.layout.layout_user_in_group, null)
-//                            Log.d("jkfl", "${userAbilities.manageUsers} ${role.last().toString().toInt()}")
-                            if (currentRole >= -1){//userAbilities.manageUsers) {
-                                val menu = userLayout.findViewById<ImageButton>(R.id.userManageMenu)
-                                menu.visibility = View.VISIBLE
-                                menu.setOnClickListener {
-                                    val popupView = layoutInflater.inflate(R.layout.layout_menu_user_manage_in_group, null)
-                                    val popupWindow = PopupWindow(
-                                        popupView,
-                                        ViewGroup.LayoutParams.WRAP_CONTENT,
-                                        ViewGroup.LayoutParams.WRAP_CONTENT,
-                                        true
-                                    )
-                                    popupView.findViewById<TextView>(R.id.username).text = itt
-                                    val makeCeo = popupView.findViewById<TextView>(R.id.toceo)
-                                    val makeHelper = popupView.findViewById<TextView>(R.id.tohelper)
-                                    val makeMember = popupView.findViewById<TextView>(R.id.tomember)
-                                    when (currentRole) {
-                                        1 -> makeCeo.visibility = View.GONE
-                                        2 -> makeHelper.visibility = View.GONE
-                                        3 -> makeMember.visibility = View.GONE
-                                    }
-                                    if (userAbilities.manageUsers != 0) {
-                                        makeCeo.visibility = View.GONE
-                                        makeHelper.visibility = View.GONE
-                                    } else {
-                                        makeCeo.setOnClickListener { _ ->
-                                            if ((usersMap["role1"]?.size ?: 0) < 5) {
-                                                showGroupMembersViewModel.setUserRole(
-                                                    currentGroup,
-                                                    member,
-                                                    currentRole,
-                                                    1
-                                                )
-                                                updateUsers()
-                                            }
-                                        }
-                                        makeHelper.setOnClickListener {
-                                            if ((usersMap["role2"]?.size ?: 0) < 15) {
-                                                showGroupMembersViewModel.setUserRole(
-                                                    currentGroup,
-                                                    member,
-                                                    currentRole,
-                                                    2
-                                                )
-                                                updateUsers()
-                                            }
-                                        }
-                                    }
-                                    makeMember.setOnClickListener {
-                                        showGroupMembersViewModel.setUserRole(currentGroup, member, currentRole, 3)
-                                        updateUsers()
-                                    }
-                                    popupView.findViewById<TextView>(R.id.kick).setOnClickListener {
-                                        showGroupMembersViewModel.kickUser(currentGroup, member, currentRole)
-                                        updateUsers()
-                                    }
-
-                                    val location = IntArray(2)
-                                    menu.getLocationOnScreen(location)
-                                    popupWindow.showAtLocation(menu, Gravity.NO_GRAVITY,
-                                        location[0], location[1] + menu.height)
-                                }
-                            }
-                            userLayout.findViewById<TextView>(R.id.username).text = itt
-                            imageLoadWithLoading("users", member, userLayout.findViewById(R.id.userImage), R.drawable.baseline_person_24)
-                            userLayout.setOnClickListener {
-                                Globals.getInstance().setString("CurrentlyWatching", member)
-                                startActivity(
-                                    Intent(this, ProfileActivity::class.java)
-                                )
-                            }
-                            oneRow.addView(userLayout)
-                            showedUsers.add(member)
-                        }
-                    }
-                    count++
+                val userLayout = layoutInflater.inflate(R.layout.layout_user_in_group, null)
+                userLayout.findViewById<TextView>(R.id.username).text = user.username
+                Glide.with(this@ShowGroupMembersActivity)
+                    .load(DatabaseMethods.ApplicationDatabaseMethods().getImageLink("users", user.userId))
+                    .circleCrop()
+                    .placeholder(R.drawable.baseline_person_24)
+                    .into(userLayout.findViewById(R.id.userImage))
+                userLayout.setOnClickListener {
+                    Globals.getInstance().setString("CurrentlyWatching", user.userId)
+                    startActivity(Intent(this@ShowGroupMembersActivity, ProfileActivity::class.java))
                 }
+
+                layoutMembers!!.addView(userLayout)
+
+                if (layoutMembers!!.childCount == 6) {
+                    layoutMembers = null
+                }
+
+                applyRoles(user, userLayout, showGroupMembersViewModel)
             }
-            removeAlls = false
         }
+
+        showGroupMembersViewModel.users.observe(this) { users ->
+            for (user in users) {
+
+                if (layoutMembers == null) {
+                    layoutMembers = LinearLayout(applicationContext)
+                    layoutMembers!!.orientation = LinearLayout.HORIZONTAL
+                    findViewById<LinearLayout>(R.id.role3).addView(layoutMembers)
+                }
+
+                val userLayout = layoutInflater.inflate(R.layout.layout_user_in_group, null)
+                userLayout.findViewById<TextView>(R.id.username).text = user.username
+                Glide.with(this@ShowGroupMembersActivity)
+                    .load(DatabaseMethods.ApplicationDatabaseMethods().getImageLink("users", user.userId))
+                    .circleCrop()
+                    .placeholder(R.drawable.baseline_person_24)
+                    .into(userLayout.findViewById(R.id.userImage))
+                userLayout.setOnClickListener {
+                    Globals.getInstance().setString("CurrentlyWatching", user.userId)
+                    startActivity(Intent(this@ShowGroupMembersActivity, ProfileActivity::class.java))
+                }
+
+                layoutMembers!!.addView(userLayout)
+
+                if (layoutMembers!!.childCount == 6) {
+                    layoutMembers = null
+                }
+
+                applyRoles(user, userLayout, showGroupMembersViewModel)
+            }
+        }
+
         val scrollView: ScrollView = findViewById(R.id.scrollViewMembers)
-        scrollView.setOnScrollChangeListener { view, _,_,_,_ ->
-            if (scrollView.getChildAt(scrollView.childCount-1).bottom == scrollView.height+view.scrollY) {
-                showGroupMembersViewModel.getAndObserveMembers(currentGroup)
+        scrollView.setOnScrollChangeListener { view, _, _, _, _ ->
+            if (scrollView.getChildAt(scrollView.childCount - 1).bottom == scrollView.height + view.scrollY) {
+                showGroupMembersViewModel.getMembers()
             }
-        }
-
-        swipeRefresh.setOnRefreshListener {
-            updateUsers()
-            swipeRefresh.isRefreshing = false
         }
     }
 }

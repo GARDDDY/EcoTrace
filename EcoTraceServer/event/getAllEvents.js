@@ -1,6 +1,7 @@
 const express = require('express');
 
 const connections = require("../server")
+const connection1 = connections["users"]
 const connection2 = connections["events"]
 
 const router = express.Router();
@@ -42,7 +43,28 @@ router.get('/getAllEvents', async (req, res) => {
 
         const hasMore = events.length === 3 && totalRecords > 3;
 
-        res.json([!hasMore, events]);
+
+        const usersIds = [...new Set(events.map(event => event.eventCreatorId))];
+        const userIds = usersIds.map(id => `'${id}'`).join(', ');
+        
+        let usernames = {};
+        
+        if (userIds.length > 0) {
+            const userQuery = `SELECT userId, username FROM user WHERE userId IN (${userIds})`;
+            const [users] = await connection1.execute(userQuery);
+            usernames = users.reduce((acc, user) => {
+                acc[user.userId] = user.username;
+                return acc;
+            }, {});
+        }
+    
+        const formattedEvents = events.map(event => ({
+            ...event,
+            eventCreatorName: usernames[event.eventCreatorId] || null
+        }));
+
+
+        res.json([!hasMore, formattedEvents]);
 
     } catch (error) {
         console.error('Error fetching event details:', error);

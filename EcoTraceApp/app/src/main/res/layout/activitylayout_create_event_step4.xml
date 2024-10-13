@@ -13,6 +13,7 @@
 
         <RelativeLayout
             android:id="@+id/editTypes"
+            android:background="#75000000"
             android:layout_alignParentEnd="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
@@ -35,14 +36,14 @@
                 android:text="Окружность"
                 android:textColor="@color/dirt_white"
                 android:layout_below="@id/addPlacemark"
-                app:tint="@color/ok_green" />
+                app:tint="@color/pair2Color1" />
 
             <View
                 android:id="@+id/selector"
                 android:layout_width="5dp"
                 android:layout_height="62dp"
                 android:layout_alignTop="@id/addPlacemark"
-                android:foreground="@drawable/layout_selector_element" />
+                android:foreground="@color/dirt_white" />
 
         </RelativeLayout>
 

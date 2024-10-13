@@ -14,17 +14,17 @@
         android:text="Данные, которые стоит обновлять ежедневно"
         android:textColor="@color/black"
         android:textSize="20sp"
-        app:layout_constraintBottom_toTopOf="@+id/linearLayout9"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <LinearLayout
         android:id="@+id/linearLayout9"
         android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:layout_marginBottom="@dimen/default_PaddingMargin"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/default_PaddingMargin"
         android:orientation="vertical"
-        app:layout_constraintBottom_toTopOf="@id/space"
+        app:layout_constraintTop_toBottomOf="@id/textOften"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
@@ -119,75 +119,5 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="parent" />
-
-    <TextView
-        android:id="@+id/textRare"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:layout_marginTop="@dimen/default_PaddingMargin"
-        android:text="Важные данные, которые редко меняются у людей, помогающие делать более точные выводы"
-        android:textSize="18sp"
-        android:textColor="@color/black"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/space"/>
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:orientation="vertical"
-        android:layout_marginTop="5dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textRare">
-
-        <Button
-            android:id="@+id/housingEcoCalc"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:drawableLeft="@drawable/baseline_house_24"
-            android:drawableTint="@color/ok_green"
-            android:textColor="@color/ok_green"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:backgroundTint="@color/transparent"
-            android:background="?attr/selectableItemBackground"
-            android:text="Жилье" />
-
-        <Space
-            android:layout_width="match_parent"
-            android:layout_height="1dp" />
-
-        <Button
-            android:id="@+id/lifestyleEcoCalc"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:drawableLeft="@drawable/baseline_emoji_people_24"
-            android:drawableTint="@color/ok_green"
-            android:textColor="@color/ok_green"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:backgroundTint="@color/transparent"
-            android:background="?attr/selectableItemBackground"
-            android:text="Образ жизни" />
-
-        <Space
-            android:layout_width="match_parent"
-            android:layout_height="1dp" />
-
-        <Button
-            android:id="@+id/moodEcoCalc"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:drawableLeft="@drawable/baseline_mood_24"
-            android:drawableTint="@color/ok_green"
-            android:textColor="@color/ok_green"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:backgroundTint="@color/transparent"
-            android:background="?attr/selectableItemBackground"
-            android:text="Ваше настроение" />
-    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

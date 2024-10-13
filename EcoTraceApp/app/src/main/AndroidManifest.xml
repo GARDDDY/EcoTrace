@@ -25,6 +25,12 @@
         android:theme="@style/Theme.AppCompat.NoActionBar"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".ui.education.ShowEducationActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.news.NewsActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.more.events.showtabs.ValidateParticipantActivity"
             android:exported="false" />
         <activity

@@ -1,9 +1,12 @@
 package com.gy.ecotrace.ui.more.groups
 
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
@@ -12,12 +15,12 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
+import com.google.gson.Gson
 import com.gy.ecotrace.Globals
 import com.gy.ecotrace.R
 import com.gy.ecotrace.db.DatabaseMethods
 import com.gy.ecotrace.db.Repository
 import com.gy.ecotrace.ui.more.groups.additional.CreateGroupViewModelFactory
-import com.gy.ecotrace.ui.more.groups.additional.GroupRepository
 import com.gy.ecotrace.ui.more.groups.createsteps.CreateGroupStep1
 import com.gy.ecotrace.ui.more.groups.createsteps.CreateGroupStep2
 import com.gy.ecotrace.ui.more.groups.viewModels.CreateGroupViewModel
@@ -29,6 +32,15 @@ class CreateGroupActivity : AppCompatActivity() {
         setContentView(R.layout.activity_create_group)
         val currentUser = Globals.getInstance().getString("CurrentlyLogged")
         val currentGroup = Globals.getInstance().getString("CurrentlyWatchingGroup")
+
+        val groupData = Gson().fromJson(intent.getStringExtra("data"), DatabaseMethods.DataClasses.Group::class.java)
+
+        val toolbar = findViewById<Toolbar>(R.id.toolbar)
+        Globals().initToolbarIconBack(toolbar, applicationContext)
+        toolbar.setNavigationOnClickListener {
+            onBackPressed()
+        }
+
 
         val viewPager: ViewPager2 = findViewById(R.id.viewPagerCreateGroup)
 
@@ -51,16 +63,24 @@ class CreateGroupActivity : AppCompatActivity() {
         val factory = CreateGroupViewModelFactory(repository)
         val sharedViewModel = ViewModelProvider(this, factory)[CreateGroupViewModel::class.java]
 
-        sharedViewModel.loadSavedData(GroupRepository.DataStorage().groupData)
+        sharedViewModel.groupClass = try {groupData} catch (e: Exception) {DatabaseMethods.DataClasses.Group()}
 
         sharedViewModel.groupData.observe(this) {
+            Log.d("gd", it.toString())
             if (it.groupName.length >= 5) {
-                createGroup.setBackgroundColor(ContextCompat.getColor(applicationContext, R.color.ok_green))
+                createGroup.backgroundTintList = ContextCompat.getColorStateList(applicationContext, R.color.ok_green)
                 createGroup.setOnClickListener {
-                    sharedViewModel.createGroup(currentUser)
+                    sharedViewModel.createGroup {
+                        if (it == null) {
+                            Toast.makeText(this@CreateGroupActivity, "Группа создана!", Toast.LENGTH_SHORT).show()
+                            finish()
+                        } else {
+                            Toast.makeText(this@CreateGroupActivity, it, Toast.LENGTH_SHORT).show()
+                        }
+                    }
                 }
             } else {
-                createGroup.setBackgroundColor(ContextCompat.getColor(applicationContext, R.color.silver))
+                createGroup.backgroundTintList = ContextCompat.getColorStateList(applicationContext, R.color.silver)
                 createGroup.setOnClickListener { false }
             }
         }

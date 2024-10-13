@@ -18,7 +18,7 @@ class SpinnerMultiChoice(context: Context, items: List<String>) :
 
     private val selectedItems = mutableMapOf<String, Boolean>().apply {
         items.forEach { this[it] = false }
-        this[items[items.indices.random()]] = true
+        this[items[0]] = true
     }
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {

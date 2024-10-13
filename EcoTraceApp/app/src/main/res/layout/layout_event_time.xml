@@ -4,68 +4,60 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:paddingBottom="@dimen/default_PaddingMargin"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <EditText
-            android:id="@+id/timeDescription"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="@dimen/default_PaddingMargin"
-            android:background="@color/transparent"
-            android:hint="Описание"
-            android:textAlignment="center"
-            android:textColor="@color/ok_green"
-            android:textColorHint="@color/silver"
-            android:textSize="18sp" />
-
-        <RelativeLayout
+        <View
             android:id="@+id/deleter"
+            android:layout_width="0dp"
+            android:layout_toStartOf="@id/deleter"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@id/ll1"
+            android:layout_alignBottom="@id/ll1"
+            android:foreground="#5CFF0000" />
+
+
+        <LinearLayout
+            android:id="@+id/ll1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="@dimen/default_PaddingMargin"
-            android:layout_marginVertical="5dp"
-            android:orientation="horizontal" >
+            android:orientation="vertical"
+            android:paddingBottom="@dimen/default_PaddingMargin">
+
+            <EditText
+                android:id="@+id/timeDescription"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/default_PaddingMargin"
+                android:background="@color/transparent"
+                android:hint="Описание"
+                android:textAlignment="center"
+                android:textColor="@color/ok_green"
+                android:textColorHint="@color/silver"
+                android:textSize="18sp" />
+
 
             <View
-                android:id="@+id/d1"
-                android:layout_width="0dp"
-                android:layout_height="2dp"
-                android:layout_alignParentStart="true"
-                android:background="@color/red_no" />
-
-            <View
-                android:id="@+id/d2"
                 android:layout_width="wrap_content"
-                android:layout_height="2dp"
-                android:layout_toEndOf="@id/d1"
-                android:layout_toStartOf="@id/d3"
+                android:layout_height="1dp"
+                android:layout_marginVertical="5dp"
                 android:background="@color/ok_green" />
 
-            <View
-                android:id="@+id/d3"
-                android:layout_width="0dp"
-                android:layout_height="2dp"
-                android:layout_alignParentEnd="true"
-                android:background="@color/red_no" />
+            <TextView
+                android:id="@+id/timeTime"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Установить время"
+                android:layout_marginHorizontal="@dimen/default_PaddingMargin"
+                android:textAlignment="center"
+                android:textColor="@color/silver"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+        </LinearLayout>
 
-        </RelativeLayout>
-
-
-        <TextView
-            android:id="@+id/timeTime"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Нажмите"
-            android:textAlignment="center"
-            android:textColor="@color/silver"
-            android:textSize="18sp"
-            android:textStyle="bold" />
-    </LinearLayout>
+    </RelativeLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

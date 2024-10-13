@@ -13,6 +13,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
+import com.google.firebase.auth.FirebaseAuth
 import com.gy.ecotrace.Globals
 import com.gy.ecotrace.R
 import com.gy.ecotrace.db.DatabaseMethods
@@ -24,6 +25,7 @@ import java.util.Locale
 class ChangeProfile : AppCompatActivity() {
 
     private var countriesToTheirCodes = HashMap<String, String>()
+    val currentUser = FirebaseAuth.getInstance().currentUser?.uid ?: ""
     private fun getAllCountries() {
         val locales = Locale.getAvailableLocales()
         for (locale in locales) {
@@ -45,7 +47,7 @@ class ChangeProfile : AppCompatActivity() {
             onBackPressed()
         }
 
-        val currentUser = Globals.getInstance().getString("CurrentlyLogged")
+
         val profileImage : ImageButton = findViewById(R.id.profile_image_change_menu)
         Glide.with(this)
             .load(Globals().getImgUrl("users", currentUser))

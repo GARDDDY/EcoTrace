@@ -60,8 +60,8 @@ class SignUpFragment : Fragment() {
         // public
 
         val filtersLayout: LinearLayout = view.findViewById(R.id.userFiltersLayout)
-        val tagsColors = DatabaseMethods.DataClasses.filterColors
-        val allEventTags = DatabaseMethods.DataClasses.UserFiltersSearchBy
+        val tagsColors: Array<Pair<String, String>> = Globals.getInstance().getFiltersColors()
+        val allEventTags: Array<Pair<String, String>> = Globals.getInstance().getUserFilters()
         for (tag in allEventTags.indices) {
             val tagButton = layoutInflater.inflate(R.layout.widget_tag_filter_button, null) as MaterialButton
             tagButton.text = allEventTags[tag].first

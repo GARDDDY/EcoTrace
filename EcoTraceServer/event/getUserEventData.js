@@ -1,5 +1,4 @@
 const express = require('express');
-const admin = require('firebase-admin');
 // const { checkOAuth2 } = require('../tech/oauth');
 // const { getRules } = require('../tech/getUserRules');
 // const { areUsersFriends } = require('../tech/areUsersFriends');

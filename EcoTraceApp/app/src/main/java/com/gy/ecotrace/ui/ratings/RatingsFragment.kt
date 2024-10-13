@@ -13,6 +13,8 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.RecyclerView
+import androidx.viewpager2.widget.ViewPager2
 import com.bumptech.glide.Glide
 import com.facebook.shimmer.ShimmerFrameLayout
 import com.google.firebase.auth.FirebaseAuth
@@ -25,6 +27,7 @@ import com.gy.ecotrace.db.Repository
 import com.gy.ecotrace.ui.more.groups.additional.CreateGroupViewModelFactory
 import com.gy.ecotrace.ui.more.groups.viewModels.CreateGroupViewModel
 import com.gy.ecotrace.ui.more.profile.ProfileActivity
+import org.w3c.dom.Text
 
 class RatingsFragment : Fragment() {
 
@@ -47,9 +50,38 @@ class RatingsFragment : Fragment() {
         val factory = RatingsViewModelFactory(repository)
         val ratingsViewModel = ViewModelProvider(this, factory)[RatingsViewModel::class.java]
 
+
+        val viewPager = view.findViewById<ViewPager2>(R.id.viewPagerWorldCountry)
+        viewPager.adapter = MyPagerAdapter()
+
+        viewPager.setPadding(0, 0, 0, 0)
+        viewPager.clipToPadding = false
+        viewPager.clipChildren = false
+        viewPager.offscreenPageLimit = 2
+
+        viewPager.setPageTransformer { page, position ->
+            page.alpha = 0.5f + (1 - Math.abs(position))
+            val translationX = -position * page.width / 2
+            page.translationX = translationX
+        }
+
+        viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+            override fun onPageSelected(position: Int) {
+                super.onPageSelected(position)
+                when (position) {
+                    0 -> {
+                        ratingsViewModel.getRating()
+                    }
+                    1 -> {
+                        ratingsViewModel.getRating(true)
+                    }
+                }
+            }
+        })
+
         val usersLayout: LinearLayout = view.findViewById(R.id.usersLayout)
         var currentInRating = false
-        ratingsViewModel.getRating(currentUser)
+//        ratingsViewModel.getRating()
         ratingsViewModel.users.observe(viewLifecycleOwner, Observer { users ->
             view.findViewById<ShimmerFrameLayout>(R.id.ratingLoading).visibility = View.GONE
             Log.d("rating", users.toString())
@@ -70,8 +102,24 @@ class RatingsFragment : Fragment() {
                 val userLayout = layoutInflater.inflate(R.layout.layout_user_rating, null)
 
                 if (users[user].userId == currentUser) {
-                    userLayout.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.dirt2_white))
+//                    userLayout.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.dirt2_white))
                     currentInRating = true
+
+                    val currentLayout: FrameLayout = view.findViewById(R.id.currentUserInRating)
+
+                    val layout = layoutInflater.inflate(R.layout.layout_user_rating, null)
+
+                    layout.findViewById<TextView>(R.id.userPlace).text = "$lastPlace"//user.toString()
+                    layout.findViewById<TextView>(R.id.username).text = users[user].username
+                    layout.findViewById<TextView>(R.id.userExperience).text = users[user].experience.toString()
+
+                    Glide.with(this@RatingsFragment)
+                        .load(DatabaseMethods.ApplicationDatabaseMethods().getImageLink("users", users[user].userId))
+                        .placeholder(R.drawable.baseline_person_24)
+                        .circleCrop()
+                        .into(layout.findViewById(R.id.userImage))
+
+                    currentLayout.addView(layout)
                 }
 
                 Glide.with(this@RatingsFragment)
@@ -92,13 +140,26 @@ class RatingsFragment : Fragment() {
 
                 usersLayout.addView(userLayout)
             }
-
-            if (!currentInRating) {
-                val currentLayout: FrameLayout = view.findViewById(R.id.currentUserInRating)
-                val userLayout = layoutInflater.inflate(R.layout.layout_user_rating, null)
-
-                currentLayout.addView(userLayout)
-            }
         })
     }
+
+    class MyPagerAdapter : RecyclerView.Adapter<MyPagerAdapter.ViewHolder>() {
+
+        private val items = listOf("В мире", "В Вашей стране")
+
+        class ViewHolder(val textView: TextView) : RecyclerView.ViewHolder(textView)
+
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+            val textView = LayoutInflater.from(parent.context)
+                .inflate(R.layout.layout_rating_area, parent, false) as TextView
+            return ViewHolder(textView)
+        }
+
+        override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+            holder.textView.text = items[position]
+        }
+
+        override fun getItemCount(): Int = items.size
+    }
+
 }

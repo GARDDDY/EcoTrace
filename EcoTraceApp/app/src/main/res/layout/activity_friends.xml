@@ -291,19 +291,20 @@
                 </LinearLayout>
 
                 <com.facebook.shimmer.ShimmerFrameLayout
+                    android:id="@+id/allUsersLoading"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" >
+                    android:layout_height="wrap_content">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical" >
+                        android:orientation="vertical">
 
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:paddingBottom="15dp"
-                            android:orientation="horizontal" >
+                            android:orientation="horizontal"
+                            android:paddingBottom="15dp">
 
                             <LinearLayout
                                 android:layout_width="wrap_content"
@@ -311,18 +312,18 @@
                                 android:orientation="horizontal">
 
                                 <ImageView
-                                    android:foreground="@drawable/layout_loading_shimmer"
                                     android:layout_width="64dp"
                                     android:layout_height="64dp"
+                                    android:foreground="@drawable/layout_loading_shimmer"
                                     app:srcCompat="@drawable/baseline_person_24" />
 
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_gravity="center"
+                                    android:foreground="@drawable/layout_loading_shimmer"
                                     android:paddingHorizontal="10dp"
                                     android:text="username"
-                                    android:foreground="@drawable/layout_loading_shimmer"
                                     android:textColor="@color/black"
                                     android:textSize="20sp"
                                     android:textStyle="bold" />
@@ -331,9 +332,9 @@
                             <HorizontalScrollView
                                 android:layout_width="match_parent"
                                 android:layout_height="40dp"
-                                android:scrollbars="none"
+                                android:layout_gravity="center"
                                 android:foreground="@drawable/layout_loading_shimmer"
-                                android:layout_gravity="center">
+                                android:scrollbars="none">
 
                                 <LinearLayout
                                     android:layout_width="wrap_content"
@@ -344,11 +345,12 @@
 
 
                         </LinearLayout>
+
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:paddingBottom="15dp"
-                            android:orientation="horizontal" >
+                            android:orientation="horizontal"
+                            android:paddingBottom="15dp">
 
                             <LinearLayout
                                 android:layout_width="wrap_content"
@@ -356,18 +358,18 @@
                                 android:orientation="horizontal">
 
                                 <ImageView
-                                    android:foreground="@drawable/layout_loading_shimmer"
                                     android:layout_width="64dp"
                                     android:layout_height="64dp"
+                                    android:foreground="@drawable/layout_loading_shimmer"
                                     app:srcCompat="@drawable/baseline_person_24" />
 
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_gravity="center"
+                                    android:foreground="@drawable/layout_loading_shimmer"
                                     android:paddingHorizontal="10dp"
                                     android:text="username"
-                                    android:foreground="@drawable/layout_loading_shimmer"
                                     android:textColor="@color/black"
                                     android:textSize="20sp"
                                     android:textStyle="bold" />
@@ -376,9 +378,9 @@
                             <HorizontalScrollView
                                 android:layout_width="match_parent"
                                 android:layout_height="40dp"
-                                android:scrollbars="none"
+                                android:layout_gravity="center"
                                 android:foreground="@drawable/layout_loading_shimmer"
-                                android:layout_gravity="center">
+                                android:scrollbars="none">
 
                                 <LinearLayout
                                     android:layout_width="wrap_content"
@@ -389,11 +391,12 @@
 
 
                         </LinearLayout>
+
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:paddingBottom="15dp"
-                            android:orientation="horizontal" >
+                            android:orientation="horizontal"
+                            android:paddingBottom="15dp">
 
                             <LinearLayout
                                 android:layout_width="wrap_content"
@@ -401,18 +404,18 @@
                                 android:orientation="horizontal">
 
                                 <ImageView
-                                    android:foreground="@drawable/layout_loading_shimmer"
                                     android:layout_width="64dp"
                                     android:layout_height="64dp"
+                                    android:foreground="@drawable/layout_loading_shimmer"
                                     app:srcCompat="@drawable/baseline_person_24" />
 
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_gravity="center"
+                                    android:foreground="@drawable/layout_loading_shimmer"
                                     android:paddingHorizontal="10dp"
                                     android:text="username"
-                                    android:foreground="@drawable/layout_loading_shimmer"
                                     android:textColor="@color/black"
                                     android:textSize="20sp"
                                     android:textStyle="bold" />
@@ -421,9 +424,9 @@
                             <HorizontalScrollView
                                 android:layout_width="match_parent"
                                 android:layout_height="40dp"
-                                android:scrollbars="none"
+                                android:layout_gravity="center"
                                 android:foreground="@drawable/layout_loading_shimmer"
-                                android:layout_gravity="center">
+                                android:scrollbars="none">
 
                                 <LinearLayout
                                     android:layout_width="wrap_content"
@@ -434,11 +437,12 @@
 
 
                         </LinearLayout>
+
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:paddingBottom="15dp"
-                            android:orientation="horizontal" >
+                            android:orientation="horizontal"
+                            android:paddingBottom="15dp">
 
                             <LinearLayout
                                 android:layout_width="wrap_content"
@@ -446,18 +450,18 @@
                                 android:orientation="horizontal">
 
                                 <ImageView
-                                    android:foreground="@drawable/layout_loading_shimmer"
                                     android:layout_width="64dp"
                                     android:layout_height="64dp"
+                                    android:foreground="@drawable/layout_loading_shimmer"
                                     app:srcCompat="@drawable/baseline_person_24" />
 
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_gravity="center"
+                                    android:foreground="@drawable/layout_loading_shimmer"
                                     android:paddingHorizontal="10dp"
                                     android:text="username"
-                                    android:foreground="@drawable/layout_loading_shimmer"
                                     android:textColor="@color/black"
                                     android:textSize="20sp"
                                     android:textStyle="bold" />
@@ -466,9 +470,9 @@
                             <HorizontalScrollView
                                 android:layout_width="match_parent"
                                 android:layout_height="40dp"
-                                android:scrollbars="none"
+                                android:layout_gravity="center"
                                 android:foreground="@drawable/layout_loading_shimmer"
-                                android:layout_gravity="center">
+                                android:scrollbars="none">
 
                                 <LinearLayout
                                     android:layout_width="wrap_content"
@@ -479,11 +483,12 @@
 
 
                         </LinearLayout>
+
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:paddingBottom="15dp"
-                            android:orientation="horizontal" >
+                            android:orientation="horizontal"
+                            android:paddingBottom="15dp">
 
                             <LinearLayout
                                 android:layout_width="wrap_content"
@@ -491,18 +496,18 @@
                                 android:orientation="horizontal">
 
                                 <ImageView
-                                    android:foreground="@drawable/layout_loading_shimmer"
                                     android:layout_width="64dp"
                                     android:layout_height="64dp"
+                                    android:foreground="@drawable/layout_loading_shimmer"
                                     app:srcCompat="@drawable/baseline_person_24" />
 
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_gravity="center"
+                                    android:foreground="@drawable/layout_loading_shimmer"
                                     android:paddingHorizontal="10dp"
                                     android:text="username"
-                                    android:foreground="@drawable/layout_loading_shimmer"
                                     android:textColor="@color/black"
                                     android:textSize="20sp"
                                     android:textStyle="bold" />
@@ -511,9 +516,9 @@
                             <HorizontalScrollView
                                 android:layout_width="match_parent"
                                 android:layout_height="40dp"
-                                android:scrollbars="none"
+                                android:layout_gravity="center"
                                 android:foreground="@drawable/layout_loading_shimmer"
-                                android:layout_gravity="center">
+                                android:scrollbars="none">
 
                                 <LinearLayout
                                     android:layout_width="wrap_content"
@@ -524,11 +529,12 @@
 
 
                         </LinearLayout>
+
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:paddingBottom="15dp"
-                            android:orientation="horizontal" >
+                            android:orientation="horizontal"
+                            android:paddingBottom="15dp">
 
                             <LinearLayout
                                 android:layout_width="wrap_content"
@@ -536,18 +542,18 @@
                                 android:orientation="horizontal">
 
                                 <ImageView
-                                    android:foreground="@drawable/layout_loading_shimmer"
                                     android:layout_width="64dp"
                                     android:layout_height="64dp"
+                                    android:foreground="@drawable/layout_loading_shimmer"
                                     app:srcCompat="@drawable/baseline_person_24" />
 
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_gravity="center"
+                                    android:foreground="@drawable/layout_loading_shimmer"
                                     android:paddingHorizontal="10dp"
                                     android:text="username"
-                                    android:foreground="@drawable/layout_loading_shimmer"
                                     android:textColor="@color/black"
                                     android:textSize="20sp"
                                     android:textStyle="bold" />
@@ -556,9 +562,9 @@
                             <HorizontalScrollView
                                 android:layout_width="match_parent"
                                 android:layout_height="40dp"
-                                android:scrollbars="none"
+                                android:layout_gravity="center"
                                 android:foreground="@drawable/layout_loading_shimmer"
-                                android:layout_gravity="center">
+                                android:scrollbars="none">
 
                                 <LinearLayout
                                     android:layout_width="wrap_content"

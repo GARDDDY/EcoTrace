@@ -10,7 +10,6 @@
         android:layout_width="match_parent"
         android:layout_height="200dp"
         android:adjustViewBounds="true"
-        android:background="@color/silver"
         android:foreground="#75000000"
         android:scaleType="fitXY"
         tools:src="@tools:sample/backgrounds/scenic"
@@ -25,6 +24,8 @@
         android:ems="10"
         android:inputType="text"
         android:hint="Название группы"
+        android:backgroundTint="@color/ok_green"
+        android:textColor="@color/ok_green"
         android:layout_marginHorizontal="@dimen/default_PaddingMargin"
         android:layout_marginVertical="10dp"
         android:textColorHint="@color/silver"
@@ -39,6 +40,8 @@
         android:ems="10"
         android:inputType="text"
         android:hint="О вашей группе"
+        android:backgroundTint="@color/ok_green"
+        android:textColor="@color/ok_green"
         android:layout_marginHorizontal="@dimen/default_PaddingMargin"
         android:layout_marginVertical="10dp"
         android:textColorHint="@color/silver"
@@ -46,14 +49,30 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/groupName" />
 
+    <HorizontalScrollView
+        android:id="@+id/hsv1"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_margin="10dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/groupAbout">
+
+        <LinearLayout
+            android:id="@+id/groupTags"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="vertical" />
+    </HorizontalScrollView>
+
     <Spinner
         android:id="@+id/groupType"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
         android:layout_marginHorizontal="@dimen/default_PaddingMargin"
         android:layout_marginVertical="10dp"
         android:entries="@array/groupType"
-        app:layout_constraintTop_toBottomOf="@+id/groupAbout" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/hsv1" />
 </androidx.constraintlayout.widget.ConstraintLayout>

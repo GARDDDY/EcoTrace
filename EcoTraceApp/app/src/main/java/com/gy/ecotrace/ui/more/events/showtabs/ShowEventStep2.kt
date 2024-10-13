@@ -107,4 +107,9 @@ class ShowEventStep2 : Fragment() {
             }
         })
     }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        handler.removeCallbacksAndMessages(null)
+    }
 }

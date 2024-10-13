@@ -1,5 +1,6 @@
 package com.gy.ecotrace.ui.more.ecocalculator
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -10,37 +11,42 @@ class EcoCalcViewModel(private val repository: Repository) : ViewModel() {
 
     var currentPage = 0
 
-    private val _answers = MutableLiveData<
-            MutableList<DatabaseMethods.DataClasses.EcoCalcSaveData>>()
-    val answers: LiveData<
-            MutableList<DatabaseMethods.DataClasses.EcoCalcSaveData>>
-        get() = _answers
-
-    private val _additional = MutableLiveData<MutableMap<String, Double>>()
-    val additional: LiveData<MutableMap<String, Double>> get() = _additional
+    private val answers: MutableMap<Int, DatabaseMethods.DataClasses.EcoCalcSaveData> = mutableMapOf()
 
     fun addAnswer(value: DatabaseMethods.DataClasses.EcoCalcSaveData) {
-        val previous = _answers.value!! //?: mutableListOf()
-//        val x = previous[value.question]?: DatabaseMethods.DataClasses.EcoCalcSaveData()
-        previous[value.question] = value
-        _answers.postValue(previous)
+        answers[value.question] = value
+        _end.postValue(isEnoughAnswers())
     }
+
+    fun getAnswer(value: Int): DatabaseMethods.DataClasses.EcoCalcSaveData {
+        return answers[value] ?: DatabaseMethods.DataClasses.EcoCalcSaveData()
+    }
+
+    private val _end = MutableLiveData<Boolean>()
+    val end: LiveData<Boolean> get() = _end
 
 
     fun saveAdditionalData() {
 
     }
 
+    private var allQuestions = -1
     fun init(amount: Int) {
-        _answers.value = MutableList(amount)
-            { DatabaseMethods.DataClasses.EcoCalcSaveData()}
+        allQuestions = amount
     }
 
 
-    fun saveData(calcType: Int, callback: (Boolean) -> Unit) {
-        repository.saveEcoData(answers.value!!, calcType) {
+    fun saveData(calcType: Int, callback: (String) -> Unit) {
+        repository.saveEcoData(answers.values.toMutableList(), calcType) {
             callback(it)
         }
+        Log.d("save", answers.toString())
+
+    }
+
+    fun isEnoughAnswers(): Boolean {
+        Log.d("enough", "${answers.size} --- $allQuestions")
+        return answers.size == allQuestions
     }
 
 

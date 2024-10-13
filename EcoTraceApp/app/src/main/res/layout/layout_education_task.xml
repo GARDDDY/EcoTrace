@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:paddingBottom="@dimen/default_PaddingMargin"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content" >
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/taskTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="TextView"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="@color/ok_green"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <EditText
+            android:id="@+id/taskTextAns"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="text"
+            android:textColorHint="@color/silver"
+            android:backgroundTint="@color/ok_green"
+            android:textColor="@color/ok_green"
+            android:hint="Ваш ответ"
+            android:visibility="gone"
+            app:layout_constraintTop_toBottomOf="@+id/taskTitle" />
+
+        <RadioGroup
+            android:id="@+id/taskOptionsAns"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:orientation="vertical"
+            android:visibility="gone"
+            app:layout_constraintTop_toBottomOf="@+id/taskTextAns">
+
+            <RadioButton
+                android:id="@+id/option1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/silver"
+                android:text="Вариант 1"
+                android:textColor="@color/ok_green"
+                android:paddingStart="@dimen/default_PaddingMargin"
+                android:textSize="18sp" />
+
+            <RadioButton
+                android:id="@+id/option2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/silver"
+                android:text="Вариант 2"
+                android:textColor="@color/ok_green"
+                android:paddingStart="@dimen/default_PaddingMargin"
+                android:textSize="18sp" />
+
+            <RadioButton
+                android:id="@+id/option3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/silver"
+                android:text="Вариант 3"
+                android:textColor="@color/ok_green"
+                android:paddingStart="@dimen/default_PaddingMargin"
+                android:textSize="18sp" />
+
+            <RadioButton
+                android:id="@+id/option4"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/silver"
+                android:text="Вариант 4"
+                android:textColor="@color/ok_green"
+                android:paddingStart="@dimen/default_PaddingMargin"
+                android:textSize="18sp" />
+
+        </RadioGroup>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>

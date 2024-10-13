@@ -11,7 +11,7 @@
 
     <LinearLayout
         android:id="@+id/linearLayout7"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_marginHorizontal="@dimen/default_PaddingMargin"
@@ -40,40 +40,25 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/addLink"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-
-            <ImageView
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                app:srcCompat="@drawable/baseline_add_link_24" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:text="Добавить ссылку"
-                android:textColor="@color/ok_green"
-                android:textSize="20sp" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/editLinks"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:id="@+id/removeImage"
+            android:visibility="gone"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:orientation="horizontal">
 
             <ImageView
+                android:id="@+id/imageView9"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
-                app:srcCompat="@drawable/baseline_link_24" />
+                app:srcCompat="@drawable/baseline_cancel_24" />
 
             <TextView
+                android:id="@+id/textView20"
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:textColor="@color/ok_green"
+                android:layout_height="wrap_content"
                 android:textSize="20sp"
-                android:text="Редактировать ссылки" />
+                android:textColor="@color/ok_green"
+                android:text="Удалить изображение" />
         </LinearLayout>
 
     </LinearLayout>

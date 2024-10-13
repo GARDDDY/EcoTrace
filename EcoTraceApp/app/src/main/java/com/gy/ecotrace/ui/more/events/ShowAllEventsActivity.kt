@@ -70,13 +70,15 @@ class ShowAllEventsActivity : AppCompatActivity() {
         showAllViewModel = ViewModelProvider(this, factory)[ShowAllEventsViewModel::class.java]
 
         val tagsLayout: LinearLayout = findViewById(R.id.allTagsLayout)
-        val tagsColors = DatabaseMethods.DataClasses.filterColors
-        val allEventTags = DatabaseMethods.DataClasses.EventFiltersSearchBy
+        val tagsColors: Array<Pair<String, String>> = Globals.getInstance().getFiltersColors()
+        val allEventTags: Array<Pair<String, String>> = Globals.getInstance().getEventsFilters()
         for (tag in allEventTags.indices) {
             val tagButton = layoutInflater.inflate(R.layout.widget_tag_filter_button, null) as MaterialButton
             tagButton.text = allEventTags[tag].first
             tagButton.textSize = 18F
             tagButton.isClickable = true
+            Log.w("testcolors", tagsColors[tag].toString())
+            Log.w("testcolors", tagsColors[tag].second.toString())
             tagButton.setTextColor(Color.parseColor(tagsColors[tag].second))
             tagButton.setBackgroundColor(ContextCompat.getColor(applicationContext, R.color.transparent))
             tagButton.rippleColor = ColorStateList.valueOf(Color.parseColor(tagsColors[tag].second))

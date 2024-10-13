@@ -1,35 +1,32 @@
 const express = require('express');
-const admin = require('firebase-admin');
-const { getUsernameOnly } = require('../tech/getUsernameOnly');
+
+const connections = require("../server")
+const connection1 = connections["users"]
 
 const router = express.Router();
 
 router.get('/getUserRating', async (req, res) => {
-    let userId = req.query.uid || '0';
-    let block = req.query.block || null;
-    if (block === 'null') {
-        block = null;
-    }
-    let oAuth = req.query.oauth || '0';
-    let requestFrom = req.query.cid || '0';
+    const userId = req.query.cid || '0';
+    const inCountry = req.query.country != "false";
 
     res.setHeader('Content-Type', 'application/json; charset=utf-8');
+    console.log(inCountry)
+    console.log(inCountry === true)
+    console.log(false === true)
+    console.log(true === true)
+    var userCountry = null;
+    if (inCountry === true) {
+        const [c] = await connection1.execute("select country_code from user where userId = ?", [userId])
+        console.log(c)
+        userCountry = c[0].country_code
 
-    const usersRef = admin.database().ref("users").orderByChild("experience").limitToLast(30);
-    const snapshot = await usersRef.once('value');
-    const values = snapshot.val() || {};
+        
+    }
+    console.log(userCountry)
 
-    const usersObject = Object.entries(values).reduce((acc, [uid, uData]) => {
-        acc[uid] = {
-            experience: uData.experience,
-            username: uData.username
-        };
-        return acc;
-    }, {});
+    const [rating] = await connection1.execute("with ranks as (select distinct experience from user order by experience desc limit 30) select userId, username, experience from user where experience in (select experience from ranks) and (? is null or country_code = ?) order by experience desc", [userCountry, userCountry])
 
-    res.json(usersObject);
-
-    
+    res.json(rating);
 });
 
 module.exports = router;

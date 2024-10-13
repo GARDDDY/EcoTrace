@@ -1,5 +1,6 @@
 package com.gy.ecotrace.ui.more.groups.viewModels
 
+import android.graphics.Bitmap
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -13,38 +14,28 @@ class CreateGroupViewModel(private val repository: Repository): ViewModel() {
     private val _groupData = MutableLiveData<DatabaseMethods.DataClasses.Group>()
     val groupData: LiveData<DatabaseMethods.DataClasses.Group> get() = _groupData
 
-    private var groupClass = DatabaseMethods.DataClasses.Group()
+    var groupImage: Bitmap? = null
 
-    fun loadSavedData(savedData: DatabaseMethods.DataClasses.Group) {
-        Log.d("Loading saved group data", savedData.groupName)
-        groupClass = savedData
-        _groupData.postValue(savedData)
+    var groupClass = DatabaseMethods.DataClasses.Group()
+
+    var groupRulesText: String? = null
+    var groupRulesImage: Bitmap? = null
+
+    fun applyGroupData(group: DatabaseMethods.DataClasses.Group) {
+        groupClass = group
+        _groupData.postValue(group)
     }
 
-    fun applyGroupData(
-        groupName: String? = groupClass.groupName,
-        groupAbout: String? = groupClass.groupAbout,
-        groupType: Int? = groupClass.groupType,
-        groupTags: String = groupClass.filters
-    ) {
-        groupClass.groupName = groupName ?: ""
-        groupClass.groupAbout = groupAbout
-        groupClass.groupType = groupType ?: 2
-        groupClass.filters = groupTags
-
-        _groupData.postValue(groupClass)
-    }
-
-    fun isGroupNameAvailable(groupName: String, callback: (Boolean) -> Unit) {
+    fun isGroupNameAvailable(groupName: String, callback: (String?) -> Unit) {
         viewModelScope.launch {
             callback(repository.isGroupNameAvailable(groupName))
         }
     }
 
-    fun createGroup(userId: String) {
+    fun createGroup(callback: (String?) -> Unit) {
         viewModelScope.launch {
-            groupClass.groupCreatorId = userId
-            repository.createGroup(groupClass)
+            val status = repository.createGroup(groupClass, groupRulesText, groupRulesImage)
+            callback(status)
         }
     }
 }

@@ -1,13 +1,14 @@
 package com.gy.ecotrace.ui.more.events
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup.LayoutParams
 import android.widget.Button
 import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
-import android.widget.Toolbar
+import androidx.appcompat.widget.Toolbar
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
@@ -26,6 +27,7 @@ import com.gy.ecotrace.ui.more.events.createsteps.CreateEventStep4
 import com.gy.ecotrace.ui.more.events.createsteps.CreateEventViewModel
 import com.gy.ecotrace.ui.more.events.createsteps.CreateEventViewModelFactory
 import com.yandex.mapkit.MapKitFactory
+import com.yandex.mapkit.map.MapObject
 
 class CreateEventActivity : AppCompatActivity() {
     private lateinit var sharedViewModel: CreateEventViewModel
@@ -47,7 +49,8 @@ class CreateEventActivity : AppCompatActivity() {
         sharedViewModel = ViewModelProvider(this, factory)[CreateEventViewModel::class.java]
 
         val editingEvent = Globals.getInstance().getString("CurrentlyEditingEvent")
-        sharedViewModel.getEvent(editingEvent)
+        sharedViewModel.currentEvent = editingEvent
+        sharedViewModel.getEvent()
 
         val pagesNames = listOf("Основное", "Планирование", "Цели", "Карта")
         val nextBtn: ImageButton = findViewById(R.id.nextPageBtn)
@@ -65,7 +68,9 @@ class CreateEventActivity : AppCompatActivity() {
                 findViewById<TextView>(R.id.textView31).text = pagesNames[position]
                 findViewById<TextView>(R.id.textView33).text = "Шаг ${position+1} / ${pagesNames.size}"
 
-                endCreation.visibility = if (position == 0) View.GONE else View.VISIBLE
+                if ((sharedViewModel.eventData.value?.eventStatus ?: 0) == 0) {
+                    endCreation.visibility = if (position == 0) View.GONE else View.VISIBLE
+                } else endCreation.visibility = View.GONE
 
                 val lParams = viewPager.layoutParams as LayoutParams
                 lParams.width = if (position == 3) LayoutParams.MATCH_PARENT else 0
@@ -102,6 +107,25 @@ class CreateEventActivity : AppCompatActivity() {
 
         }
 
+
+        endCreation.setOnClickListener {
+
+            if ((sharedViewModel.eventTimes.value?.size ?: 0) > 0) {
+                Toast.makeText(this@CreateEventActivity, "Вы должны добавить хотя бы одно временное событие!", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            val eventData = mutableListOf<Any>(
+                sharedViewModel.eventData.value ?: DatabaseMethods.DataClasses.Event(),
+                sharedViewModel.eventTimes.value ?: mutableMapOf<String, String>(),
+                sharedViewModel.eventGoals.value ?: mutableMapOf<String, String>(),
+                sharedViewModel.eventCoords.value ?: mutableMapOf<MapObject, DatabaseMethods.DataClasses.MapObject>()
+            )
+
+            sharedViewModel.createEvent(eventData)
+
+
+        }
 
     }
 

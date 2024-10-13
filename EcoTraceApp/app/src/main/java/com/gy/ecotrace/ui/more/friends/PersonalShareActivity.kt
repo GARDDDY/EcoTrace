@@ -76,13 +76,16 @@ class PersonalShareActivity : AppCompatActivity() {
         val personalInvLink : TextView = findViewById(R.id.userLink)
         val personalQr: ImageView = findViewById(R.id.userQrCode)
         Log.d("personal", "${personalInvLink.width} ${personalInvLink.height}")
-        val link = "${mainHost}user/$currentUser"
-        personalInvLink.text = link
-        personalInvLink.isClickable = true
-        personalInvLink.setOnClickListener {
-            val clipboard : ClipboardManager = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-            val clip = ClipData.newPlainText("Ссылка скопирована", link)
-            clipboard.setPrimaryClip(clip)
+        val link = intent.getStringExtra("link") ?: "${mainHost}user/$currentUser"
+        if (!(intent.getBooleanExtra("valid", false))) {
+            personalInvLink.text = link
+            personalInvLink.isClickable = true
+            personalInvLink.setOnClickListener {
+                val clipboard: ClipboardManager =
+                    getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                val clip = ClipData.newPlainText("Ссылка скопирована", link)
+                clipboard.setPrimaryClip(clip)
+            }
         }
         Handler(Looper.getMainLooper()).post {
             personalQr.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
@@ -93,11 +96,14 @@ class PersonalShareActivity : AppCompatActivity() {
             })
         }
 
+        findViewById<TextView>(R.id.additionalText).text = intent.getStringExtra("name") ?: ""
 
         Glide.with(this)
-            .load(DatabaseMethods.ApplicationDatabaseMethods().getImageLink("users", currentUser))
+            .load(DatabaseMethods.ApplicationDatabaseMethods()
+                .getImageLink( intent.getStringExtra("imageF") ?: "users",
+                    intent.getStringExtra("image") ?: currentUser))
             .circleCrop()
-            .placeholder(R.drawable.baseline_person_24)
+//            .placeholder(R.drawable.baseline_person_24)
             .into(findViewById(R.id.userImage))
     }
 }

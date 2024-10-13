@@ -13,9 +13,9 @@ class RatingsViewModel(private val repository: Repository) : ViewModel() {
     private val _users = MutableLiveData<MutableList<DatabaseMethods.DataClasses.Rating>>()
     val users: LiveData<MutableList<DatabaseMethods.DataClasses.Rating>> get() = _users
 
-    fun getRating(userId: String) {
+    fun getRating(inCountry: Boolean = false) {
         viewModelScope.launch {
-            _users.postValue(repository.getUserRating(userId))
+            _users.postValue(repository.getUserRating(inCountry))
         }
     }
 }

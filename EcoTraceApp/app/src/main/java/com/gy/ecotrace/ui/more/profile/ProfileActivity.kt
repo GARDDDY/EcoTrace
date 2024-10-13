@@ -13,6 +13,8 @@ import android.view.View.OnFocusChangeListener
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import android.widget.HorizontalScrollView
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
@@ -29,6 +31,7 @@ import androidx.lifecycle.Observer
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.bumptech.glide.Glide
 import com.facebook.shimmer.ShimmerFrameLayout
+import com.google.firebase.auth.FirebaseAuth
 import com.gy.ecotrace.Globals
 import com.gy.ecotrace.R
 import com.gy.ecotrace.db.DatabaseMethods
@@ -40,7 +43,7 @@ import com.gy.ecotrace.ui.more.groups.ShowGroupActivity
 class ProfileActivity : AppCompatActivity() {
     private lateinit var userViewModel: ProfileViewModel
     private var currentUser = Globals.getInstance().getString("CurrentlyWatching")
-    private var loggedUser = Globals.getInstance().getString("CurrentlyLogged")
+    private var loggedUser = FirebaseAuth.getInstance().currentUser?.uid ?: ""
     private lateinit var toolbar: Toolbar
         override fun onCreate(savedInstanceState: Bundle?) {
             super.onCreate(savedInstanceState)
@@ -51,7 +54,7 @@ class ProfileActivity : AppCompatActivity() {
                 DatabaseMethods.ApplicationDatabaseMethods()
             )
 
-            userViewModel = ProfileViewModel(Repository(DatabaseMethods.UserDatabaseMethods(), DatabaseMethods.ApplicationDatabaseMethods()))
+            userViewModel = ProfileViewModel(repository)
 
 
             toolbar = findViewById(R.id.toolbarProfile)
@@ -67,9 +70,6 @@ class ProfileActivity : AppCompatActivity() {
             }
 //
             if (currentUser == loggedUser) {
-//                findViewById<LinearLayout>(R.id.add_user_as_friend).visibility = View.GONE
-//                findViewById<LinearLayout>(R.id.invite_user_to_group).visibility = View.GONE
-
                 toolbar.inflateMenu(R.menu.popup_menu_profile)
                 toolbar.setOnMenuItemClickListener {
                     when (it.itemId) {
@@ -102,59 +102,56 @@ class ProfileActivity : AppCompatActivity() {
                     }
                 }
             } else {
-//                findViewById<LinearLayout>(R.id.add_user_as_friend).setOnClickListener {
-//                    userViewModel.friends.observe(this, Observer {
-//                        val anyCommunications =
-//                            it.indexOfFirst { fship -> fship.userId == loggedUser }
-//
-//                        if (anyCommunications != -1) {
-//                            val builder = AlertDialog.Builder(this)
-//                            builder.setTitle("Удаление из друзей")
-//
-//                            builder.setMessage("Вы действительно хотите удалить этого пользователя из списка своих друзей?")
-//                            builder.setPositiveButton("Подтвердить") { dialog, which ->
-//                                userViewModel.removeFriend(currentUser)
-//                                recreate()
-//                            }
-//                            builder.setNegativeButton("Отмена") { dialog, which ->
-//                                dialog.dismiss()
-//                            }
-//                            val dialog = builder.create()
-//                            dialog.show()
-//                        } else {
-//                            val builder = AlertDialog.Builder(this)
-//                            builder.setTitle("Добавление в друзья")
-//
-//                            builder.setMessage("Вы действительно хотите добавить этого пользователя в список своих друзей?")
-//                            builder.setPositiveButton("Подтвердить") { dialog, which ->
-//                                userViewModel.addFriend(loggedUser)
-//                                recreate()
-//                            }
-//                            builder.setNegativeButton("Отмена") { dialog, which ->
-//                                dialog.dismiss()
-//                            }
-//                            val dialog = builder.create()
-//                            dialog.show()
-//                        }
-//                    })
-//                }
-//                findViewById<LinearLayout>(R.id.invite_user_to_group).visibility = View.GONE
+                val setFriend = findViewById<ImageButton>(R.id.setFriend)
+                userViewModel.areFriends(currentUser) {
+                    if (it) {
+                        setFriend.setImageResource(R.drawable.baseline_person_remove_24)
+                        setFriend.imageTintList =
+                            ContextCompat.getColorStateList(applicationContext, R.color.red_no)
+
+                        setFriend.setOnClickListener {
+                            val builder = AlertDialog.Builder(this)
+                            builder.setTitle("Удаление из друзей")
+
+                            builder.setMessage("Вы действительно хотите удалить этого пользователя из списка своих друзей?")
+                            builder.setPositiveButton("Подтвердить") { _, _ ->
+                                userViewModel.removeFriend(currentUser)
+                                recreate()
+                            }
+                            builder.setNegativeButton("Отмена") { dialog, _ ->
+                                dialog.dismiss()
+                            }
+                            val dialog = builder.create()
+                            dialog.show()
+                        }
+
+                    } else {
+                        setFriend.setOnClickListener {
+                            val builder = AlertDialog.Builder(this)
+                            builder.setTitle("Добавление в друзья")
+
+                            builder.setMessage("Вы действительно хотите добавить этого пользователя в список своих друзей?")
+                            builder.setPositiveButton("Подтвердить") { _, _ ->
+                                userViewModel.addFriend(loggedUser)
+                                recreate()
+                            }
+                            builder.setNegativeButton("Отмена") { dialog, _ ->
+                                dialog.dismiss()
+                            }
+                            val dialog = builder.create()
+                            dialog.show()
+                        }
+                    }
+
+                    setFriend.visibility = View.VISIBLE
+                }
             }
-//
-//            Glide.with(this)
-//                .load(Globals().getImgUrl("users", currentUser))
-//                .placeholder(R.drawable.baseline_person_24)
-//                .circleCrop()
-//                .into(findViewById(R.id.profile_image_profile_menu))
-//
-//
-//
 
             userViewModel.getUser(currentUser)
             userViewModel.getEvents(currentUser)
             userViewModel.getFriends(currentUser)
             userViewModel.getGroups(currentUser)
-//
+
             userViewModel.user.observe(this, Observer { user ->
                 user?.let {
 
@@ -199,7 +196,7 @@ class ProfileActivity : AppCompatActivity() {
                     Glide.with(this)
                         .load(DatabaseMethods
                             .ApplicationDatabaseMethods()
-                            .getImageLink("ranks", expToRanks[expToRanks.keys.filter { it <= user.experience }.maxOrNull()]!!))
+                            .getImageLink("\$ranks", expToRanks[expToRanks.keys.filter { it <= user.experience }.maxOrNull()]!!))
                         .into(findViewById(R.id.userExperienceImageProfile))
                     findViewById<TextView>(R.id.userCountryName).text = user.country.name
                     findViewById<TextView>(R.id.userCountryFlag).text = getCountryEmoji(user.country.code)
@@ -269,160 +266,175 @@ class ProfileActivity : AppCompatActivity() {
 
 
             var lastSort = 0
-            val eventRoles = DatabaseMethods.DataClasses.EventRoles
+            val eventRoles: Array<String> = Globals.getInstance().getEventRoles()
+
+            val eventSort: Spinner = findViewById(R.id.eventsFiltersChoose)
+            eventSort.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
+                    if (lastSort != p2) {
+                        lastSort = p2
+                        userViewModel.getEvents(currentUser, lastSort, true)
+                    }
+                }
+
+                override fun onNothingSelected(p0: AdapterView<*>?) {}
+            }
+
             userViewModel.events.observe(this, Observer { events ->
                 Log.d("eventsGot", "$events")
                 findViewById<ShimmerFrameLayout>(R.id.userEventsInformationLayoutLoading).visibility = View.GONE
                 findViewById<LinearLayout>(R.id.userEventsInformationLayout).visibility = View.VISIBLE
-                if ((events?.size ?: 0) > 0)  {
-                    findViewById<TextView>(R.id.noEventsWarning).visibility = View.GONE
-                    findViewById<RelativeLayout>(R.id.allEventsLayout).visibility = View.VISIBLE
-                    val eventsLayout: LinearLayout = findViewById(R.id.eventsLayout)
+                findViewById<TextView>(R.id.noEventsWarning).visibility = View.GONE
+                findViewById<RelativeLayout>(R.id.allEventsLayout).visibility = View.VISIBLE
+                val eventsLayout: LinearLayout = findViewById(R.id.eventsLayout)
+                if (userViewModel.newEvents) {
                     eventsLayout.removeAllViews()
-                        for (eventNumId in events!!.indices) {
-                            val event = events[eventNumId]
-                            val eventName = event.eventInfo.eventName
-                            val eventId = event.eventInfo.eventId
-                            val activityOneLayout =
-                                layoutInflater.inflate(R.layout.layout_user_event, null)
-                            activityOneLayout.findViewById<TextView>(R.id.eventName).text =
-                                eventName
-
-                            userViewModel.getEvent(eventId) { eventData ->
-
-                                val eventStatusString: String = when (eventData.eventStatus) {
-                                    0 -> "Еще не началось!"
-                                    1 -> "Уже проходит!"
-                                    2 -> "Закончилось"
-                                    else -> "error-unreal-status"
-                                }
-                                val eventFilter: Spinner = findViewById(R.id.eventsFiltersChoose)
-                                eventFilter.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-                                    override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
-                                        if (position != lastSort) {
-                                            lastSort = position
-                                            updateEvents()
-                                            userViewModel.getEvents(currentUser, lastSort)
-                                        }
-                                    }
-
-                                    override fun onNothingSelected(parent: AdapterView<*>) {}
-                                }
-
-                                activityOneLayout.findViewById<TextView>(R.id.eventStatus).text =
-                                    eventStatusString
-                                activityOneLayout.findViewById<TextView>(R.id.eventCountMembers).text =
-                                    "${eventData.eventCountMembers}"
-
-                                val ending = when {
-                                    eventData.eventCountMembers % 100 in 11..14 -> "ов"
-                                    eventData.eventCountMembers % 10 == 1 -> ""
-                                    eventData.eventCountMembers % 10 in 2..4 -> "а"
-                                    else -> "ов"
-                                }
-                                activityOneLayout.findViewById<TextView>(R.id.membersWord).text = "участник$ending"
-                                activityOneLayout.findViewById<TextView>(R.id.eventUserRole).text =
-                                    "Роль: "//${eventRoles[act.eventInfo.eventUsersToTheirRoles!!.get(currentUser)!!]}"
-
-
-                                Glide.with(this)
-                                    .load(Globals().getImgUrl("events", eventId))
-                                    .placeholder(R.drawable.round_family_restroom_24)
-                                    .into(activityOneLayout.findViewById(R.id.eventImage))
-
-                                activityOneLayout.setOnClickListener {
-                                    Globals.getInstance()
-                                        .setString("CurrentlyWatchingEvent", eventId)
-                                    startActivity(Intent(this, ShowEventActivity::class.java))
-
-                                }
-
-                                eventsLayout.addView(activityOneLayout)
-                                if (eventNumId != events.size - 1) {
-                                    val space = View(applicationContext)
-                                    val dpDefault = resources.getDimensionPixelSize(R.dimen.default_PaddingMargin)
-                                    val layoutParams = ViewGroup.LayoutParams(dpDefault, ViewGroup.LayoutParams.WRAP_CONTENT)
-                                    space.layoutParams = layoutParams
-                                    eventsLayout.addView(space)
-                                }
-                            }
-
+                    userViewModel.newEvents = false
+                }
+                userViewModel.updEvents = false
+                for (event in events) {
+                    val eventName = event.eventInfo.eventName
+                    val eventId = event.eventInfo.eventId
+                    val activityOneLayout =
+                        layoutInflater.inflate(R.layout.layout_user_event, null)
+                    activityOneLayout.findViewById<TextView>(R.id.eventName).text =
+                        eventName
+                    activityOneLayout.findViewById<TextView>(R.id.eventCountMembers).text = event.eventInfo.eventCountMembers.toString()
+                    activityOneLayout.findViewById<TextView>(R.id.eventUserRole).text = eventRoles[event.eventRole]
+                    val eventStatusString: String = when (event.eventInfo.eventStatus) {
+                            0 -> "Еще не началось!"
+                            1 -> "Уже проходит!"
+                            2 -> "Закончилось"
+                            else -> "error-unreal-status"
                         }
+
+                    activityOneLayout.findViewById<TextView>(R.id.eventStatus).text =
+                        eventStatusString
+
+                    val ending = when {
+                        event.eventInfo.eventCountMembers % 100 in 11..14 -> "ов"
+                        event.eventInfo.eventCountMembers % 10 == 1 -> ""
+                        event.eventInfo.eventCountMembers % 10 in 2..4 -> "а"
+                        else -> "ов"
                     }
+                    activityOneLayout.findViewById<TextView>(R.id.membersWord).text = "участник$ending"
+
+
+                    Glide.with(this)
+                        .load(Globals().getImgUrl("events", eventId))
+                        .into(activityOneLayout.findViewById(R.id.eventImage))
+
+                    activityOneLayout.setOnClickListener {
+                        Globals.getInstance()
+                            .setString("CurrentlyWatchingEvent", eventId)
+                        startActivity(Intent(this, ShowEventActivity::class.java))
+
+                    }
+
+                    eventsLayout.addView(activityOneLayout)
+                    if (events.last() != event) {
+                        val space = View(applicationContext)
+                        val dpDefault = resources.getDimensionPixelSize(R.dimen.default_PaddingMargin)
+                        val layoutParams = ViewGroup.LayoutParams(dpDefault, ViewGroup.LayoutParams.WRAP_CONTENT)
+                        space.layoutParams = layoutParams
+                        eventsLayout.addView(space)
+                    }
+                }
             })
-//
+
+            val eventScrollView: HorizontalScrollView = findViewById(R.id.allEventsScrollView)
+            eventScrollView.setOnScrollChangeListener { v, scrollX, scrollY, oldScrollX, oldScrollY ->
+                if (!userViewModel.updEvents) {
+                    if (scrollX >= (v as HorizontalScrollView).getChildAt(0).width - v.width) {
+                        userViewModel.updEvents = true
+                        userViewModel.getEvents(currentUser, lastSort)
+                    }
+                }
+            }
+
             userViewModel.friends.observe(this, Observer { friends ->
                 findViewById<ShimmerFrameLayout>(R.id.userFriendsInformationLayoutLoading).visibility = View.GONE
                 findViewById<LinearLayout>(R.id.userFriendsInformationLayout).visibility = View.VISIBLE
                 friends?.let {
-                    if (friends.size > 0) {
-                        findViewById<TextView>(R.id.noFriendsWarning).visibility = View.GONE
-                        val friendsLayout: LinearLayout = findViewById(R.id.friendsLayout)
+                    findViewById<TextView>(R.id.noFriendsWarning).visibility = View.GONE
+                    val friendsLayout: LinearLayout = findViewById(R.id.friendsLayout)
+                    if (userViewModel.newFriends) {
                         friendsLayout.removeAllViews()
-                        for (fr in friends) {
-                            if (fr.userId != currentUser) {
-                                if (fr.sender && !fr.friend && currentUser == loggedUser || fr.friend) {
-                                    val friendOneLayout =
-                                        layoutInflater.inflate(R.layout.friend_linear_layout, null)
-                                    friendOneLayout.findViewById<TextView>(R.id.username_friend_layout).text =
-                                        fr.username
+                        userViewModel.newFriends = false
+                    }
+                    userViewModel.updFriends = false
+                    for (fr in friends) {
+                        if (fr.userId != currentUser ) {
+                             val friendOneLayout =
+                                 layoutInflater.inflate(R.layout.friend_linear_layout, null)
+                            friendOneLayout.findViewById<TextView>(R.id.username_friend_layout).text =
+                                fr.username
 
-                                    friendOneLayout.setOnClickListener {
-                                        val myIntent =
-                                            Intent(this, ProfileActivity::class.java)
-                                        myIntent.putExtra("previousId", currentUser)
-                                        Log.d("goto", fr.userId)
-                                        Globals.getInstance()
-                                            .setString("CurrentlyWatching", fr.userId)
-                                        startActivity(myIntent)
-                                    }
-
-                                    Glide.with(this)
-                                        .load(Globals().getImgUrl("users", "${fr.userId}"))
-                                        .placeholder(R.drawable.baseline_person_24)
-                                        .into(friendOneLayout.findViewById(R.id.user_img_friend_layout))
-
-                                    friendsLayout.addView(friendOneLayout)
-                                }
-//                                if (fr.userId == loggedUser) {
-//                                    findViewById<TextView>(R.id.textView24).text =
-//                                        if (fr.friend) "Ваш друг" else "Отправлен"
-//                                    findViewById<ImageButton>(R.id.imageButton2)
-//                                        .setImageResource(R.drawable.baseline_person_remove_24)
-//                                }
+                            friendOneLayout.setOnClickListener {
+                                val myIntent =
+                                    Intent(this, ProfileActivity::class.java)
+                                myIntent.putExtra("previousId", currentUser)
+                                Log.d("goto", fr.userId)
+                                Globals.getInstance()
+                                    .setString("CurrentlyWatching", fr.userId)
+                                startActivity(myIntent)
                             }
+
+                            Glide.with(this)
+                                .load(Globals().getImgUrl("users", "${fr.userId}"))
+                                .circleCrop()
+                                .placeholder(R.drawable.baseline_person_24)
+                                .into(friendOneLayout.findViewById(R.id.user_img_friend_layout))
+
+                            friendsLayout.addView(friendOneLayout)
                         }
                     }
                 }
             })
-//
+
+            val friendScrollView: HorizontalScrollView = findViewById(R.id.allFriendsScrollView)
+            friendScrollView.setOnScrollChangeListener { v, scrollX, scrollY, oldScrollX, oldScrollY ->
+                if (!userViewModel.updFriends) {
+                    if (scrollX >= (v as HorizontalScrollView).getChildAt(0).width - v.width) {
+                        userViewModel.updFriends = true
+                        userViewModel.getFriends(currentUser)
+                    }
+                }
+            }
+
             userViewModel.groups.observe(this, Observer { groups ->
                 findViewById<ShimmerFrameLayout>(R.id.userGroupsInformationLayoutLoading).visibility = View.GONE
                 findViewById<LinearLayout>(R.id.userGroupsInformationLayout).visibility = View.VISIBLE
                 groups?.let {
-                    if (groups.size > 0) {
-                        findViewById<TextView>(R.id.noGroupsWarning).visibility = View.GONE
-                        val groupsLayout: LinearLayout = findViewById(R.id.groupsLayout)
-                        groupsLayout.removeAllViews()
-                        for (group in groups) {
-                            val groupName = group.groupInfo.groupName
-                            val groupId = group.groupInfo.groupId
-                            val groupOneLayout =
-                                layoutInflater.inflate(R.layout.layout_user_group, null)
-                            groupOneLayout.findViewById<TextView>(R.id.groupName).text =
-                                groupName
-                            Glide.with(this)
-                                .load(Globals().getImgUrl("groups", groupId))
-                                .centerInside()
-                                .into(groupOneLayout.findViewById(R.id.groupImage))
+                    findViewById<TextView>(R.id.noGroupsWarning).visibility = View.GONE
+                    val groupsLayout: LinearLayout = findViewById(R.id.groupsLayout)
+                    groupsLayout.removeAllViews()
+                    for (group in groups) {
+                        val groupName = group.groupInfo.groupName
+                        val groupId = group.groupInfo.groupId
+                        val groupOneLayout =
+                            layoutInflater.inflate(R.layout.layout_user_group, null)
+                        groupOneLayout.findViewById<TextView>(R.id.groupName).text =
+                            groupName
+                        groupOneLayout.findViewById<TextView>(R.id.groupAbout).text = group.groupInfo.groupAbout
+                        Glide.with(this)
+                            .load(Globals().getImgUrl("groups", groupId))
+                            .centerInside()
+                            .into(groupOneLayout.findViewById(R.id.groupImage))
 
-                            groupOneLayout.setOnClickListener {
-                                Globals.getInstance()
-                                    .setString("CurrentlyWatchingGroup", groupId)
-                                startActivity(Intent(this, ShowGroupActivity::class.java))
-                            }
+                        groupOneLayout.setOnClickListener {
+                            Globals.getInstance()
+                                .setString("CurrentlyWatchingGroup", groupId)
+                            startActivity(Intent(this, ShowGroupActivity::class.java))
+                        }
 
-                            groupsLayout.addView(groupOneLayout)
+                        groupsLayout.addView(groupOneLayout)
+                        if (groups.last() != group) {
+                            val space = View(applicationContext)
+                            val dpDefault = resources.getDimensionPixelSize(R.dimen.default_PaddingMargin)
+                            val layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, dpDefault)
+                            space.layoutParams = layoutParams
+                            groupsLayout.addView(space)
                         }
                     }
                 }

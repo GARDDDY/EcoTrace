@@ -1,4 +1,4 @@
-const admin = require('firebase-admin');
+// to sql, unused?
 
 async function getRules(userId, rule) {
     let rulesArray = ['countrySeen', 'nameSeen', 'friendFrom', 'showGroups'];

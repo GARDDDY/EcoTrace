@@ -22,7 +22,6 @@ import com.gy.ecotrace.db.Repository
 import com.gy.ecotrace.ui.more.ecocalculator.views.EcoCalculatorMainFragment
 import com.gy.ecotrace.ui.more.ecocalculator.views.EcoCalculatorResultsFragment
 import com.gy.ecotrace.ui.more.groups.additional.CreateGroupViewModelFactory
-import com.gy.ecotrace.ui.more.groups.additional.GroupRepository
 import com.gy.ecotrace.ui.more.groups.createsteps.CreateGroupStep1
 import com.gy.ecotrace.ui.more.groups.createsteps.CreateGroupStep2
 import com.gy.ecotrace.ui.more.groups.viewModels.CreateGroupViewModel
@@ -57,27 +56,6 @@ class EcologicalCalculatorActivity : AppCompatActivity() {
         )
         val factory = EcoCalcViewModelFactory(repository)
         val sharedViewModel = ViewModelProvider(this, factory)[EcoCalcViewModel::class.java]
-
-//        val repository = Repository(
-//            DatabaseMethods.UserDatabaseMethods(),
-//            DatabaseMethods.ApplicationDatabaseMethods()
-//        )
-//        val factory = CreateGroupViewModelFactory(repository)
-//        val sharedViewModel = ViewModelProvider(this, factory)[CreateGroupViewModel::class.java]
-//
-//        sharedViewModel.loadSavedData(GroupRepository.DataStorage().groupData)
-//
-//        sharedViewModel.groupData.observe(this) {
-//            if (it.groupName.length >= 5) {
-//                createGroup.setBackgroundColor(ContextCompat.getColor(applicationContext, R.color.ok_green))
-//                createGroup.setOnClickListener {
-//                    sharedViewModel.createGroup(currentUser)
-//                }
-//            } else {
-//                createGroup.setBackgroundColor(ContextCompat.getColor(applicationContext, R.color.silver))
-//                createGroup.setOnClickListener { false }
-//            }
-//        }
 
     }
 

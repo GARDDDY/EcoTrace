@@ -1,4 +1,4 @@
-const admin = require('firebase-admin');
+//to sql
 
 async function areUsersFriends(user1, user2) {
     try {

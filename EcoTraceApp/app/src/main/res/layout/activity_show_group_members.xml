@@ -17,258 +17,225 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-        android:id="@+id/swipeRefreshLayout"
+    <ScrollView
+        android:id="@+id/scrollViewMembers"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolbar">
 
-        <ScrollView
-            android:id="@+id/scrollViewMembers"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/toolbar7">
+            android:layout_height="wrap_content">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+            <TextView
+                android:id="@+id/textView42"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/default_PaddingMargin"
+                android:text="Создатель"
+                android:textColor="@color/ok_green"
+                android:textSize="20sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <LinearLayout
+                android:id="@+id/openProfile"
+                android:layout_width="0dp"
+                android:layout_marginTop="@dimen/default_PaddingMargin"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView42">
+
+                <ImageView
+                    android:id="@+id/creatorImage"
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
+                    android:layout_marginStart="15dp"
+                    app:srcCompat="@drawable/baseline_person_24" />
 
                 <TextView
-                    android:id="@+id/textView42"
+                    android:id="@+id/creatorName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="64dp"
+                    android:gravity="center"
+                    android:layout_marginHorizontal="@dimen/default_PaddingMargin"
+                    android:text="creatorName"
+                    android:textColor="@color/ok_green"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/linearLayout3"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginHorizontal="@dimen/default_PaddingMargin"
+                android:orientation="horizontal"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/openProfile">
+
+                <TextView
+                    android:id="@+id/textView49"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Руководители"
+                    android:textColor="@color/ok_green"
+                    android:textSize="20sp" />
+
+                <TextView
+                    android:id="@+id/textView52"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/default_PaddingMargin"
-                    android:text="Создатель"
+                    android:text="( "
                     android:textColor="@color/ok_green"
-                    android:textSize="20sp"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    android:textSize="20sp" />
 
-                <LinearLayout
-                    android:id="@+id/openProfile"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/textView42">
+                <TextView
+                    android:id="@+id/role1count"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    android:textColor="@color/ok_green"
+                    android:textSize="20sp" />
 
-                    <ImageView
-                        android:id="@+id/creatorImage"
-                        android:layout_width="64dp"
-                        android:layout_height="64dp"
-                        android:layout_marginStart="15dp"
-                        app:srcCompat="@drawable/baseline_person_24" />
+                <TextView
+                    android:id="@+id/textView53"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=" / 5 )"
+                    android:textColor="@color/ok_green"
+                    android:textSize="20sp" />
+            </LinearLayout>
 
-                    <TextView
-                        android:id="@+id/creatorName"
-                        android:layout_width="wrap_content"
-                        android:layout_height="64dp"
-                        android:gravity="center"
-                        android:layout_marginHorizontal="@dimen/default_PaddingMargin"
-                        android:text="creatorName"
-                        android:textColor="@color/ok_green"
-                        android:textSize="20sp"
-                        android:textStyle="bold" />
-                </LinearLayout>
+            <LinearLayout
+                android:id="@+id/role1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/default_PaddingMargin"
+                android:layout_marginVertical="@dimen/default_PaddingMargin"
+                android:orientation="vertical"
+                app:layout_constraintTop_toBottomOf="@+id/linearLayout3">
 
-                <LinearLayout
-                    android:id="@+id/linearLayout3"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginHorizontal="@dimen/default_PaddingMargin"
-                    android:orientation="horizontal"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/openProfile">
-
-                    <TextView
-                        android:id="@+id/textView49"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Руководители"
-                        android:textColor="@color/ok_green"
-                        android:textSize="20sp" />
-
-                    <TextView
-                        android:id="@+id/textView52"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/default_PaddingMargin"
-                        android:text="( "
-                        android:textColor="@color/ok_green"
-                        android:textSize="20sp" />
-
-                    <TextView
-                        android:id="@+id/role1count"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="0"
-                        android:textColor="@color/ok_green"
-                        android:textSize="20sp" />
-
-                    <TextView
-                        android:id="@+id/textView53"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text=" / 5 )"
-                        android:textColor="@color/ok_green"
-                        android:textSize="20sp" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/role1"
+                <TextView
+                    android:id="@+id/role1warningnoone"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="@dimen/default_PaddingMargin"
-                    android:layout_marginVertical="@dimen/default_PaddingMargin"
-                    android:orientation="vertical"
-                    app:layout_constraintTop_toBottomOf="@+id/linearLayout3">
+                    android:text="Должность руководителя еще никто не занимает!"
+                    android:textColor="@color/black"
+                    android:textSize="15sp"
+                    android:visibility="gone" />
+            </LinearLayout>
 
-                    <TextView
-                        android:id="@+id/role1warningnoone"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Должность руководителя еще никто не занимает!"
-                        android:textColor="@color/black"
-                        android:textSize="15sp"
-                        android:visibility="gone" />
-                </LinearLayout>
+            <LinearLayout
+                android:id="@+id/linearLayout5"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginHorizontal="@dimen/default_PaddingMargin"
+                android:orientation="horizontal"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/role1">
 
-                <LinearLayout
-                    android:id="@+id/linearLayout5"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginHorizontal="@dimen/default_PaddingMargin"
-                    android:orientation="horizontal"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/role1">
+                <TextView
+                    android:id="@+id/textView50"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Помощники"
+                    android:textColor="@color/ok_green"
+                    android:textSize="20sp" />
 
-                    <TextView
-                        android:id="@+id/textView50"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Помощники"
-                        android:textColor="@color/ok_green"
-                        android:textSize="20sp" />
+                <TextView
+                    android:id="@+id/textView54"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/default_PaddingMargin"
+                    android:text="( "
+                    android:textColor="@color/ok_green"
+                    android:textSize="20sp" />
 
-                    <TextView
-                        android:id="@+id/textView54"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/default_PaddingMargin"
-                        android:text="( "
-                        android:textColor="@color/ok_green"
-                        android:textSize="20sp" />
+                <TextView
+                    android:id="@+id/role2count"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    android:textColor="@color/ok_green"
+                    android:textSize="20sp" />
 
-                    <TextView
-                        android:id="@+id/role2count"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="0"
-                        android:textColor="@color/ok_green"
-                        android:textSize="20sp" />
+                <TextView
+                    android:id="@+id/textView55"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=" / 10 )"
+                    android:textColor="@color/ok_green"
+                    android:textSize="20sp" />
+            </LinearLayout>
 
-                    <TextView
-                        android:id="@+id/textView55"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text=" / 10 )"
-                        android:textColor="@color/ok_green"
-                        android:textSize="20sp" />
-                </LinearLayout>
+            <LinearLayout
+                android:id="@+id/role2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/default_PaddingMargin"
+                android:layout_marginVertical="@dimen/default_PaddingMargin"
+                android:orientation="vertical"
+                app:layout_constraintTop_toBottomOf="@+id/linearLayout5">
 
-                <LinearLayout
-                    android:id="@+id/role2"
+                <TextView
+                    android:id="@+id/role2warningnoone"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="@dimen/default_PaddingMargin"
-                    android:layout_marginVertical="@dimen/default_PaddingMargin"
-                    android:orientation="vertical"
-                    app:layout_constraintTop_toBottomOf="@+id/linearLayout5">
+                    android:text="В этой группе еще нет помощников!"
+                    android:textColor="@color/black"
+                    android:textSize="15sp"
+                    android:visibility="gone" />
 
-                    <TextView
-                        android:id="@+id/role2warningnoone"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="В этой группе еще нет помощников!"
-                        android:textColor="@color/black"
-                        android:textSize="15sp"
-                        android:visibility="gone" />
+            </LinearLayout>
 
-                </LinearLayout>
+            <LinearLayout
+                android:id="@+id/linearLayout6"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/default_PaddingMargin"
+                android:orientation="horizontal"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/role2">
 
-                <LinearLayout
-                    android:id="@+id/linearLayout6"
+                <TextView
+                    android:id="@+id/textView51"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Участники"
+                    android:textColor="@color/ok_green"
+                    android:textSize="20sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/role3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/default_PaddingMargin"
+                android:layout_marginVertical="@dimen/default_PaddingMargin"
+                android:orientation="vertical"
+                app:layout_constraintTop_toBottomOf="@+id/linearLayout6">
+
+                <TextView
+                    android:id="@+id/role3warningnoone"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="@dimen/default_PaddingMargin"
-                    android:orientation="horizontal"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/role2">
+                    android:text="В этой группе нет обычных участников!"
+                    android:textColor="@color/black"
+                    android:textSize="15sp"
+                    android:visibility="gone" />
 
-                    <TextView
-                        android:id="@+id/textView51"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Участники"
-                        android:textColor="@color/ok_green"
-                        android:textSize="20sp" />
+            </LinearLayout>
 
-                    <TextView
-                        android:id="@+id/textView56"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/default_PaddingMargin"
-                        android:text="( "
-                        android:textColor="@color/ok_green"
-                        android:textSize="20sp" />
-
-                    <TextView
-                        android:id="@+id/role3count"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="0"
-                        android:textColor="@color/ok_green"
-                        android:textSize="20sp" />
-
-                    <TextView
-                        android:id="@+id/textView57"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text=" )"
-                        android:textColor="@color/ok_green"
-                        android:textSize="20sp" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/role3"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="@dimen/default_PaddingMargin"
-                    android:layout_marginVertical="@dimen/default_PaddingMargin"
-                    android:orientation="vertical"
-                    app:layout_constraintTop_toBottomOf="@+id/linearLayout6">
-
-                    <TextView
-                        android:id="@+id/role3warningnoone"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="В этой группе нет обычных участников!"
-                        android:textColor="@color/black"
-                        android:textSize="15sp"
-                        android:visibility="gone" />
-
-                </LinearLayout>
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-        </ScrollView>
-    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

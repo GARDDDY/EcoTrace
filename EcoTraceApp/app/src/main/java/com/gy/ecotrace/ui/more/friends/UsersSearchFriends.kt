@@ -7,11 +7,17 @@ import android.content.res.ColorStateList
 import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.View
+import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
 import android.widget.Toolbar
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AlertDialog
@@ -29,6 +35,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.bumptech.glide.Glide
+import com.facebook.shimmer.ShimmerFrameLayout
 import com.google.android.material.button.MaterialButton
 import com.google.firebase.auth.FirebaseAuth
 import com.google.mlkit.vision.barcode.BarcodeScanning
@@ -57,6 +64,11 @@ class UsersSearchFriends : AppCompatActivity() {
     private lateinit var searcherViewModel: SearcherViewModel
     private var loggedUser = FirebaseAuth.getInstance().currentUser?.uid ?: "0"
 
+
+    private val handler = Handler(Looper.getMainLooper())
+    private val delay: Long = 300
+    private var runnable: Runnable? = null
+
     private fun isSubDomain(url: String): String {
         val mainDomain = Regex("https?://([^/]+)/").find(mainHost)?.groupValues?.get(1)
 
@@ -81,15 +93,7 @@ class UsersSearchFriends : AppCompatActivity() {
         enableEdgeToEdge()
 
         if (loggedUser == "0") {
-            val builder = AlertDialog.Builder(applicationContext)
-            builder.setTitle("Требуется вход в аккаунт")
-
-            builder.setMessage("Войдите или создайте новый аккаунт, чтобы пользоваться всеи функциями приложения!")
-            builder.setPositiveButton("Подтвердить") { _, _ ->
-                startActivity(Intent(this@UsersSearchFriends, ProfileActivity::class.java))
-            }
-            val dialog = builder.create()
-            dialog.show()
+            Toast.makeText(this@UsersSearchFriends, "Требуется вход в аккаунт", Toast.LENGTH_SHORT).show()
             finish()
             return
         }
@@ -211,54 +215,47 @@ class UsersSearchFriends : AppCompatActivity() {
 //
 
 
-//        searcherViewModel.getUserFriends(loggedUser)
-//        searcherViewModel.filteredUserFriends.observe(this, Observer {
-//            val friendsLayout: LinearLayout =
-//                findViewById(R.id.friendsLayout)
-//            friendsLayout.removeAllViews()
-//            it?.let{
-//                if (it.isNotEmpty()) {
-//
-//                    for (fr in it) {
-//                        val friendOneLayout =
-//                            layoutInflater.inflate(R.layout.friend_linear_layout, null)
-//                        friendOneLayout.findViewById<TextView>(R.id.username_friend_layout).text =
-//                            fr.username
-//
-//                        friendOneLayout.setOnClickListener {
-//                            val myIntent = Intent(this, ProfileActivity::class.java)
-//                            myIntent.putExtra("previousId", loggedUser)
-//                            Globals.getInstance().setString("CurrentlyWatching", fr.userId)
-//                            this.startActivity(myIntent)
-//                        }
-//
-//                        Glide.with(this)
-//                            .load(Globals().getImgUrl("users", "${fr.userId}"))
-//                            .into(friendOneLayout.findViewById(R.id.user_img_friend_layout))
-//
-//                        friendsLayout.addView(friendOneLayout)
-//                    }
-//
-//                    findViewById<TextView>(R.id.noFriendsWarning).visibility = View.GONE
-//                }
-//
-//
-//            }
-//            findViewById<LinearLayout>(R.id.userFriendsInformationLayout).visibility = View.VISIBLE
-//            findViewById<ShimmerFrameLayout>(R.id.userFriendsInformationLayoutLoading).visibility = View.GONE
-//        })
-//        findViewById<EditText>(R.id.search_friend_by_username)
-//            .addTextChangedListener(object : TextWatcher {
-//                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-//                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
-//                override fun afterTextChanged(s: Editable?) {
-//                    searcherViewModel.stringUserFriendsFilter.value = s.toString()
-//            }
-//        })
-        // теги
+        searcherViewModel.getUserFriends(loggedUser)
+        searcherViewModel.userFriends.observe(this, Observer {
+            val friendsLayout: LinearLayout =
+                findViewById(R.id.friendsLayout)
+            friendsLayout.removeAllViews()
+            it?.let{
+                if (it.isNotEmpty()) {
+
+                    for (fr in it) {
+                        val friendOneLayout =
+                            layoutInflater.inflate(R.layout.friend_linear_layout, null)
+                        friendOneLayout.findViewById<TextView>(R.id.username_friend_layout).text =
+                            fr.username
+
+                        friendOneLayout.setOnClickListener {
+                            val myIntent = Intent(this, ProfileActivity::class.java)
+                            myIntent.putExtra("previousId", loggedUser)
+                            Globals.getInstance().setString("CurrentlyWatching", fr.userId)
+                            this.startActivity(myIntent)
+                        }
+
+                        Glide.with(this)
+                            .load(Globals().getImgUrl("users", "${fr.userId}"))
+                            .into(friendOneLayout.findViewById(R.id.user_img_friend_layout))
+
+                        friendsLayout.addView(friendOneLayout)
+                    }
+
+                    findViewById<TextView>(R.id.noFriendsWarning).visibility = View.GONE
+                }
+
+
+            }
+            findViewById<LinearLayout>(R.id.userFriendsInformationLayout).visibility = View.VISIBLE
+            findViewById<ShimmerFrameLayout>(R.id.userFriendsInformationLayoutLoading).visibility = View.GONE
+        })
+        val loading = findViewById<ShimmerFrameLayout>(R.id.allUsersLoading)
+        val layoutForFiltered: LinearLayout = findViewById(R.id.foundUsersLayout)
         val filtersLayout: LinearLayout = findViewById(R.id.userFiltersLayout)
-        val tagsColors = DatabaseMethods.DataClasses.filterColors
-        val allEventTags = DatabaseMethods.DataClasses.UserFiltersSearchBy
+        val tagsColors:Array<Pair<String, String>> = Globals.getInstance().getFiltersColors()
+        val allEventTags:Array<Pair<String, String>> = Globals.getInstance().getUserFilters()
         for (tag in allEventTags.indices) {
             val tagButton = layoutInflater.inflate(R.layout.widget_tag_filter_button, null) as MaterialButton
             tagButton.text = allEventTags[tag].first
@@ -275,17 +272,37 @@ class UsersSearchFriends : AppCompatActivity() {
                         .getColor(applicationContext, R.color.transparent))
                 else tagButton
                     .setBackgroundColor(Color.parseColor(tagsColors[tag].first))
-
-                searcherViewModel.findAllUsers()
+                searcherViewModel.reapplyFilter(tag)
+                loading.visibility = View.VISIBLE
+                layoutForFiltered.visibility = View.GONE
+                searcherViewModel.findAllUsers(true)
             }
 
             filtersLayout.addView(tagButton)
         }
 
+        findViewById<EditText>(R.id.usernameSearcher).addTextChangedListener(object : TextWatcher{
+            override fun afterTextChanged(p0: Editable?) {
+                searcherViewModel.filterName = p0?.toString()
+                loading.visibility = View.VISIBLE
+                layoutForFiltered.visibility = View.GONE
+                searcherViewModel.filterName = p0?.toString()
+                runnable?.let { handler.removeCallbacks(it) }
+                runnable = Runnable {
+                    searcherViewModel.findAllUsers(true)
+                }
+                handler.postDelayed(runnable!!, delay)
+            }
+
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+        })
+
         // найденные
         searcherViewModel.findAllUsers()
         searcherViewModel.usersFoundFilter.observe(this, Observer {
-            val layoutForFiltered: LinearLayout = findViewById(R.id.foundUsersLayout)
+            loading.visibility = View.GONE
+            layoutForFiltered.visibility = View.VISIBLE
             it?.let{
 //                findViewById<TextView>(R.id.bad_tags_no_found).visibility = View.GONE
 //                findViewById<TextView>(R.id.bad_query_not_found).visibility = View.GONE
@@ -293,7 +310,7 @@ class UsersSearchFriends : AppCompatActivity() {
                 if (it.isNotEmpty()) {
                     for (user in it) {
                         Log.d("unparse", user.toString())
-                        user?.let {
+                        user.let {
                             val layoutInf =
                                 layoutInflater.inflate(R.layout.layout_user_found_filters, null)
                             layoutInf.findViewById<TextView>(R.id.username_found_layout).text =
@@ -301,18 +318,19 @@ class UsersSearchFriends : AppCompatActivity() {
                             val filters = user.filters.split(",").map { it.toInt() - 1 }
                             val filtersLayout =
                                 layoutInf.findViewById<LinearLayout>(R.id.user_filters_layout)
-                                                    for (f in filters) {
-                                                        val tagFilter = layoutInflater.inflate(R.layout.widget_tag_filter_button, null) as MaterialButton
-                                                        tagFilter.text = allEventTags[f].first
-                                                        tagFilter.textSize = 16F
-                                                        tagFilter.tooltipText = allEventTags[f].second
-                                                        tagFilter.setTextColor(Color.parseColor(tagsColors[f].second))
-                                                        tagFilter.setBackgroundColor(Color.parseColor(tagsColors[f].first))
-                                                        filtersLayout.addView(tagFilter)
-                                                    }
+                            for (f in filters) {
+                                val tagFilter = layoutInflater.inflate(R.layout.widget_tag_filter_button, null) as MaterialButton
+                                tagFilter.text = allEventTags[f].first
+                                tagFilter.textSize = 16F
+                                tagFilter.tooltipText = allEventTags[f].second
+                                tagFilter.setTextColor(Color.parseColor(tagsColors[f].second))
+                                tagFilter.setBackgroundColor(Color.parseColor(tagsColors[f].first))
+                                filtersLayout.addView(tagFilter)
+                            }
 
                             Glide.with(this)
                                 .load(Globals().getImgUrl("users", user.userId))
+                                .circleCrop()
                                 .placeholder(R.drawable.baseline_person_24)
                                 .into(layoutInf.findViewById(R.id.user_img_found_layout))
 

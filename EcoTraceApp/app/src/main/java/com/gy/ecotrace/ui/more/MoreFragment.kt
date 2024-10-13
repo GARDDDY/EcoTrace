@@ -12,6 +12,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import com.google.firebase.auth.FirebaseAuth
 import com.gy.ecotrace.Globals
 import com.gy.ecotrace.R
 import com.gy.ecotrace.ui.more.ecocalculator.EcologicalCalculatorActivity
@@ -35,13 +36,13 @@ class MoreFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        if (Globals.getInstance().getString("CurrentlyLogged") == "0") {
+        if ((FirebaseAuth.getInstance().currentUser?.uid ?: "0") == "0") {
             view.findViewById<TextView>(R.id.openProfileDescriptionText).text =
                 "У вас еще нет аккаунта, создайте его, нажав сюда!"
         }
         view.findViewById<LinearLayout>(R.id.profileOpenLayout).setOnClickListener {
             val currentUser = Globals.getInstance().getString("CurrentlyWatching")
-            val currentLogged = Globals.getInstance().getString("CurrentlyLogged")
+            val currentLogged = FirebaseAuth.getInstance().currentUser?.uid ?: "0"
             if (currentUser == "0") {
                 if (currentLogged == "0") {
                     startActivity(Intent

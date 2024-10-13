@@ -26,6 +26,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Observer
 import com.gy.ecotrace.R
 import com.gy.ecotrace.db.DatabaseMethods
 import com.yandex.mapkit.MapKitFactory
@@ -137,9 +138,9 @@ class CreateEventStep4: Fragment() {
                 override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                     val selectedItem = parent?.getItemAtPosition(position).toString()
                     if (selectedItem == "Ничего не выбрано") {
-                        null
+                        objClass.objectRelation = null
                     } else {
-                        allTimes.entries.find { it.value == selectedItem }?.key
+                        objClass.objectRelation = allTimes.entries.find { it.value == selectedItem }?.key
                     }
                 }
                 override fun onNothingSelected(parent: AdapterView<*>?) {}
@@ -222,6 +223,35 @@ class CreateEventStep4: Fragment() {
     }
 //
 //
+    private fun addObj(objType: Int, point: Point, objClass: DatabaseMethods.DataClasses.MapObject) {
+        when (objType) {
+            0 -> {
+                val placeMark = marksCollection.addPlacemark(point)
+                placeMark.setIcon(ImageProvider.fromResource(context,
+                     com.yandex.maps.mobile.R.drawable.search_layer_pin_selected_default))
+                placeMark.setIconStyle(IconStyle().apply {
+                    anchor = PointF(0.5f, 1f)
+                })
+                placeMark.addTapListener(dotTapListener)
+                objClass.objectType = 2
+                objClass.objectCenter = point
+
+                sharedViewModel.addCoord(placeMark, objClass)
+
+            }
+            1 -> {
+                val addedCircle =
+                    marksCollection.addCircle(Circle(point, objClass.circleRadius ?: 100f), Color.BLUE, 2f, 0) // stroke, strokeWidth, fill
+                addedCircle.addTapListener(circleTapListener)
+                objClass.objectType = 0
+                objClass.objectCenter = point
+                objClass.circleRadius = objClass.circleRadius ?: 100f
+
+                sharedViewModel.addCoord(addedCircle, objClass)
+            }
+        }
+    }
+
     private val mapListener = object : InputListener {
         override fun onMapTap(map: com.yandex.mapkit.map.Map, point: Point) {
 
@@ -245,32 +275,7 @@ class CreateEventStep4: Fragment() {
                 return
             }
 
-            when (mapEditType) {
-                0 -> {
-                    val placeMark = marksCollection.addPlacemark(point)
-                    placeMark.setIcon(ImageProvider.fromResource(context,
-                        com.yandex.maps.mobile.R.drawable.search_layer_pin_selected_default))
-                    placeMark.setIconStyle(IconStyle().apply {
-                        anchor = PointF(0.5f, 1f)
-                    })
-                    placeMark.addTapListener(dotTapListener)
-                    objClass.objectType = 2
-                    objClass.objectCenter = point
-
-                    sharedViewModel.addCoord(placeMark, objClass)
-
-                }
-                1 -> {
-                    val addedCircle =
-                        marksCollection.addCircle(Circle(point, 100f), Color.BLUE, 2f, 0) // stroke, strokeWidth, fill
-                    addedCircle.addTapListener(circleTapListener)
-                    objClass.objectType = 0
-                    objClass.objectCenter = point
-                    objClass.circleRadius = 100f
-
-                    sharedViewModel.addCoord(addedCircle, objClass)
-                }
-            }
+            addObj(mapEditType, point, objClass)
         }
     }
 
@@ -287,6 +292,13 @@ class CreateEventStep4: Fragment() {
         super.onViewCreated(view, savedInstanceState)
         marksCollection = mapView.map.mapObjects.addCollection()
         mapView.map.addInputListener(mapListener)
+
+        sharedViewModel.getCoords()
+        sharedViewModel.toAddeventCoords.observe(viewLifecycleOwner, Observer {
+            for (o in it) {
+                addObj(o.objectType, o.objectCenter, o)
+            }
+        })
 
         mainLayout = view.findViewById(R.id.main)
 

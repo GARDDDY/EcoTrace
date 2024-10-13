@@ -2,12 +2,14 @@ package com.gy.ecotrace.ui.more.events.createsteps
 
 import android.animation.Animator
 import android.animation.ValueAnimator
+import android.annotation.SuppressLint
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.text.format.DateUtils.formatDateTime
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
@@ -23,6 +25,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Observer
 import com.gy.ecotrace.R
 import java.util.Calendar
 import java.util.TimeZone
@@ -31,20 +34,16 @@ class CreateEventStep2: Fragment() {
 
     private val sharedViewModel: CreateEventViewModel by activityViewModels()
 
-    private fun deleteLoadingFill(deleter: RelativeLayout): ValueAnimator {
-        val maxLength = deleter.width / 2
-        val loads = listOf(deleter.getChildAt(0), deleter.getChildAt(2))
+    private fun deleteLoadingFill(deleter: View, maxWidth: Int): ValueAnimator {
 
-        return ValueAnimator.ofInt(0, maxLength).apply {
+        return ValueAnimator.ofInt(0, maxWidth).apply {
             this.duration = 2000L
             this.interpolator = AccelerateDecelerateInterpolator()
             addUpdateListener { animation ->
-                for (load in loads) {
-                    val animatedValue = animation.animatedValue as Int
-                    val layoutParams = load.layoutParams as ViewGroup.LayoutParams
-                    layoutParams.width = animatedValue
-                    load.layoutParams = layoutParams
-                }
+                val animatedValue = animation.animatedValue as Int
+                val layoutParams = deleter.layoutParams as ViewGroup.LayoutParams
+                layoutParams.width = animatedValue
+                deleter.layoutParams = layoutParams
             }
             addListener(object : Animator.AnimatorListener {
                 override fun onAnimationStart(p0: Animator) { deleter.tag = false }
@@ -54,7 +53,7 @@ class CreateEventStep2: Fragment() {
             })
         }
     }
-
+    @SuppressLint("ClickableViewAccessibility")
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -70,22 +69,27 @@ class CreateEventStep2: Fragment() {
         val timesLayout: LinearLayout = view.findViewById(R.id.timesLayoutCreateEvent)
         val addTime: Button = view.findViewById(R.id.addEventTime)
 
-        fun addTimes() {
+        fun addTimes(id: String? = null, value: String? = null) {
             if (allAddedTimes.isNotEmpty() && allAddedTimes.values.all { it.isEmpty() }) return
             val layout = layoutInflater.inflate(R.layout.layout_event_time, null)
+            layout.tag = id
 
             val descriptionEntry: EditText = layout.findViewById(R.id.timeDescription)
+            descriptionEntry.setText(value ?: "")
             val timeSetter: TextView = layout.findViewById(R.id.timeTime)
-            val deleter: RelativeLayout = layout.findViewById(R.id.deleter)
+            val deleter: View = layout.findViewById(R.id.deleter)
 
-
-            deleter.setOnTouchListener { view, motionEvent ->
+            layout.setOnTouchListener { _, motionEvent ->
                 when (motionEvent.action) {
-                    MotionEvent.ACTION_DOWN, MotionEvent.ACTION_POINTER_DOWN -> {
-                        deleteLoadingFill(deleter).start()
+                    MotionEvent.ACTION_DOWN -> {
+                        Log.d("anim", "start dell")
+                        layout.requestFocus()
+                        deleteLoadingFill(deleter, layout.width).start()
                     }
-                    else -> {
-                        if (deleter.tag != null) {
+                    MotionEvent.ACTION_UP -> {
+                        Log.d("anim", "end dell")
+                        if (deleter.tag != null && deleter.tag as Boolean) {
+                            Log.d("anim", "delled")
                             if (layout.tag != null) {
                                 Log.d("deleting", "values")
                                 sharedViewModel.removeTime(layout.tag as String)
@@ -96,10 +100,14 @@ class CreateEventStep2: Fragment() {
                                 ).show()
                             }
                             Log.d("deleting", "layout")
-                            deleter.setOnTouchListener( null )
+                            layout.setOnTouchListener( null )
                             timesLayout.removeView(layout)
                             false
-                        } else deleteLoadingFill(deleter).reverse()
+                        } else {
+                            Log.d("anim", "reverse dell")
+                            deleteLoadingFill(deleter, layout.width).reverse()
+                        }
+                        layout.clearFocus()
                     }
                 }
                 true
@@ -138,7 +146,7 @@ class CreateEventStep2: Fragment() {
             ): TimePickerDialog {
                 val picker = TimePickerDialog(
                     context,
-                    TimePickerDialog.OnTimeSetListener { it, hourChosen, minuteChosen ->
+                    TimePickerDialog.OnTimeSetListener { _, hourChosen, minuteChosen ->
                         if (minMinute != null) {
                             if (year == minYear && month == minMonth && day == minDay) {
                                 if (hourChosen < minHour!! || (hourChosen == minHour && minuteChosen < minMinute)) {
@@ -156,7 +164,6 @@ class CreateEventStep2: Fragment() {
                             Log.d("bad time", "ok time, first pick")
                             onTimeSetListener(hourChosen, minuteChosen)
                         }
-
                     },
                     hour,
                     minute,
@@ -166,7 +173,31 @@ class CreateEventStep2: Fragment() {
                 return picker
             }
 
+            fun getTimestamp(year: Int, month: Int, day: Int, hour: Int, minute: Int): Long {
+                val calendar = Calendar.getInstance()
+                calendar.set(year, month, day, hour, minute)
+                return calendar.timeInMillis
+            }
 
+            fun getDateTimeFromTimestamp(timestamps: String): String {
+                var values = mutableListOf<String>()
+                for (timestamp in timestamps.split('_')) {
+                    Log.d("getting time", timestamp)
+                    val calendar = Calendar.getInstance().apply {
+                        timeInMillis = timestamp.toLong()*1000
+                    }
+                    val day = calendar.get(Calendar.DAY_OF_MONTH)
+                    val month = calendar.get(Calendar.MONTH) + 1
+                    val year = calendar.get(Calendar.YEAR)
+                    val hour = calendar.get(Calendar.HOUR_OF_DAY)
+                    val minute = calendar.get(Calendar.MINUTE)
+
+                    values.add(String.format("%02d.%02d.%d %02d:%02d", day, month, year, hour, minute))
+                }
+
+                return "${values[0]} - ${values[1]}"
+            }
+            if (id != null) timeSetter.text = getDateTimeFromTimestamp(id)
 
             fun formatDateTime(
                 day1: Int, month1: Int, year1: Int, hour1: Int, minute1: Int, // для textview
@@ -177,46 +208,6 @@ class CreateEventStep2: Fragment() {
                     day1, month1 + 1, year1, hour1, minute1,
                     day2, month2 + 1, year2, hour2, minute2
                 )
-            }
-
-            fun indexUTC(utc1: Long, utc2: Long): String { // для сохранения
-                val calendar1 = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
-                calendar1.timeInMillis = utc1
-                val y1 = calendar1.get(Calendar.YEAR)
-                val m1 = calendar1.get(Calendar.MONTH) + 1
-                val d1 = calendar1.get(Calendar.DAY_OF_MONTH)
-                val h1 = calendar1.get(Calendar.HOUR_OF_DAY)
-                val mi1 = calendar1.get(Calendar.MINUTE)
-
-                val calendar2 = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
-                calendar2.timeInMillis = utc2
-                val y2 = calendar2.get(Calendar.YEAR)
-                val m2 = calendar2.get(Calendar.MONTH) + 1
-                val d2 = calendar2.get(Calendar.DAY_OF_MONTH)
-                val h2 = calendar2.get(Calendar.HOUR_OF_DAY)
-                val mi2 = calendar2.get(Calendar.MINUTE)
-
-                Log.d("testdate", "$y1 $y2")
-
-                return String.format(
-                    "%02d%02d%d%02d%02d_%d%02d%02d%02d%02d",
-                    d1,
-                    m1,
-                    y1,
-                    h1,
-                    mi1,
-                    d2,
-                    m2,
-                    y2,
-                    h2,
-                    mi2
-                )
-            }
-
-            fun currentMillis(year: Int, month: Int, day: Int, hourOfDay: Int, minute: Int): Long {
-                val calendar = Calendar.getInstance()
-                calendar.set(year, month, day, hourOfDay, minute)
-                return calendar.timeInMillis
             }
 
             fun handleDateTimeSelection(view: View) {
@@ -232,12 +223,10 @@ class CreateEventStep2: Fragment() {
                     day
                 ) { selectedYear1, selectedMonth1, selectedDay1 ->
                     val timePickerDialog1 = createTimePickerDialog(
-                        view.context, calendar.get(
-                            Calendar.HOUR_OF_DAY
-                        ), calendar.get(Calendar.MINUTE)
+                        view.context, calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE)
                     ) { hour1, minute1 ->
 
-                        val millis1 = currentMillis(
+                        val timestamp1 = getTimestamp(
                             selectedYear1,
                             selectedMonth1,
                             selectedDay1,
@@ -258,15 +247,16 @@ class CreateEventStep2: Fragment() {
                                 selectedYear1, selectedMonth1, selectedDay1
                             ) { hourOfDay2, minute2 ->
 
-                                val millis2 = currentMillis(
+                                val timestamp2 = getTimestamp(
                                     selectedYear2,
                                     selectedMonth2,
                                     selectedDay2,
                                     hourOfDay2,
                                     minute2
                                 )
-                                if (millis1 < millis2) {
-                                    timeSetter.text = formatDateTime(
+                                if (timestamp1 <= timestamp2) {
+
+                                    val formattedDateTime = formatDateTime(
                                         selectedDay1,
                                         selectedMonth1,
                                         selectedYear1,
@@ -278,9 +268,11 @@ class CreateEventStep2: Fragment() {
                                         hourOfDay2,
                                         minute2
                                     )
-                                    val utcDateIndex = indexUTC(millis1, millis2)
-                                    layout.tag = utcDateIndex
-                                    sharedViewModel.addTime(utcDateIndex, "")
+                                    timeSetter.text = formattedDateTime
+
+                                    val timestampString = "${timestamp1}_${timestamp2}"
+                                    layout.tag = timestampString
+                                    sharedViewModel.addTime(timestampString, descriptionEntry.text.toString())
                                 } else {
                                     Toast.makeText(
                                         view.context,
@@ -288,17 +280,11 @@ class CreateEventStep2: Fragment() {
                                         Toast.LENGTH_LONG
                                     ).show()
                                 }
-
                             }
-                            Toast.makeText(
-                                view.context,
-                                "Выберите время окончания",
-                                Toast.LENGTH_SHORT
-                            ).show()
+                            Toast.makeText(view.context, "Выберите время окончания", Toast.LENGTH_SHORT).show()
                             timePickerDialog2.show()
                         }
-                        Toast.makeText(view.context, "Выберите дату окончания", Toast.LENGTH_SHORT)
-                            .show()
+                        Toast.makeText(view.context, "Выберите дату окончания", Toast.LENGTH_SHORT).show()
                         datePickerDialog2.show()
                     }
                     Toast.makeText(view.context, "Выберите время начала", Toast.LENGTH_SHORT).show()
@@ -329,10 +315,18 @@ class CreateEventStep2: Fragment() {
             })
             timeSetter.setOnClickListener {
                 handleDateTimeSelection(it)
+                sharedViewModel.removeTime(layout.tag as? String?)
             }
 
             timesLayout.addView(layout)
         }
+
+        sharedViewModel.getTimes()
+        sharedViewModel.eventTimes.observe(viewLifecycleOwner, Observer {
+            for ((id, value) in it) {
+                addTimes(id, value)
+            }
+        })
 
         addTime.setOnClickListener {
             Toast.makeText(

@@ -8,6 +8,7 @@ async function checkOAuth2(token, userId) {
     try {
         const auth = admin.auth();
         const verifiedIdToken = await auth.verifyIdToken(token);
+        console.log("VErifying user", verifiedIdToken.sub, userId)
         return verifiedIdToken.sub === userId;
     } catch (error) {
         console.error("Verify Error: ", error);

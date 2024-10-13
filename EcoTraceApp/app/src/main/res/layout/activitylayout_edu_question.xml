@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/questionTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/optionsLayout"
+        android:layout_margin="@dimen/default_PaddingMargin"
+        android:textSize="20sp"
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        android:textAlignment="center"
+        android:text="TextView" />
+
+    <LinearLayout
+        android:id="@+id/optionsLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_marginHorizontal="@dimen/default_PaddingMargin"
+        android:orientation="vertical">
+
+        <Button
+            android:id="@+id/option1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/silver"
+            android:text="Вариант 1"
+            android:textColor="@color/dirt_white"
+            android:textSize="18sp" />
+
+        <Button
+            android:id="@+id/option2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/silver"
+            android:text="Вариант 2"
+            android:textColor="@color/dirt_white"
+            android:textSize="18sp" />
+
+        <Button
+            android:id="@+id/option3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/silver"
+            android:text="Вариант 3"
+            android:textColor="@color/dirt_white"
+            android:textSize="18sp" />
+
+        <Button
+            android:id="@+id/option4"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/silver"
+            android:text="Вариант 4"
+            android:textColor="@color/dirt_white"
+            android:textSize="18sp" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/answerStatus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/optionsLayout"
+        android:layout_centerHorizontal="true"
+        android:textSize="18sp"
+        android:layout_margin="@dimen/default_PaddingMargin"
+        android:textStyle="italic"
+        android:visibility="gone"
+        android:textColor="@color/black"
+        android:text="Ура! Это верный ответ!" />
+
+</RelativeLayout>

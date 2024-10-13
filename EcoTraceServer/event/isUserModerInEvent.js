@@ -24,8 +24,7 @@ router.get('/isUserModerInEvent', async (req, res) => {
     const [moder] = await connection2.execute(
         `SELECT eventRole FROM events WHERE eventId = "${eventId}" AND userId = "${userId}"`
     );
-
-    res.json([moder <= 1]);
+    res.json([moder[0].eventRole <= 1]);
     // 0 создатель
     // 1 помощник
     // 2 участник

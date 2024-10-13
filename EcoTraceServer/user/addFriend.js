@@ -1,5 +1,5 @@
 const express = require('express');
-const admin = require('firebase-admin');
+//to sql
 const { checkOAuth2 } = require('../tech/oauth');
 const { getUsernameOnly } = require('../tech/getUsernameOnly');
 const { sendMsg } = require('../global/sendMessageToUserDevice');
