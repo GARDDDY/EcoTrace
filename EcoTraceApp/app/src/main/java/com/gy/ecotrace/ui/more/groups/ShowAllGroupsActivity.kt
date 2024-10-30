@@ -23,8 +23,10 @@ import com.bumptech.glide.Glide
 import com.facebook.shimmer.ShimmerFrameLayout
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.firebase.auth.FirebaseAuth
 import com.gy.ecotrace.Globals
 import com.gy.ecotrace.R
+import com.gy.ecotrace.customs.ETAuth
 import com.gy.ecotrace.db.DatabaseMethods
 import com.gy.ecotrace.db.Repository
 import com.gy.ecotrace.ui.more.groups.CreateGroupActivity
@@ -46,6 +48,7 @@ class ShowAllGroupsViewModelFactory(private val repository: Repository) : ViewMo
 class ShowAllGroupsActivity : AppCompatActivity() {
 
     private lateinit var showAllViewModel: ShowAllGroupsViewModel
+    private val currentUser = ETAuth.getInstance().guid() // ?
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -171,33 +174,33 @@ class ShowAllGroupsActivity : AppCompatActivity() {
             }
         })
 
-//        showAllViewModel.getUserGroups()
-//        showAllViewModel.groups.observe(this, Observer {
-//            it?.let{
-//                findViewById<LinearLayout>(R.id.userJoinedGroups).visibility = View.VISIBLE
-//                val joinedGroups = findViewById<LinearLayout>(R.id.userJoinedGroupsLayout)
-//                for ((groupId, groupName) in it) {
-//                    val groupLayout = layoutInflater.inflate(R.layout.layout_joined_group_short, null)
-//                    groupLayout.findViewById<TextView>(R.id.groupName).text = groupName
-//
-//                    Glide.with(this)
-//                        .load(Globals().getImgUrl("groups", groupId))
-//                        .into(groupLayout.findViewById(R.id.groupImage))
-//
-//
-//                    groupLayout.setOnClickListener {
-//                        Globals.getInstance().setString("CurrentlyWatchingGroup", groupId)
-//                        startActivity(Intent(this@ShowAllGroupsActivity, ShowGroupActivity::class.java))
-//                    }
-//
-//                    joinedGroups.addView(groupLayout)
-//                    val separator = View(applicationContext)
-//                    separator.layoutParams = ViewGroup.LayoutParams(resources.getDimensionPixelSize(R.dimen.default_PaddingMargin),
-//                        ViewGroup.LayoutParams.WRAP_CONTENT)
-//                    joinedGroups.addView(separator)
-//                }
-//            }
-//        })
+        showAllViewModel.getUserGroups(currentUser)
+        showAllViewModel.userGroups.observe(this, Observer {
+            it?.let{
+                findViewById<LinearLayout>(R.id.userJoinedGroups).visibility = View.VISIBLE
+                val joinedGroups = findViewById<LinearLayout>(R.id.userJoinedGroupsLayout)
+                for (group in it) {
+                    val groupLayout = layoutInflater.inflate(R.layout.layout_joined_group_short, null)
+                    groupLayout.findViewById<TextView>(R.id.groupName).text = group.groupInfo.groupName
+
+                    Glide.with(this)
+                        .load(Globals().getImgUrl("groups", group.groupInfo.groupId))
+                        .into(groupLayout.findViewById(R.id.groupImage))
+
+
+                    groupLayout.setOnClickListener {
+                        Globals.getInstance().setString("CurrentlyWatchingGroup", group.groupInfo.groupId)
+                        startActivity(Intent(this@ShowAllGroupsActivity, ShowGroupActivity::class.java))
+                    }
+
+                    joinedGroups.addView(groupLayout)
+                    val separator = View(applicationContext)
+                    separator.layoutParams = ViewGroup.LayoutParams(resources.getDimensionPixelSize(R.dimen.default_PaddingMargin),
+                        ViewGroup.LayoutParams.WRAP_CONTENT)
+                    joinedGroups.addView(separator)
+                }
+            }
+        })
 
         val groupsScrollView: ScrollView = findViewById(R.id.allGroupsScrollView)
         groupsScrollView.setOnScrollChangeListener { view, _,_,_,_ ->

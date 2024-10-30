@@ -71,7 +71,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/default_PaddingMargin"
                     android:text="group-About"
-                    android:hint="Нет описания"
+                    android:hint="@string/noDescription"
                     android:textColorHint="@color/silver"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -160,7 +160,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:gravity="center"
-                        android:text="Правила"
+                        android:text="@string/rules"
                         android:textSize="16sp" />
 
                     <ImageView
@@ -177,7 +177,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:backgroundTint="@color/ok_green"
-                    android:text="Присоединиться"
+                    android:text="@string/join"
                     android:layout_margin="@dimen/default_PaddingMargin"
                     android:textColor="@color/dirt_white"
                     app:layout_constraintTop_toBottomOf="@+id/showGroupRules"
@@ -244,7 +244,7 @@
                             android:layout_height="match_parent"
                             android:clickable="true"
                             android:gravity="center"
-                            android:text="Изображение"
+                            android:text="@string/image"
                             android:textColor="@color/black"
                             android:textSize="15sp" />
                     </LinearLayout>
@@ -258,7 +258,7 @@
                         android:layout_marginBottom="10dp"
                         android:layout_toEndOf="@+id/attachImage"
                         android:backgroundTint="@color/silver"
-                        android:text="Опубликовать"
+                        android:text="@string/publish"
                         android:textColor="@color/dirt_white" />
 
                     <LinearLayout
@@ -282,7 +282,7 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
                             android:layout_marginHorizontal="10dp"
-                            android:text="Написать что-нибудь..."
+                            android:text="@string/writeSomething..."
                             android:textColor="@color/black"
                             android:textSize="16sp" />
                     </LinearLayout>
@@ -402,7 +402,7 @@
                     android:textSize="18sp"
                     android:layout_marginTop="@dimen/default_PaddingMargin"
                     android:visibility="gone"
-                    android:text="В этой группе еще никто и ничего не публиковал!"
+                    android:text="@string/noPostsInThisGroupYet"
                     app:layout_constraintTop_toBottomOf="@id/loadingPosts" />
 
                 <LinearLayout

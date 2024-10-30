@@ -11,6 +11,8 @@ router.get('/getUpdates', async (req, res) => {
     const oAuth = req.query.oauth || '0';
     const sinceTime = req.query.since || 0;
 
+    console.log(sinceTime)
+
     if (!connection2) {
         console.error("not connected to events")
         return

@@ -5,6 +5,7 @@ const connection1 = connections["users"]
 const connection2 = connections["groups"]
 
 const router = express.Router();
+const { checkOAuth2 } = require('../tech/oauth');
 
 
 const roleToCount = {
@@ -22,6 +23,10 @@ router.get('/getGroupMembers', async (req, res) => {
 
     const userId = req.query.cid || "0";
     const oauth = req.query.oauth || "0";
+
+    if (!await checkOAuth2(oauth, userId)) {
+        return res.status(403).json({ error: "You are not signed in! Not allowed ev" });
+    }
 
     if (!connection2) {
         console.error("not connected to groups")

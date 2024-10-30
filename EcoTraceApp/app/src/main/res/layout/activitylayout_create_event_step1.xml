@@ -23,7 +23,7 @@
             android:id="@+id/textView36"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Название"
+            android:text="@string/name"
             android:textColor="@color/black"
             android:textSize="20sp" />
 
@@ -33,7 +33,7 @@
             android:layout_height="wrap_content"
             android:backgroundTint="@color/ok_green"
             android:ems="10"
-            android:hint="Название мероприятия"
+            android:hint="@string/eventName"
             android:inputType="text"
             android:layout_marginBottom="15dp"
             android:textColor="@color/ok_green"
@@ -43,7 +43,7 @@
             android:id="@+id/textView37"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Краткое описание"
+            android:text="@string/shortDescription"
             android:textColor="@color/black"
             android:textSize="20sp" />
 
@@ -53,7 +53,7 @@
             android:layout_height="wrap_content"
             android:backgroundTint="@color/ok_green"
             android:ems="10"
-            android:hint="Кратко опишите вашу идею"
+            android:hint="@string/tellAboutYourIdeaShortly"
             android:inputType="text"
             android:layout_marginBottom="15dp"
             android:textColor="@color/ok_green"
@@ -63,7 +63,7 @@
             android:id="@+id/textView38"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Теги"
+            android:text="@string/tags"
             android:textColor="@color/black"
             android:textSize="20sp" />
 
@@ -78,42 +78,6 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical" />
         </ScrollView>
-
-        <TextView
-                android:id="@+id/textView39"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Мероприятие начнется"
-            android:layout_marginTop="20dp"
-                android:textColor="@color/black"
-                android:textSize="20sp" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:orientation="horizontal">
-
-            <Spinner
-                android:id="@+id/chooseStartWay"
-                android:layout_width="wrap_content"
-                android:layout_weight="1"
-                android:layout_height="match_parent"
-                android:background="@color/transparent"
-                android:foregroundTint="@color/ok_green"
-                android:entries="@array/eventStart" />
-
-            <EditText
-                android:id="@+id/autostartWhenMembers"
-                android:layout_width="wrap_content"
-                android:minWidth="40dp"
-                android:layout_height="wrap_content"
-                android:visibility="gone"
-                android:textColor="@color/ok_green"
-                android:backgroundTint="@color/ok_green"
-                android:textCursorDrawable="@color/ok_green"
-                android:inputType="number" />
-        </LinearLayout>
 
     </LinearLayout>
 </FrameLayout>

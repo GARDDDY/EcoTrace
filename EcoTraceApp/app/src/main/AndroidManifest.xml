@@ -86,7 +86,7 @@
             android:name=".ui.more.events.ShowEventActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.more.profile.SignInUpHub"
+            android:name=".ui.more.profile.sign.SignInUpHub"
             android:exported="false" />
         <activity
             android:name=".ui.more.friends.UsersSearchFriends"
@@ -104,7 +104,8 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ui.more.profile.ChangeProfile"
+            android:name=".ui.more.profile.change.ChangeProfile"
+            android:windowSoftInputMode="adjustResize"
             android:exported="false" />
         <activity
             android:name=".ui.more.profile.ProfileActivity"

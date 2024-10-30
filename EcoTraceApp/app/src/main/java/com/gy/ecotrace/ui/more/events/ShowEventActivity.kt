@@ -34,6 +34,7 @@ import com.google.mlkit.vision.common.InputImage
 import com.gy.ecotrace.BuildConfig
 import com.gy.ecotrace.Globals
 import com.gy.ecotrace.R
+import com.gy.ecotrace.customs.ETAuth
 import com.gy.ecotrace.db.DatabaseMethods
 import com.gy.ecotrace.db.Repository
 import com.gy.ecotrace.ui.more.friends.PersonalShareActivity
@@ -121,7 +122,7 @@ class ShowEventActivity : AppCompatActivity() {
         eventViewModel.event.observe(this, Observer {
 
             createQr.setOnClickListener { _ ->
-                val currentUser = FirebaseAuth.getInstance().currentUser?.uid ?: ""
+                val currentUser = ETAuth.getInstance().guid()
                 val qrActivity = Intent(this@ShowEventActivity, PersonalShareActivity::class.java)
                 qrActivity.putExtra("valid", true)
                 qrActivity.putExtra("link", "eventparticipanrvalidation?uid=$currentUser&eid=$currentEvent")

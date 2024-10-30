@@ -18,6 +18,10 @@ router.post('/validateUser', async (req, res) => {
         return
     }
 
+    if (!await checkOAuth2(oauth, userId)) {
+        return res.status(403).json({ error: "You are not signed in! Not allowed ev" });
+    }
+
     res.setHeader('Content-Type', 'application/json; charset=utf-8');
 
     const [moder] = await connection1.execute(

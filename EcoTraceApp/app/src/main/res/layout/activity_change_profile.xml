@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
     android:background="@color/dirt_white">
 
     <androidx.appcompat.widget.Toolbar
@@ -23,6 +24,7 @@
         android:layout_marginEnd="9dp"
         android:layout_marginBottom="10dp"
         android:visibility="visible"
+        android:scrollbars="none"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/toolbar2"
         app:layout_constraintStart_toEndOf="@+id/toolbar2"
@@ -42,9 +44,9 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:padding="12dp"
-                android:text="Публичная информация"
+                android:text="@string/publicInfo"
                 android:textColor="@color/ok_green"
-                android:textSize="24dp"
+                android:textSize="24sp"
                 android:textStyle="bold" />
 
             <LinearLayout
@@ -58,9 +60,9 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_weight="1"
-                    android:text="Аватар"
+                    android:text="@string/avatar"
                     android:textColor="@color/black"
-                    android:textSize="18dp"
+                    android:textSize="18sp"
                     android:textStyle="bold" />
 
                 <ImageButton
@@ -70,102 +72,124 @@
                     android:layout_weight="0"
                     android:padding="0dp"
                     android:scaleType="fitCenter"
-                    tools:srcCompat="@tools:sample/avatars" />
+                    android:backgroundTint="@color/transparent"
+                    app:srcCompat="@drawable/baseline_person_24" />
             </LinearLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" >
+
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/newUsernameLayout"
+                    android:layout_width="match_parent"
+                    app:counterEnabled="true"
+                    app:counterMaxLength="64"
+                    style="@style/CustomTextInputLayout"
+                    android:layout_height="wrap_content">
+
+                    <com.google.android.material.textfield.TextInputEditText
+
+                        android:id="@+id/newUsername"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/black"
+                        android:textColorHint="@color/silver"
+                        android:hint="@string/newUsername" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <ImageButton
+                    android:id="@+id/returnUsername"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentEnd="true"
+                    android:backgroundTint="@color/transparent"
+                    app:tint="@color/ok_green"
+                    android:visibility="visible"
+                    android:src="@drawable/baseline_keyboard_backspace_24" />
+
+            </RelativeLayout>
+
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:id="@+id/textView7"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_weight="1"
-                    android:text="Никнейм"
-                    android:textColor="@color/black"
-                    android:textSize="18dp"
-                    android:textStyle="bold" />
-
-                <EditText
-                    android:id="@+id/newUsername_change_menu"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:backgroundTint="@color/ok_green"
-                    android:ems="10"
-                    android:hint="Новый никнейм"
-                    android:inputType="text"
-                    android:text=""
-                    android:textColor="@color/ok_green"
-                    android:textColorHint="@color/silver" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_marginVertical="@dimen/default_PaddingMargin"
                 android:orientation="horizontal">
 
                 <TextView
                     android:id="@+id/textView15"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1.09"
-                    android:text="Страна"
+                    android:layout_weight="1"
+                    android:text="@string/country"
                     android:textColor="@color/black"
-                    android:textSize="18dp"
+                    android:textSize="18sp"
                     android:textStyle="bold" />
 
                 <Spinner
                     android:id="@+id/newCountry_change_menu"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:backgroundTint="@color/transparent"
-                    android:spinnerMode="dropdown"
-                    android:ellipsize="marquee"
-                    android:singleLine="true"
-                    android:textAlignment="textEnd"
-                    android:gravity="end"
-                    android:theme="@style/mySpinnerItemStyle"/>
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:id="@+id/textView16"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="110"
-                    android:text="Обо мне"
-                    android:textColor="@color/black"
-                    android:textSize="18dp"
-                    android:textStyle="bold" />
-
-                <EditText
-                    android:id="@+id/aboutme_change_menu"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
                     android:backgroundTint="@color/ok_green"
-                    android:ems="10"
-                    android:gravity="start|top"
-                    android:inputType="textMultiLine"
-                    android:textColor="@color/ok_green" />
+                    android:spinnerMode="dropdown"
+                    android:ellipsize="none"
+                    android:singleLine="true"
+                    android:gravity="end" />
+
             </LinearLayout>
 
-            <Button
-                android:id="@+id/save_public_info"
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:backgroundTint="@color/ok_green"
-                android:text="Сохранить"
-                android:textColor="@color/dirt_white" />
+                android:layout_height="wrap_content" >
+
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    app:counterEnabled="true"
+                    app:counterMaxLength="256"
+                    style="@style/CustomTextInputLayout"
+                    android:layout_height="wrap_content">
+
+                    <com.google.android.material.textfield.TextInputEditText
+
+                        android:id="@+id/newAboutMe"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/black"
+                        android:textColorHint="@color/silver"
+                        android:hint="@string/tellAboutYourself" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <ImageButton
+                    android:id="@+id/returnAboutMe"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentEnd="true"
+
+                    android:backgroundTint="@color/transparent"
+                    app:tint="@color/ok_green"
+                    android:visibility="visible"
+                    android:src="@drawable/baseline_keyboard_backspace_24" />
+
+            </RelativeLayout>
+
+            <HorizontalScrollView
+                android:layout_width="match_parent"
+                android:layout_marginVertical="@dimen/default_PaddingMargin"
+                android:scrollbars="none"
+                android:layout_height="wrap_content" >
+
+                <LinearLayout
+                    android:id="@+id/tagsLayout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal" />
+
+            </HorizontalScrollView>
 
             <TextView
                 android:id="@+id/textView9"
@@ -173,118 +197,116 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:padding="12dp"
-                android:text="Приватная инфомация"
+                android:text="@string/personalInfo"
                 android:textColor="@color/ok_green"
-                android:textSize="24dp"
+                android:textSize="24sp"
                 android:textStyle="bold" />
 
-            <LinearLayout
+            <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                style="@style/CustomTextInputLayout"
+                android:layout_height="wrap_content">
 
-                <TextView
-                    android:id="@+id/textView8"
-                    android:layout_width="wrap_content"
+                <com.google.android.material.textfield.TextInputEditText
+
+                    android:id="@+id/newFullname"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_weight="200"
-                    android:text="Реальное имя"
                     android:textColor="@color/black"
-                    android:textSize="18dp"
-                    android:textStyle="bold" />
+                    android:textColorHint="@color/silver"
+                    android:hint="@string/howToCallYou" />
+            </com.google.android.material.textfield.TextInputLayout>
 
-                <EditText
-                    android:id="@+id/newFullname_change_menu"
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_marginVertical="@dimen/default_PaddingMargin"
+                android:layout_height="wrap_content" >
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/newEmailLayout"
+                    android:layout_width="match_parent"
+                    style="@style/CustomTextInputLayout"
+                    android:hint="@string/email"
+                    android:layout_height="wrap_content">
+
+                    <com.google.android.material.textfield.TextInputEditText
+
+                        android:id="@+id/newEmail"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/black"
+                        android:textColorHint="@color/silver" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+
+
+                <ImageButton
+                    android:id="@+id/applyEmail"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:backgroundTint="@color/ok_green"
-                    android:ems="10"
-                    android:hint="Ваше имя"
-                    android:inputType="text"
-                    android:text=""
-                    android:textColor="@color/ok_green"
-                    android:textColorHint="@color/silver" />
+                    android:layout_height="match_parent"
+                    android:backgroundTint="@color/transparent"
+                    android:visibility="gone"
+                    android:layout_centerVertical="true"
+                    app:tint="@color/ok_green"
+                    android:layout_alignParentEnd="true"
+                    tools:src="@drawable/baseline_check_24" />
+            </RelativeLayout>
 
-            </LinearLayout>
-
-            <LinearLayout
+            <Space
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:layout_marginVertical="@dimen/default_PaddingMargin"/>
 
-                <TextView
-                    android:id="@+id/textView10"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_weight="100"
-                    android:text="Почта"
-                    android:textColor="@color/black"
-                    android:textSize="18dp"
-                    android:textStyle="bold" />
-
-                <EditText
-                    android:id="@+id/newEmail_change_menu"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:backgroundTint="@color/ok_green"
-                    android:ems="10"
-                    android:hint="Ваш email"
-                    android:inputType="textEmailAddress"
-                    android:textColor="@color/ok_green"
-                    android:textColorHint="@color/silver" />
-            </LinearLayout>
-
-            <TextView
-                android:id="@+id/textView12"
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:padding="12dp"
-                android:text="@string/password"
-                android:textColor="@color/ok_green"
-                android:textSize="24dp"
-                android:textStyle="bold" />
+                android:layout_height="wrap_content" >
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/currentPasswordLayout"
+                    android:layout_width="match_parent"
+                    style="@style/CustomTextInputLayout"
+                    android:layout_height="wrap_content">
 
-                <EditText
-                    android:id="@+id/oldPassword_change_menu"
+                    <com.google.android.material.textfield.TextInputEditText
+
+                        android:id="@+id/currentPassword"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/black"
+                        android:textColorHint="@color/silver"
+                        android:hint="@string/currentPassword" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/newPasswordLayout"
+                    android:layout_width="match_parent"
+                    android:layout_below="@id/currentPasswordLayout"
+                    style="@style/CustomTextInputLayout"
+                    android:layout_height="wrap_content">
+
+                    <com.google.android.material.textfield.TextInputEditText
+
+                        android:id="@+id/newPassword"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/black"
+                        android:textColorHint="@color/silver"
+                        android:hint="@string/newPassword" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.button.MaterialButton
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:backgroundTint="@color/ok_green"
-                    android:ems="10"
-                    android:hint="Старый"
-                    android:inputType="textPassword"
-                    android:textColor="@color/ok_green"
-                    android:textColorHint="@color/silver" />
-
-                <EditText
-                    android:id="@+id/newPassword_change_menu"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:backgroundTint="@color/ok_green"
-                    android:ems="10"
-                    android:hint="Новый"
-                    android:inputType="textPassword"
-                    android:textColor="@color/ok_green"
-                    android:textColorHint="@color/silver" />
-
-                <Button
-                    android:id="@+id/apply_new_password"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:backgroundTint="@color/ok_green"
-                    android:text="Сменить пароль"
                     android:textColor="@color/dirt_white"
-                    android:theme="@style/Widget.AppCompat.Button.Small" />
-            </LinearLayout>
+                    android:text="@string/applyNewPassword"
+                    android:layout_marginTop="5dp"
+                    android:visibility="gone"
+                    android:layout_below="@id/newPasswordLayout" />
+
+            </RelativeLayout>
+
+
 
             <TextView
                 android:id="@+id/textView"
@@ -292,9 +314,9 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:padding="12dp"
-                android:text="Настройки конфиденциальности"
+                android:text="@string/privacySettings"
                 android:textColor="@color/ok_green"
-                android:textSize="20dp"
+                android:textSize="20sp"
                 android:textStyle="bold" />
 
             <LinearLayout
@@ -309,17 +331,17 @@
 
                     <TextView
                         android:id="@+id/textView2"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:layout_weight="1"
-                        android:text="Ваше имя видят"
+                        android:text="@string/yourNameIsSeenTo"
                         android:textColor="@color/black"
-                        android:textSize="18dp"
+                        android:textSize="18sp"
                         android:textStyle="bold" />
 
                     <Spinner
-                        android:id="@+id/spinner"
+                        android:id="@+id/canSeeFullname"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:backgroundTint="@color/ok_green"
@@ -335,13 +357,21 @@
 
                     <TextView
                         android:id="@+id/textView17"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="Вашу страну видят"
+                        android:text="@string/yourCountryIsSeenTo"
                         android:textColor="@color/black"
-                        android:textSize="18dp"
+                        android:textSize="18sp"
                         android:textStyle="bold" />
+                    <Spinner
+                        android:id="@+id/canSeeCountry"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="@color/ok_green"
+                        android:entries="@array/whoCanSeeFullname"
+                        android:spinnerMode="dropdown"
+                        android:theme="@style/mySpinnerItemStyle" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -351,13 +381,21 @@
 
                     <TextView
                         android:id="@+id/textView18"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="Ваших друзей видят"
+                        android:text="@string/yourFriendsAreSeenTo"
                         android:textColor="@color/black"
-                        android:textSize="18dp"
+                        android:textSize="18sp"
                         android:textStyle="bold" />
+                    <Spinner
+                        android:id="@+id/canSeeFriends"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="@color/ok_green"
+                        android:entries="@array/whoCanSeeFullname"
+                        android:spinnerMode="dropdown"
+                        android:theme="@style/mySpinnerItemStyle" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -367,13 +405,21 @@
 
                     <TextView
                         android:id="@+id/textView19"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="Ваши группы видят"
+                        android:text="@string/yourGroupsAreSeenTo"
                         android:textColor="@color/black"
-                        android:textSize="18dp"
+                        android:textSize="18sp"
                         android:textStyle="bold" />
+                    <Spinner
+                        android:id="@+id/canSeeGroups"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="@color/ok_green"
+                        android:entries="@array/whoCanSeeFullname"
+                        android:spinnerMode="dropdown"
+                        android:theme="@style/mySpinnerItemStyle" />
                 </LinearLayout>
 
             </LinearLayout>

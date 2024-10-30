@@ -16,6 +16,10 @@ router.get('/getComments', async (req, res) => {
 
     const timestamp = new Date().getTime() / 1000;
 
+    if (!await checkOAuth2(oauth, userId)) {
+        return res.status(403).json({ error: "You are not signed in! Not allowed ev" });
+    }
+
     if (!connection2) {
         console.error("not connected to groups")
         return;

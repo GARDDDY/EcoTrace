@@ -21,6 +21,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.gy.ecotrace.Globals
 import com.gy.ecotrace.R
+import com.gy.ecotrace.customs.ETAuth
 import com.gy.ecotrace.databinding.FragmentRatingsBinding
 import com.gy.ecotrace.db.DatabaseMethods
 import com.gy.ecotrace.db.Repository
@@ -41,7 +42,7 @@ class RatingsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val currentUser = FirebaseAuth.getInstance().currentUser?.uid ?: "0"
+        val currentUser = ETAuth.getInstance().guid()
 
         val repository = Repository(
             DatabaseMethods.UserDatabaseMethods(),
@@ -79,9 +80,13 @@ class RatingsFragment : Fragment() {
             }
         })
 
+        if (currentUser == "0") {
+            viewPager.visibility = View.GONE
+        }
+
         val usersLayout: LinearLayout = view.findViewById(R.id.usersLayout)
         var currentInRating = false
-//        ratingsViewModel.getRating()
+        ratingsViewModel.getRating()
         ratingsViewModel.users.observe(viewLifecycleOwner, Observer { users ->
             view.findViewById<ShimmerFrameLayout>(R.id.ratingLoading).visibility = View.GONE
             Log.d("rating", users.toString())
@@ -106,6 +111,7 @@ class RatingsFragment : Fragment() {
                     currentInRating = true
 
                     val currentLayout: FrameLayout = view.findViewById(R.id.currentUserInRating)
+                    currentLayout.removeAllViews()
 
                     val layout = layoutInflater.inflate(R.layout.layout_user_rating, null)
 

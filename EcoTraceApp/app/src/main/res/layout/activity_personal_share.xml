@@ -101,7 +101,7 @@
         android:id="@+id/button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Поделиться"
+        android:text="@string/share"
         android:textSize="20sp"
         android:visibility="gone"
         android:textColor="@color/dirt_white"

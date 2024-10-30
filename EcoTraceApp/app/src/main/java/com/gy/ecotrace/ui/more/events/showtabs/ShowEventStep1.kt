@@ -107,7 +107,7 @@ class ShowEventStep1 : Fragment() {
             view.findViewById<TextView>(R.id.eventAbout).text = event.eventAbout
             view.findViewById<TextView>(R.id.eventCountMembers).text = "${event.eventCountMembers} ${members(event.eventCountMembers)}"
             view.findViewById<TextView>(R.id.eventStartDate).text = when(event.eventStatus) {
-                0 -> "Начнется ${getWhenStart(event.eventStart)}"
+                0 -> "Начнется ${event.startTime}"
                 1 -> "Проходит"
                 2 -> "Закончилось"
                 else -> "неизвестно"

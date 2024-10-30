@@ -29,6 +29,9 @@ class ShowAllEventsViewModel(private val repository: Repository) : ViewModel() {
     private var startAtId: String? = null
     var foundAll = false
 
+    var startDate: Long? = null
+    var endDate: Long? = null
+
 
     fun getEvents(updateAllGot: Boolean = true) {
         viewModelScope.launch {
@@ -42,7 +45,7 @@ class ShowAllEventsViewModel(private val repository: Repository) : ViewModel() {
             }.joinToString(",")
 
 
-            val data = repository.findEventsWithFilters(filters, startAtId)
+            val data = repository.findEventsWithFilters(filters, startAtId, startDate, endDate)
 
             Log.d("data", data.toString())
 
@@ -54,14 +57,14 @@ class ShowAllEventsViewModel(private val repository: Repository) : ViewModel() {
         }
     }
 
-    fun getUserEvents() {
+    private val _userEvents = MutableLiveData<MutableList<DatabaseMethods.UserDatabaseMethods.UserEvent>>()
+    private var lastIdUser: String? = null
+    val userEvents: LiveData<MutableList<DatabaseMethods.UserDatabaseMethods.UserEvent>> get() = _userEvents
+
+    fun getUserEvents(userId: String) {
         viewModelScope.launch {
-            Log.d("test", "1")
-            val events = repository.getUserEventsShort(lastId)
-            Log.d("test", "2")
-            lastId = events?.keys?.last()
-            Log.d("test", "3")
-            _events.postValue(events)
+            val events = repository.getUserEvents(userId, lastIdUser, 1)
+            _userEvents.postValue(events)
         }
     }
 

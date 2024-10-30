@@ -50,7 +50,7 @@
                     android:layout_height="wrap_content"
                     android:textColor="@color/ok_green"
                     android:textSize="18sp"
-                    android:text="Ваши мероприятия" />
+                    android:text="@string/yourEvents" />
 
                 <TextView
                     android:id="@+id/textView29"
@@ -58,7 +58,7 @@
                     android:layout_height="wrap_content"
                     android:textColor="@color/silver"
                     android:textSize="14sp"
-                    android:text="Мероприятия, в которых вы участвуете" />
+                    android:text="@string/eventsYouAreIn" />
 
                 <HorizontalScrollView
                     android:scrollbars="none"
@@ -80,7 +80,7 @@
                 android:layout_marginBottom="10dp"
                 android:textSize="18sp"
                 android:textColor="@color/ok_green"
-                android:text="Поиск мероприятий" />
+                android:text="@string/searchForEvents" />
 
             <HorizontalScrollView
                 android:id="@+id/horizontalScrollView"
@@ -98,28 +98,24 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_marginBottom="@dimen/default_PaddingMargin"
                 android:orientation="horizontal">
 
                 <TextView
-                    android:id="@+id/editTextDate"
+                    android:id="@+id/startFromTime"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:ems="5"
+                    android:ems="7"
                     android:gravity="center"
                     android:textColor="@color/black"
                     android:textColorHint="@color/silver"
-                    android:hint="───────" />
+                    android:hint="@string/sinceNow" />
 
-                <TextView
-                    android:id="@+id/editTextTime"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:ems="3"
-                    android:hint="────"
-                    android:gravity="center"
-                    android:textColorHint="@color/silver"
-                    android:textColor="@color/black" />
-
+                <LinearLayout
+                    android:id="@+id/whenStartReady"
+                    android:visibility="invisible"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" >
                 <TextView
                     android:id="@+id/textView22"
                     android:layout_width="wrap_content"
@@ -132,24 +128,24 @@
                     android:text="─" />
 
                 <TextView
-                    android:id="@+id/editTextDate2"
+                    android:id="@+id/endToTime"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:ems="5"
+                    android:ems="7"
                     android:gravity="center"
                     android:textColor="@color/black"
                     android:textColorHint="@color/silver"
-                    android:hint="───────" />
+                    android:hint="@string/tillTheEnd" />
 
-                <TextView
-                    android:id="@+id/editTextTime2"
+                <ImageButton
+                    android:id="@+id/clearDates"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:ems="3"
-                    android:hint="────"
-                    android:gravity="center"
-                    android:textColorHint="@color/silver"
-                    android:textColor="@color/black" />
+                    android:backgroundTint="@color/transparent"
+                    app:tint="@color/ok_green"
+                    android:visibility="visible"
+                    android:src="@drawable/baseline_cancel_24" />
+                </LinearLayout>
             </LinearLayout>
 
             <LinearLayout
@@ -162,7 +158,7 @@
                 android:id="@+id/noEventsWarning"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Не найдено ни одного мероприятия с такими тегами!"
+                android:text="@string/noEventsFoundWithSuchTags"
                 android:textColor="@color/ok_green"
                 android:textAlignment="center"
                 android:textSize="18sp"

@@ -6,7 +6,7 @@ const connection2 = connections["groups"]
 
 const router = express.Router();
 
-router.get('/getNewPosts', async (req, res) => {
+router.get('/getNewPosts', async (req, res) => { // todo rename filename
     const groupId = req.query.gid || "0";
     const userId = req.query.cid || "0";
     const oauth = req.query.oauth || "0";
@@ -18,6 +18,10 @@ router.get('/getNewPosts', async (req, res) => {
     if (!connection2) {
         console.error("not connected to groups")
         return;
+    }
+
+    if (!await checkOAuth2(oauth, userId)) {
+        return res.status(403).json({ error: "You are not signed in! Not allowed ev" });
     }
 
     res.setHeader('Content-Type', 'application/json; charset=utf-8');

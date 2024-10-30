@@ -19,12 +19,106 @@
     <TextView
         android:id="@+id/factText"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         android:text="TextView"
         android:textColor="@color/black"
         android:textSize="18sp"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/mainTitleFact" />
+
+    <Button
+        android:id="@+id/openQuestions"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/ok_green"
+        android:layout_marginVertical="@dimen/default_PaddingMargin"
+        android:drawableEnd="@drawable/baseline_keyboard_arrow_down_24"
+        android:drawableTint="@color/dirt_white"
+        android:text="@string/openQuestion"
+        android:textColor="@color/dirt_white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/factText" />
+
+
+    <RelativeLayout
+        android:id="@+id/questionLayout"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/openQuestions">
+
+        <TextView
+            android:id="@+id/questionTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/optionsLayout"
+            android:layout_margin="@dimen/default_PaddingMargin"
+            android:text="TextView"
+            android:textAlignment="center"
+            android:textColor="@color/black"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:id="@+id/optionsLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_marginHorizontal="@dimen/default_PaddingMargin"
+            android:orientation="vertical">
+
+                    <Button
+                        android:id="@+id/option1"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="@color/silver"
+                        android:text="Вариант 1"
+                        android:textColor="@color/dirt_white"
+                        android:textSize="18sp" />
+
+                    <Button
+                        android:id="@+id/option2"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="@color/silver"
+                        android:text="Вариант 2"
+                        android:textColor="@color/dirt_white"
+                        android:textSize="18sp" />
+
+                    <Button
+                        android:id="@+id/option3"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="@color/silver"
+                        android:text="Вариант 3"
+                        android:textColor="@color/dirt_white"
+                        android:textSize="18sp" />
+
+                    <Button
+                        android:id="@+id/option4"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="@color/silver"
+                        android:text="Вариант 4"
+                        android:textColor="@color/dirt_white"
+                        android:textSize="18sp" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/answerStatus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/optionsLayout"
+            android:layout_centerHorizontal="true"
+            android:layout_margin="@dimen/default_PaddingMargin"
+            android:text="Ура! Это верный ответ!"
+            android:textColor="@color/black"
+            android:textSize="18sp"
+            android:textStyle="italic"
+            android:visibility="gone" />
+
+    </RelativeLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

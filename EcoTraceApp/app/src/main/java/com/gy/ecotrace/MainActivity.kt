@@ -19,6 +19,7 @@ import com.google.gson.Gson
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import com.google.gson.reflect.TypeToken
+import com.gy.ecotrace.customs.ETAuth
 import com.gy.ecotrace.databinding.ActivityMainBinding
 import com.gy.ecotrace.db.DatabaseMethods
 import com.yandex.mapkit.MapKitFactory
@@ -40,6 +41,10 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        ETAuth.initialize(this)
+
+        // todo EDUCATION status
+        // todo bugfixes, apply CHANGE_PROFILE, CREATE_PROFILE
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -57,48 +62,37 @@ class MainActivity : AppCompatActivity() {
         navView.setupWithNavController(navController)
 
 
-        val loggedUser = FirebaseAuth.getInstance().currentUser?.uid
+        val loggedUser = ETAuth.getInstance().guid()
         Globals.getInstance().setString("CurrentlyWatching", loggedUser ?: "0")
 
         startService(Intent(this, AppService::class.java))
 
-        val key = "f3d745ad-1974-4793-978d-52b3a165865c"
-        MapKitFactory.setApiKey(key)
-        Glide.get(this).clearMemory()
+        MapKitFactory.setApiKey(com.gy.ecotrace.BuildConfig.MAPKIT_API_KEY)
+
 
         fun applyData(type: Int, data1: String) {
-            Log.d("data", data1)
+            Log.d("data got, parsing", data1.toString())
             val data: Any = try {
-                Log.d("setting to array", data1)
-                // Попробуем распарсить как массив строк
                 Gson().fromJson(data1, Array<String>::class.java)
             } catch (e: Exception) {
-                Log.e("ParseError", "Failed to parse as Array<String>: ${e.message}")
                 try {
-                    // Попробуем распарсить как JsonObject
-                    val jsonObject = Gson().fromJson(data1, JsonObject::class.java)
-                    Log.d("setting to compl array", "$jsonObject")
-
-                    // Создаем массив пар из JsonObject
-                    val pairs = jsonObject.entrySet().map { Pair(it.key, it.value.asString) }.toTypedArray()
-                    pairs
+                    val jsonObject = Gson().fromJson(data1, Array<DatabaseMethods.DataClasses.ConstantMap>::class.java)
+                    jsonObject
                 } catch (e: Exception) {
-                    Log.e("ParseError", "Failed to parse as JsonObject: ${e.message}")
-                    throw Exception("ParsingError $data1\n$e")
+                    Log.e("unable to unparse", data1.toString(), e)
                 }
             }
-
-            Log.d("data -> $type", data.toString())
+            Log.d("data parsed, saving", data.toString())
 
             when (type) {
-                0 -> Globals.getInstance().setEventRoles(data as Array<String>)
-                1 -> Globals.getInstance().setGroupRoles(data as Array<String>)
-                2 -> Globals.getInstance().setUserRoles(data as Array<String>)
+                0 -> Globals.getInstance().setEventRoles(data)
+                1 -> Globals.getInstance().setGroupRoles(data)
+                2 -> Globals.getInstance().setUserRoles(data)
 
-                3 -> Globals.getInstance().setUserFilters(data as Array<Pair<String, String>>)
-                4 -> Globals.getInstance().setEventsFilters(data as Array<Pair<String, String>>)
-                5 -> Globals.getInstance().setGroupsFilters(data as Array<Pair<String, String>>)
-                6 -> Globals.getInstance().setFiltersColors(data as Array<Pair<String, String>>)
+                3 -> Globals.getInstance().setUserFilters(data)
+                4 -> Globals.getInstance().setEventsFilters(data)
+                5 -> Globals.getInstance().setGroupsFilters(data)
+                6 -> Globals.getInstance().setFiltersColors(data)
             }
         }
 
@@ -124,6 +118,7 @@ class MainActivity : AppCompatActivity() {
                     }
                     pendingRequests.add(job)
                 } else {
+                    Log.d("getting from cache", inCacheType)
                     applyData(type, inCacheType)
                 }
             }

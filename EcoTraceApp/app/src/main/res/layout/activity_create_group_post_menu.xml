@@ -22,7 +22,7 @@
         android:id="@+id/publishPost"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Опубликовать"
+        android:text="@string/publish"
         android:layout_alignEnd="@+id/toolbar8"
         android:clickable="false"
         android:backgroundTint="@color/silver"
@@ -54,7 +54,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginEnd="@dimen/default_PaddingMargin"
-            android:text="Пост в группу"
+            android:text="@string/postToTheGroup"
             android:textColor="@color/black"
             android:textSize="20sp" />
 
@@ -67,6 +67,7 @@
             android:textColor="@color/ok_green"
             android:textSize="20sp"
             android:textStyle="bold" />
+<!--        debug text-->
     </LinearLayout>
 
     <LinearLayout
@@ -94,7 +95,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:text="Изображение"
+                android:text="@string/image"
                 android:textColor="@color/ok_green"
                 android:textSize="20sp" />
         </LinearLayout>
@@ -138,7 +139,7 @@
             android:layout_marginVertical="10dp"
             android:backgroundTint="@color/transparent"
             android:ems="10"
-            android:hint="Написать что-нибудь..."
+            android:hint="@string/writeSomething..."
             android:inputType="textMultiLine"
             android:isScrollContainer="true"
             android:padding="@dimen/default_PaddingMargin"

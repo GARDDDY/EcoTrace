@@ -125,7 +125,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textColor="@color/silver"
-                            android:text="Скрыто" />
+                            android:text="@string/hidden" />
 
                     </LinearLayout>
 
@@ -139,6 +139,8 @@
                         android:layout_marginHorizontal="50dp"
                         android:textColor="@color/silver"
                         android:textAlignment="center"
+                        android:hint="@string/noDescription"
+                        android:textColorHint="@color/silver"
                         android:text="@string/lorem_ipsum" />
 
 
@@ -192,7 +194,7 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Скрыто" />
+                                android:text="@string/hidden" />
 
                         </LinearLayout>
 
@@ -220,14 +222,14 @@
                     android:layout_marginTop="@dimen/default_PaddingMargin"
                     android:textSize="18sp"
                     android:textColor="@color/black"
-                    android:text="Углеродные выбросы пользователя" />
+                    android:text="@string/users_sCarbonFootprint" />
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/default_PaddingMargin"
                     android:textSize="10.8sp"
                     android:textColor="@color/silver"
-                    android:text="Для получения более подробной информации обратитесь к пользователю" />
+                    android:text="@string/contactUserForMoreInfo" />
                 <LinearLayout
                     android:id="@+id/userEcoDataInformationLayout"
                     android:layout_width="match_parent"
@@ -243,7 +245,7 @@
                         android:textStyle="bold"
                         android:textColor="@color/ok_green"
                         android:textAlignment="center"
-                        android:text="Пользователь еще проходил экологические тесты!" />
+                        android:text="@string/userHaveNotTakenTestsYet" />
 
                     <RelativeLayout
                         android:id="@+id/ecoDataLayout"
@@ -303,7 +305,7 @@
                     android:layout_marginVertical="@dimen/default_PaddingMargin"
                     android:textSize="18sp"
                     android:textColor="@color/black"
-                    android:text="Участия в мероприятиях" />
+                    android:text="@string/eventsParticipation" />
                 <LinearLayout
                     android:id="@+id/userEventsInformationLayout"
                     android:layout_width="match_parent"
@@ -319,7 +321,7 @@
                         android:textStyle="bold"
                         android:textColor="@color/ok_green"
                         android:textAlignment="center"
-                        android:text="Пользователь еще не участовал ни в одном мероприятии" />
+                        android:text="@string/userHaveNotTakenPartInAnyEventYet" />
 
                     <RelativeLayout
                         android:id="@+id/allEventsLayout"
@@ -419,7 +421,7 @@
                                         android:layout_height="wrap_content"
                                         android:layout_marginEnd="5dp"
                                         android:textColor="@color/ok_green"
-                                        android:text="Участников" />
+                                        android:text="@string/membersrp" />
 
                                     <TextView
                                         android:layout_width="wrap_content"
@@ -499,7 +501,7 @@
                                         android:layout_height="wrap_content"
                                         android:layout_marginEnd="5dp"
                                         android:textColor="@color/ok_green"
-                                        android:text="Участников" />
+                                        android:text="@string/membersrp" />
 
                                     <TextView
                                         android:layout_width="wrap_content"
@@ -534,7 +536,7 @@
                     android:layout_marginVertical="@dimen/default_PaddingMargin"
                     android:textSize="18sp"
                     android:textColor="@color/black"
-                    android:text="Друзья" />
+                    android:text="@string/friends" />
                 <LinearLayout
                     android:id="@+id/userFriendsInformationLayout"
                     android:layout_width="match_parent"
@@ -550,7 +552,7 @@
                         android:textStyle="bold"
                         android:textColor="@color/ok_green"
                         android:textAlignment="center"
-                        android:text="Пользователь еще не никого не добавил в друзья или скрыл их" />
+                        android:text="@string/userHaveNotMadeFriendsWithAnyoneYetOrHidedThem" />
 
                     <HorizontalScrollView
                         android:id="@+id/allFriendsScrollView"
@@ -714,7 +716,7 @@
                     android:layout_marginVertical="@dimen/default_PaddingMargin"
                     android:textSize="18sp"
                     android:textColor="@color/black"
-                    android:text="Группы" />
+                    android:text="@string/groups" />
                 <LinearLayout
                     android:id="@+id/userGroupsInformationLayout"
                     android:layout_width="match_parent"
@@ -730,7 +732,7 @@
                         android:textStyle="bold"
                         android:textColor="@color/ok_green"
                         android:textAlignment="center"
-                        android:text="Пользователь еще не вступил ни в одну группу или скрыл их" />
+                        android:text="@string/userHaveNotJoinedAnyGroupYetOrHidedThem" />
 
                     <ScrollView
                         android:layout_width="match_parent"

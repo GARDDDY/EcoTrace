@@ -45,6 +45,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.gson.Gson
 import com.gy.ecotrace.Globals
 import com.gy.ecotrace.R
+import com.gy.ecotrace.customs.ETAuth
 import com.gy.ecotrace.db.DatabaseMethods
 import com.gy.ecotrace.db.Repository
 import com.gy.ecotrace.ui.more.groups.additional.ShowGroupViewModelFactory
@@ -62,7 +63,7 @@ import java.util.Locale
 
 class ShowPostWithCommentsActivity : AppCompatActivity() {
 
-    private val currentUser = FirebaseAuth.getInstance().currentUser?.uid ?: "0"
+    private val currentUser = ETAuth.getInstance().guid()
     private var userRole: Int = 4
 
     private lateinit var showPostViewModel: ShowPostWithCommentsViewModel

@@ -21,73 +21,92 @@
             android:textSize="18sp"
             android:layout_centerHorizontal="true" />
 
-        <EditText
-            android:id="@+id/emailData"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/emailDataLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="@color/ok_green"
-            android:backgroundTint="@color/ok_green"
-            android:hint="Email"
-            android:inputType="textEmailAddress"
-            android:textColorHint="@color/silver"
             android:layout_below="@id/tw1"
-            android:layout_marginHorizontal="50dp"/>
+            android:layout_marginTop="@dimen/default_PaddingMargin"
+            android:layout_marginHorizontal="50dp">
 
-        <EditText
-            android:id="@+id/passwordData"
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/emailData"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColorHint="@color/silver"
+                android:inputType="textEmailAddress"
+                android:hint="Email" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/passwordDataLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Пароль"
-            android:textColorHint="@color/silver"
-            android:textColor="@color/ok_green"
-            android:backgroundTint="@color/ok_green"
-            android:layout_below="@id/emailData"
-            android:layout_toStartOf="@id/showPasswordButton"
-            android:layout_marginStart="50dp"
-            android:inputType="textPassword"/>
+            android:layout_below="@id/emailDataLayout"
+            android:layout_marginTop="@dimen/default_PaddingMargin"
+            app:passwordToggleEnabled="true"
+            app:passwordToggleTint="@color/silver"
+            android:layout_marginHorizontal="50dp">
 
-        <ImageButton
-            android:id="@+id/showPasswordButton"
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/passwordData"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColorHint="@color/silver"
+                android:inputType="textPassword"
+                android:hint="Пароль" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/fullnameDataLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/passwordDataLayout"
+            android:layout_marginTop="@dimen/default_PaddingMargin"
+            android:layout_marginHorizontal="50dp">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/fullnameData"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColorHint="@color/silver"
+                android:inputType="text"
+                android:hint="Ваше имя" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <RadioGroup
+            android:id="@+id/userGender"
             android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:src="@drawable/eye_open"
-            app:tint="@color/silver"
-            android:background="@color/transparent"
-            android:contentDescription="Show password"
-            android:layout_above="@id/loginData"
-            android:layout_alignEnd="@id/emailData"
-            android:layout_below="@id/emailData" />
-
-        <EditText
-            android:id="@+id/loginData"
-            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Логин"
-            android:textColorHint="@color/silver"
-            android:textColor="@color/ok_green"
-            android:backgroundTint="@color/ok_green"
-            android:layout_below="@id/passwordData"
-            android:layout_marginHorizontal="50dp"/>
+            android:layout_below="@+id/fullnameDataLayout"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/default_PaddingMargin"
+            android:orientation="horizontal">
 
-        <EditText
-            android:id="@+id/fullnameData"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Ваше имя"
-            android:textColor="@color/ok_green"
-            android:backgroundTint="@color/ok_green"
-            android:textColorHint="@color/silver"
-            android:layout_below="@id/loginData"
-            android:layout_marginHorizontal="50dp"/>
+            <androidx.appcompat.widget.AppCompatRadioButton
+                android:id="@+id/genderMale"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Мужчина"
+                android:textColor="@color/black" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="*"
-            android:textColor="@color/red_no"
-            android:layout_alignTop="@id/fullnameData"
-            android:layout_alignEnd="@id/fullnameData"
-            android:layout_marginEnd="@dimen/default_PaddingMargin"/>
+            <androidx.appcompat.widget.AppCompatRadioButton
+                android:id="@+id/genderFemale"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Женщина"
+                android:textColor="@color/black" />
+
+            <com.google.android.material.radiobutton.MaterialRadioButton
+                android:id="@+id/genderNone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:drawableTint="@color/ok_green"
+                android:text="Не указывать пол"
+                android:textColor="@color/black" />
+        </RadioGroup>
 
         <TextView
             android:id="@+id/tw2"
@@ -97,55 +116,32 @@
             android:textColor="@color/black"
             android:textSize="18sp"
             android:layout_centerHorizontal="true"
-            android:layout_below="@id/fullnameData"
+            android:layout_below="@id/userGender"
             android:layout_marginTop="16dp"/>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="*"
-            android:layout_alignTop="@id/tw2"
-            android:layout_toEndOf="@id/tw2"
-            android:textColor="@color/red_no"
-            android:layout_marginHorizontal="5dp" />
-
-        <RadioGroup
-            android:id="@+id/userGender"
-            android:layout_width="wrap_content"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/usernameDataLayout"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/tw2"
-            android:orientation="horizontal"
-            android:layout_centerHorizontal="true">
+            android:layout_marginVertical="@dimen/default_PaddingMargin"
+            android:layout_marginHorizontal="50dp">
 
-            <androidx.appcompat.widget.AppCompatRadioButton
-                android:id="@+id/genderMale"
-                android:layout_width="wrap_content"
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/usernameData"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@color/black"
-                android:text="Мужчина"/>
+                android:textColorHint="@color/silver"
+                android:inputType="textEmailAddress"
+                android:hint="Никнейм" />
+        </com.google.android.material.textfield.TextInputLayout>
 
-            <androidx.appcompat.widget.AppCompatRadioButton
-                android:id="@+id/genderFemale"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/black"
-                android:text="Женщина"/>
-
-            <com.google.android.material.radiobutton.MaterialRadioButton
-                android:id="@+id/genderNone"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:checked="true"
-                android:drawableTint="@color/ok_green"
-                android:textColor="@color/black"
-                android:text="Не указывать пол"/>
-        </RadioGroup>
 
         <HorizontalScrollView
             android:id="@+id/userFilters"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/userGender"
+            android:layout_below="@id/usernameDataLayout"
             android:layout_alignStart="@id/userGender"
             android:layout_alignEnd="@id/userGender"
             android:scrollbars="none"
@@ -199,7 +195,7 @@
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:textColor="@color/silver"
-            android:text="* - заполнение данных опционально"
+            android:text="* - заполнение данных обязательно"
             android:layout_below="@id/ll1"
             android:layout_marginTop="16dp"/>
     </RelativeLayout>

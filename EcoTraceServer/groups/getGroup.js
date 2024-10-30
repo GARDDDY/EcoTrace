@@ -1,4 +1,5 @@
 const express = require('express');
+const { checkOAuth2 } = require('../tech/oauth');
 
 const connections = require("../server")
 const connection1 = connections["users"]
@@ -8,6 +9,7 @@ const router = express.Router();
 
 router.get('/getGroup', async (req, res) => {
     const groupId = req.query.gid || "";
+    // todo for oauth
 
     if (!connection2) {
         console.error("not connected to groups")

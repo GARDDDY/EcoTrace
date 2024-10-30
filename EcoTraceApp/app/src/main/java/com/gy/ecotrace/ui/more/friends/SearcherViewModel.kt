@@ -15,12 +15,24 @@ class SearcherViewModel(private val repository: Repository) : ViewModel() {
     private val _userFriends = MutableLiveData<MutableList<DatabaseMethods.DataClasses.Friendship>?>()
     val userFriends: LiveData<MutableList<DatabaseMethods.DataClasses.Friendship>?> get() = _userFriends
 
-    private var lastFoundFriend: String? = null
+
     var foundAll = false
-    fun getUserFriends(userId: String) {
+    private var fGot: String? = null
+    var newFriends = true
+    var updFriends = false
+    fun getUserFriends(userId: String, new: Boolean = false) {
         viewModelScope.launch {
-            val dataFriends = repository.getUserFriends(userId, lastFoundFriend)
-            _userFriends.postValue(dataFriends)
+            if (new) {
+                fGot = null
+                _userFriends.value?.clear()
+                newFriends = true
+            }
+            val friends = repository.getUserFriends(userId, fGot)
+            fGot = try {friends.last().userId} catch (e: Exception) { null }
+
+            foundAll = fGot == null
+
+            _userFriends.postValue(friends)
         }
     }
 
@@ -35,6 +47,7 @@ class SearcherViewModel(private val repository: Repository) : ViewModel() {
     private var lastFound: String? = null
     var foundAllUsers = false
     var filterName: String? = null
+    var updUsers = false
     fun findAllUsers(new: Boolean = false) {
         viewModelScope.launch {
             val filters = filtersSearchNew.mapIndexedNotNull { index, value ->

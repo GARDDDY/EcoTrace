@@ -7,7 +7,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
@@ -15,13 +14,13 @@ import androidx.fragment.app.Fragment
 import com.google.firebase.auth.FirebaseAuth
 import com.gy.ecotrace.Globals
 import com.gy.ecotrace.R
+import com.gy.ecotrace.customs.ETAuth
 import com.gy.ecotrace.ui.more.ecocalculator.EcologicalCalculatorActivity
-import com.gy.ecotrace.ui.more.events.CreateEventActivity
 import com.gy.ecotrace.ui.more.events.ShowAllEventsActivity
 import com.gy.ecotrace.ui.more.friends.UsersSearchFriends
 import com.gy.ecotrace.ui.more.groups.ShowAllGroupsActivity
 import com.gy.ecotrace.ui.more.profile.ProfileActivity
-import com.gy.ecotrace.ui.more.profile.SignInUpHub
+import com.gy.ecotrace.ui.more.profile.sign.SignInUpHub
 
 class MoreFragment : Fragment() {
 
@@ -36,15 +35,16 @@ class MoreFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        if ((FirebaseAuth.getInstance().currentUser?.uid ?: "0") == "0") {
+        if (ETAuth.getInstance().guid() == "") {
             view.findViewById<TextView>(R.id.openProfileDescriptionText).text =
                 "У вас еще нет аккаунта, создайте его, нажав сюда!"
         }
         view.findViewById<LinearLayout>(R.id.profileOpenLayout).setOnClickListener {
             val currentUser = Globals.getInstance().getString("CurrentlyWatching")
-            val currentLogged = FirebaseAuth.getInstance().currentUser?.uid ?: "0"
-            if (currentUser == "0") {
-                if (currentLogged == "0") {
+            val currentLogged = ETAuth.getInstance().guid()
+            Log.d("Logged in as", currentLogged)
+//            if (currentUser == "") {
+                if (currentLogged == "") {
                     startActivity(Intent
                         (
                             requireActivity(),
@@ -55,7 +55,7 @@ class MoreFragment : Fragment() {
                 } else {
                     Globals.getInstance().setString("CurrentlyWatching", currentLogged)
                 }
-            }
+//            }
 
             startActivity(Intent
                 (
@@ -92,11 +92,11 @@ class MoreFragment : Fragment() {
                     ShowAllGroupsActivity::class.java)
             )
         }
-        view.findViewById<LinearLayout>(R.id.settingsOpenLayout).setOnClickListener {
-            Toast.makeText(context, "Настройки", Toast.LENGTH_SHORT).show()
-        }
-        view.findViewById<LinearLayout>(R.id.howToUseOpenLayout).setOnClickListener {
-            Toast.makeText(context, "Как пользоваться", Toast.LENGTH_SHORT).show()
-        }
+//        view.findViewById<LinearLayout>(R.id.settingsOpenLayout).setOnClickListener {
+//            Toast.makeText(context, "Настройки", Toast.LENGTH_SHORT).show()
+//        }
+//        view.findViewById<LinearLayout>(R.id.howToUseOpenLayout).setOnClickListener {
+//            Toast.makeText(context, "Как пользоваться", Toast.LENGTH_SHORT).show()
+//        }
     }
 }

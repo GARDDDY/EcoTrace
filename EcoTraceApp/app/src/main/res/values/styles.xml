@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="EditTextLayout" parent="Theme.AppCompat.NoActionBar">
+<!--        <item name="colorAccent">@color/ok_green</item>-->
+<!--        <item name="colorControlActivated">@color/ok_green</item>-->
+<!--        <item name="colorControlNormal">@color/silver</item>-->
+        <item name="colorPrimarySurface">@color/ok_green</item>
+        <item name="actionModeSplitBackground">@color/ok_green</item>
+    </style>
+
+    <style name="CustomTextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="boxStrokeColor">@color/ok_green</item>
+        <item name="hintTextColor">@color/silver</item>
+        <item name="endIconTint">@color/ok_green</item>
+        <item name="startIconTint">@color/ok_green</item>
+    </style>
+
+    <style name="CustomRadioButton" parent="Widget.AppCompat.CompoundButton.RadioButton">
+        <item name="android:buttonTint">@color/ok_green</item>
+    </style>
+
+</resources>

@@ -24,11 +24,12 @@ import com.google.zxing.qrcode.QRCodeWriter
 import com.gy.ecotrace.BuildConfig
 import com.gy.ecotrace.Globals
 import com.gy.ecotrace.R
+import com.gy.ecotrace.customs.ETAuth
 import com.gy.ecotrace.db.DatabaseMethods
 
 class PersonalShareActivity : AppCompatActivity() {
     private var mainHost = BuildConfig.SERVER_API_URI
-    private val currentUser = FirebaseAuth.getInstance().currentUser?.uid ?: ""
+    private val currentUser = ETAuth.getInstance().guid()
 
     private fun applyQr(qrImage: ImageView, text: String) {
         val width = qrImage.width

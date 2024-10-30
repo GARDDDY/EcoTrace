@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="5dp"
         android:gravity="center"
-        android:text="Данные, которые стоит обновлять ежедневно"
+        android:text="@string/dataThatShouldBeUpdatedDaily"
         android:textColor="@color/black"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -35,8 +35,8 @@
             android:backgroundTint="@color/transparent"
             android:drawableLeft="@drawable/baseline_fastfood_24"
             android:drawableTint="@color/ok_green"
-            android:text="Пища"
-            android:background="?attr/selectableItemBackground"
+            android:text="@string/food"
+            
             android:textColor="@color/ok_green"
             android:textSize="20sp"
             android:textStyle="bold" />
@@ -52,8 +52,8 @@
             android:backgroundTint="@color/transparent"
             android:drawableLeft="@drawable/baseline_water_drop_24"
             android:drawableTint="@color/ok_green"
-            android:text="Вода"
-            android:background="?attr/selectableItemBackground"
+            android:text="@string/water"
+            
             android:textColor="@color/ok_green"
             android:textSize="20sp"
             android:textStyle="bold" />
@@ -69,8 +69,8 @@
             android:backgroundTint="@color/transparent"
             android:drawableLeft="@drawable/baseline_compost_24"
             android:drawableTint="@color/ok_green"
-            android:text="Отходы"
-            android:background="?attr/selectableItemBackground"
+            android:text="@string/trash"
+            
             android:textColor="@color/ok_green"
             android:textSize="20sp"
             android:textStyle="bold" />
@@ -86,8 +86,8 @@
             android:backgroundTint="@color/transparent"
             android:drawableLeft="@drawable/baseline_energy_savings_leaf_24"
             android:drawableTint="@color/ok_green"
-            android:text="Энергия"
-            android:background="?attr/selectableItemBackground"
+            android:text="@string/energy"
+            
             android:textColor="@color/ok_green"
             android:textSize="20sp"
             android:textStyle="bold" />
@@ -103,8 +103,8 @@
             android:backgroundTint="@color/transparent"
             android:drawableLeft="@drawable/baseline_directions_car_24"
             android:drawableTint="@color/ok_green"
-            android:text="Транспорт"
-            android:background="?attr/selectableItemBackground"
+            android:text="@string/transport"
+            
             android:textColor="@color/ok_green"
             android:textSize="20sp"
             android:textStyle="bold" />

@@ -1,11 +1,11 @@
 const express = require('express');
-//to sql
+
 const { checkOAuth2 } = require('../tech/oauth');
-const { getUsernameOnly } = require('../tech/getUsernameOnly');
 const { sendMsg } = require('../global/sendMessageToUserDevice');
+const connections = require("../server")
+const connection1 = connections["users"]
 
 const router = express.Router();
-
 
 router.get('/addFriend', async (req, res) => {
 
@@ -19,30 +19,18 @@ router.get('/addFriend', async (req, res) => {
         return res.status(403).json({ error: "You are not signed in! Not allowed" });
     }
 
-    admin.database().ref("users/"+userId+"/friends/"+requestFrom).set(
-        {
-            friend: false,
-            sender: false // is userId a sender
-        }
-    )
-    admin.database().ref("users/"+requestFrom+"/friends/"+userId).set(
-        {
-            friend: false,
-            sender: true
-        }
-    )
+    const [any] = await connection1.execute('select * from friends where userId = ? and senderId = ? or userId = ? and senderId = ?', [userId, requestFrom, requestFrom, userId])
 
-    const senderName = await getUsernameOnly(requestFrom);
-
-    sendMsg(userId, {
-        title: "Новый запрос на добавление в друзья",
-        body: `${senderName} хочет добавить Вас в друзья!`,
-        action: "OPEN_PROFILE",
-        data: {
-            sender: requestFrom
+    if (any.length == 0) {
+        await connection1.execute("insert into friends (senderId, userId, isFriend) values (?,?,?)", [requestFrom, userId, 0])
+    } else {
+        if (requestFrom == any[0].userId) {
+            await connection1.execute("update friends set isFriend = 1 where userId = ? and senderId = ? or userId = ? and senderId = ?", [userId, requestFrom, requestFrom, userId])
         }
-    })
+    }
 
+    
+    res.send([true])
 
 });
 

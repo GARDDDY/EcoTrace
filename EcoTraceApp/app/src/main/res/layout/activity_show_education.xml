@@ -46,12 +46,12 @@
         android:id="@+id/sv1"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/doCheckBtn"
-        android:layout_marginVertical="@dimen/default_PaddingMargin"
         android:layout_marginHorizontal="@dimen/default_PaddingMargin"
+        android:layout_marginVertical="@dimen/default_PaddingMargin"
         android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/doCheckBtn"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/progressBar">
 
@@ -68,6 +68,7 @@
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="@dimen/default_PaddingMargin"
         android:visibility="gone"
+        android:textColor="@color/dirt_white"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:text="Проверить" />
+        android:text="@string/check" />
 </androidx.constraintlayout.widget.ConstraintLayout>

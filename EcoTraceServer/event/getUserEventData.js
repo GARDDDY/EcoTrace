@@ -1,5 +1,5 @@
 const express = require('express');
-// const { checkOAuth2 } = require('../tech/oauth');
+const { checkOAuth2 } = require('../tech/oauth');
 // const { getRules } = require('../tech/getUserRules');
 // const { areUsersFriends } = require('../tech/areUsersFriends');
 
@@ -21,9 +21,9 @@ router.get('/getUserEventData', async (req, res) => {
 
     res.setHeader('Content-Type', 'application/json; charset=utf-8');
 
-    // if (!await checkOAuth2(oAuth, requestFrom)) {
-    //     return res.status(403).json({ error: "You are not signed in! Not allowed ev" });
-    // }
+    if (!await checkOAuth2(oAuth, userId)) {
+        return res.status(403).json({ error: "You are not signed in! Not allowed ev" });
+    }
 
     const data = {};
 

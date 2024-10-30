@@ -7,6 +7,7 @@ const router = express.Router();
 
 router.get('/getAllUsers', async (req, res) => {
     const filters = req.query.filters || "";
+    const userId = req.query.cid || '0';
     var startAfter = req.query.nei || null;
     var filterName = req.query.name || null;
     if (filterName === "null") filterName = null;
@@ -19,47 +20,21 @@ router.get('/getAllUsers', async (req, res) => {
 
     res.setHeader('Content-Type', 'application/json; charset=utf-8');
 
-    try {
-        let query = 'SELECT userId, filters, username FROM user WHERE filters LIKE ?';
-        let params = [`%${filters}%`];
+    const [users] = await connection2.execute(`select userId, username, filters from user 
+        where filters like ? and userId != ? and (? is null or username like ?) and (? is null or userId > ?) 
+        limit 3`, [`%${filters}%`, userId, filterName, `%${filterName}%`, startAfter, startAfter])
 
-        if (filterName !== null) {
-            query += ' AND username LIKE ?';
-            params.push(`${filterName}%`);
-        }
+    console.log(userId, users)
 
-        if (startAfter !== null) {
-            query += ' AND userId > ?';
-            params.push(startAfter);
-        }
-        query += ' LIMIT 3'
+    const [total] = await connection2.execute(`select count(*) as total from user 
+        where filters like ? and userId != ? and (? is null or username like ?) and (? is null or userId > ?)`, 
+        [`%${filters}%`, userId, filterName, `%${filterName}%`, startAfter, startAfter])
 
-        const [users] = await connection2.execute(query, params);
+    const hasMore = users.length === 3 && total[0].total > 3;
 
-        let countQuery = 'SELECT COUNT(*) as total FROM user WHERE filters LIKE ?';
-        let countParams = [`%${filters}%`];
+    res.json([!hasMore, users]);
 
-        if (filterName !== null) {
-            countQuery += ' AND username LIKE ?';
-            countParams.push(`${filterName}%`);
-        }
-
-        if (startAfter !== null) {
-            countQuery += ' AND userId > ?';
-            countParams.push(startAfter);
-        }
-
-        const [countResult] = await connection2.execute(countQuery, countParams);
-        const totalRecords = countResult[0].total;
-
-        const hasMore = users.length === 3 && totalRecords > 3;
-
-        res.json([!hasMore, users]);
-
-    } catch (error) {
-        console.error('Error fetching event details:', error);
-        res.status(500).json({ error: 'Error fetching event details' });
-    }
+    
 });
 
 module.exports = router;

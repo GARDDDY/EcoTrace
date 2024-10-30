@@ -9,19 +9,31 @@
         android:id="@+id/navigation_news"
         android:name="com.gy.ecotrace.ui.news.NewsFragment"
         android:label="News"
-        tools:layout="@layout/fragment_news" />
+        tools:layout="@layout/fragment_news" >
+        <action
+            android:id="@+id/action_navigation_news_to_navigation_education"
+            app:destination="@id/navigation_education" />
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_education"
         android:name="com.gy.ecotrace.ui.education.EducationFragment"
         android:label="Education"
-        tools:layout="@layout/fragment_education" />
+        tools:layout="@layout/fragment_education" >
+        <action
+            android:id="@+id/action_navigation_education_to_navigation_ratings"
+            app:destination="@id/navigation_ratings" />
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_ratings"
         android:name="com.gy.ecotrace.ui.ratings.RatingsFragment"
         android:label="Ratings"
-        tools:layout="@layout/fragment_ratings" />
+        tools:layout="@layout/fragment_ratings" >
+        <action
+            android:id="@+id/action_navigation_ratings_to_navigation_more"
+            app:destination="@id/navigation_more" />
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_more"

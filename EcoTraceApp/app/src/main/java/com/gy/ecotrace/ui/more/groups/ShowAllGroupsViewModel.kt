@@ -52,14 +52,14 @@ class ShowAllGroupsViewModel(private val repository: Repository): ViewModel() {
         }
     }
 
-//    fun getUserGroups() {
-//        viewModelScope.launch {
-//            Log.d("test", "1")
-//            val groups = repository.getUserGroupsShort(lastId)
-//            Log.d("test", "2")
-//            lastId = groups?.keys?.last()
-//            Log.d("test", "3")
-//            _groups.postValue(groups)
-//        }
-//    }
+    private val _userGroups = MutableLiveData<MutableList<DatabaseMethods.UserDatabaseMethods.UserGroup>>()
+    private var lastIdUser: String? = null
+    val userGroups: LiveData<MutableList<DatabaseMethods.UserDatabaseMethods.UserGroup>> get() = _userGroups
+
+    fun getUserGroups(userId: String) {
+        viewModelScope.launch {
+            val groups = repository.getUserGroups(userId, lastIdUser)
+            _userGroups.postValue(groups)
+        }
+    }
 }

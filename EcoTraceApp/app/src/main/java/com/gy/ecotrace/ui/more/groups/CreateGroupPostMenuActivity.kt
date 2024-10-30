@@ -39,6 +39,7 @@ import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
 import com.gy.ecotrace.Globals
 import com.gy.ecotrace.R
+import com.gy.ecotrace.customs.ETAuth
 import com.gy.ecotrace.db.DatabaseMethods
 import com.gy.ecotrace.db.Repository
 import com.gy.ecotrace.ui.more.groups.additional.CreateGroupPostMenuViewModelFactory
@@ -50,7 +51,7 @@ import org.w3c.dom.Text
 
 class CreateGroupPostMenuActivity : AppCompatActivity() {
 
-    private val currentUser = FirebaseAuth.getInstance().currentUser?.uid ?: "0"
+    private val currentUser = ETAuth.getInstance().guid()
     private lateinit var showGroupViewModel: CreateGroupPostMenuViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {

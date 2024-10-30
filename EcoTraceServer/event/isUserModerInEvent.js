@@ -1,4 +1,5 @@
 const express = require('express');
+const { checkOAuth2 } = require('../tech/oauth');
 
 const connections = require("../server")
 const connection2 = connections["users"]
@@ -17,9 +18,9 @@ router.get('/isUserModerInEvent', async (req, res) => {
 
     res.setHeader('Content-Type', 'application/json; charset=utf-8');
 
-    // if (!await checkOAuth2(oAuth, requestFrom)) {
-    //     return res.status(403).json({ error: "You are not signed in! Not allowed ev" });
-    // }
+    if (!await checkOAuth2(oAuth, userId)) {
+        return res.status(403).json({ error: "You are not signed in! Not allowed ev" });
+    }
 
     const [moder] = await connection2.execute(
         `SELECT eventRole FROM events WHERE eventId = "${eventId}" AND userId = "${userId}"`

@@ -19,6 +19,8 @@ router.post('/createEvent', async (req, res) => {
         return
     }
 
+    // todo make exp (50?) check, oauth
+
     res.setHeader('Content-Type', 'application/json; charset=utf-8');
 
     const eid = uuidv4();

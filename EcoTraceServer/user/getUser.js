@@ -25,15 +25,18 @@ router.get('/getUser', async (req, res) => {
         return
     }
 
-    const userId = req.query.uid || '0';
     const requestFrom = req.query.cid || '0';
     const oAuth = req.query.oauth || '0';
+    var userId = req.query.uid || requestFrom;
+    if (userId === "null") userId = requestFrom
+
+    console.log(userId)
 
     res.setHeader('Content-Type', 'application/json; charset=utf-8');
 
-    // if (!await checkOAuth2(oAuth, requestFrom)) {
-    //     return res.status(403).json({ error: "You are not signed in! Not allowed" });
-    // }
+    if (!await checkOAuth2(oAuth, requestFrom)) {
+        return res.status(403).json({ error: "You are not signed in! Not allowed" });
+    }
 
     try {
         const [rows] = await connection.execute(
@@ -44,7 +47,7 @@ router.get('/getUser', async (req, res) => {
             return res.status(404).json({ error: "User not found" });
         }
 
-        const userData = merge(rows[0]);
+        const userData = rows[0]//merge(rows[0]);
 
         const [rulesRows] = await connection.execute(
             `SELECT * FROM rules WHERE userId = "${userId}"`

@@ -14,8 +14,10 @@ import android.text.TextWatcher
 import android.util.Log
 import android.view.View
 import android.widget.EditText
+import android.widget.HorizontalScrollView
 import android.widget.ImageButton
 import android.widget.LinearLayout
+import android.widget.ScrollView
 import android.widget.TextView
 import android.widget.Toast
 import android.widget.Toolbar
@@ -43,6 +45,7 @@ import com.google.mlkit.vision.common.InputImage
 import com.gy.ecotrace.BuildConfig
 import com.gy.ecotrace.Globals
 import com.gy.ecotrace.R
+import com.gy.ecotrace.customs.ETAuth
 import com.gy.ecotrace.db.DatabaseMethods
 import com.gy.ecotrace.db.Repository
 import com.gy.ecotrace.ui.more.profile.ProfileActivity
@@ -62,7 +65,7 @@ class SearcherViewModelFactory(private val repository: Repository) : ViewModelPr
 class UsersSearchFriends : AppCompatActivity() {
     private var mainHost = BuildConfig.SERVER_API_URI
     private lateinit var searcherViewModel: SearcherViewModel
-    private var loggedUser = FirebaseAuth.getInstance().currentUser?.uid ?: "0"
+    private var loggedUser = ETAuth.getInstance().guid()
 
 
     private val handler = Handler(Looper.getMainLooper())
@@ -220,24 +223,30 @@ class UsersSearchFriends : AppCompatActivity() {
             val friendsLayout: LinearLayout =
                 findViewById(R.id.friendsLayout)
             friendsLayout.removeAllViews()
+
             it?.let{
                 if (it.isNotEmpty()) {
 
                     for (fr in it) {
                         val friendOneLayout =
                             layoutInflater.inflate(R.layout.friend_linear_layout, null)
-                        friendOneLayout.findViewById<TextView>(R.id.username_friend_layout).text =
-                            fr.username
+                        val usernameText = friendOneLayout.findViewById<TextView>(R.id.username_friend_layout)
+                        usernameText.text = fr.username
+                        usernameText.setTextColor(ContextCompat.getColor(applicationContext, if (fr.isFriend == 1) R.color.ok_green else R.color.red_no))
+
+
+                        val friendId = if (fr.senderId == loggedUser) fr.userId else fr.senderId
 
                         friendOneLayout.setOnClickListener {
                             val myIntent = Intent(this, ProfileActivity::class.java)
                             myIntent.putExtra("previousId", loggedUser)
-                            Globals.getInstance().setString("CurrentlyWatching", fr.userId)
+                            Globals.getInstance().setString("CurrentlyWatching", friendId)
                             this.startActivity(myIntent)
                         }
 
                         Glide.with(this)
-                            .load(Globals().getImgUrl("users", "${fr.userId}"))
+                            .load(Globals().getImgUrl("users", "${friendId}"))
+                            .circleCrop()
                             .into(friendOneLayout.findViewById(R.id.user_img_friend_layout))
 
                         friendsLayout.addView(friendOneLayout)
@@ -251,6 +260,27 @@ class UsersSearchFriends : AppCompatActivity() {
             findViewById<LinearLayout>(R.id.userFriendsInformationLayout).visibility = View.VISIBLE
             findViewById<ShimmerFrameLayout>(R.id.userFriendsInformationLayoutLoading).visibility = View.GONE
         })
+
+        val userFriendScrollView: HorizontalScrollView = findViewById(R.id.friendsLayoutScrollView)
+        userFriendScrollView.setOnScrollChangeListener { v, scrollX, scrollY, oldScrollX, oldScrollY ->
+            if (!searcherViewModel.updFriends && !searcherViewModel.foundAll) {
+                if (scrollX >= (v as HorizontalScrollView).getChildAt(0).width - v.width) {
+                    searcherViewModel.updFriends = true
+                    searcherViewModel.getUserFriends(loggedUser)
+                }
+            }
+        }
+
+        val friendScrollView: ScrollView = findViewById(R.id.scrollViewMain)
+        friendScrollView.setOnScrollChangeListener { v, scrollX, scrollY, oldScrollX, oldScrollY ->
+            if (!searcherViewModel.updUsers && !searcherViewModel.foundAllUsers) {
+                if (scrollX >= (v as HorizontalScrollView).getChildAt(0).width - v.width) {
+                    searcherViewModel.updUsers = true
+                    searcherViewModel.findAllUsers()
+                }
+            }
+        }
+
         val loading = findViewById<ShimmerFrameLayout>(R.id.allUsersLoading)
         val layoutForFiltered: LinearLayout = findViewById(R.id.foundUsersLayout)
         val filtersLayout: LinearLayout = findViewById(R.id.userFiltersLayout)
@@ -308,6 +338,7 @@ class UsersSearchFriends : AppCompatActivity() {
 //                findViewById<TextView>(R.id.bad_query_not_found).visibility = View.GONE
                 layoutForFiltered.removeAllViews()
                 if (it.isNotEmpty()) {
+                    findViewById<TextView>(R.id.noUsersWarning).visibility = View.GONE
                     for (user in it) {
                         Log.d("unparse", user.toString())
                         user.let {
@@ -348,19 +379,14 @@ class UsersSearchFriends : AppCompatActivity() {
                     }
                 }
                 else {
-//                    if (searcherUsed) {
-//                        if (searcher.text.toString().isEmpty()) {
-//                            searcher.visibility = View.GONE
-//
-//                            findViewById<TextView>(R.id.bad_tags_no_found).visibility = View.VISIBLE
-//                        } else {
-//                            val warningText = findViewById<TextView>(R.id.bad_query_not_found)
-//                            warningText.visibility = View.VISIBLE
-//                            warningText.text = "Среди найденных по тегам пользователей нет пользователя с никнеймом ${searcher.text}!"
-//                        }
-//                    }
+                    findViewById<TextView>(R.id.noUsersWarning).visibility = View.VISIBLE
                 }
             }
         })
+
+        swipeRefreshLayout.setOnRefreshListener {
+            searcherViewModel.findAllUsers(true)
+            searcherViewModel.getUserFriends(loggedUser, true)
+        }
     }
 }

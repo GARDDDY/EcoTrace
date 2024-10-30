@@ -24,7 +24,7 @@
                 android:layout_height="wrap_content"
                 android:backgroundTint="@color/transparent"
                 android:src="@drawable/search_layer_pin_selected_default"
-                android:text="Точка"
+                android:text="@string/dot"
                 android:textColor="@color/dirt_white" />
 
             <ImageButton
@@ -33,7 +33,7 @@
                 android:layout_height="62dp"
                 android:backgroundTint="@color/transparent"
                 android:src="@drawable/outline_circle_24"
-                android:text="Окружность"
+                android:text="@string/circle"
                 android:textColor="@color/dirt_white"
                 android:layout_below="@id/addPlacemark"
                 app:tint="@color/pair2Color1" />

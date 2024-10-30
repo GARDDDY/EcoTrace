@@ -5,19 +5,24 @@ const app = express();
 const port = 8000; // 35288
 const mysql = require("mysql2/promise")
 
-const serviceAccount = require('./config/ecotrace-cf2be-firebase-adminsdk-manyb-f71a3569d6.json');
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
-  databaseURL: "https://ecotrace-cf2be-default-rtdb.firebaseio.com/"
-});
+// const serviceAccount = require('./config/ecotrace-cf2be-firebase-adminsdk-manyb-f71a3569d6.json');
+// admin.initializeApp({
+//   credential: admin.credential.cert(serviceAccount),
+//   databaseURL: "https://ecotrace-cf2be-default-rtdb.firebaseio.com/"
+// });
 
-const dbs = ["users", "events", "groups", "web", "calculator"];
+
+const dbs = ["users", "events", "groups", "web", "calculator", "auth"];
 const dbConnections = {};
 
 async function connectToDatabases() {
     const connectionPromises = dbs.map(async (db) => {
         try {
             const connection = await mysql.createConnection({
+                // host     : process.env.MYSQL_ADDON_HOST,
+                // database : process.env.MYSQL_ADDON_DB,
+                // user     : process.env.MYSQL_ADDON_USER,
+                // password : process.env.MYSQL_ADDON_PASSWORD
                 host: "127.0.0.1",
                 port: 3306,
                 user: "root",
@@ -42,6 +47,7 @@ connectToDatabases().then(() => {
 
     app.use(require("./app/web"));
     app.use(require("./tech/constants"));
+    app.use(require("./tech/Auth"));
     app.use(require("./app/getWeb"));
     app.use(require("./app/getRating"));
 
@@ -50,6 +56,9 @@ connectToDatabases().then(() => {
     app.use(require("./user/getUpdates"));
     app.use(require("./user/getEducations"));
     app.use(require("./user/applyEdu"));
+    app.use(require("./user/areUsersFriends"));
+    app.use(require("./user/getRules"));
+    app.use(require("./user/getPrivate"));
     app.use(require("./user/getAllUsers"));
     app.use(require("./user/getEcoCalc"));
     app.use(require("./user/calcResults"));
@@ -58,6 +67,8 @@ connectToDatabases().then(() => {
     app.use(require("./user/getEvents"));
     app.use(require("./user/setEcoData"));
     app.use(require("./user/getUserEmail"));
+    app.use(require("./user/addFriend"));
+    app.use(require("./user/removeFriend"));
 
     app.use(require("./event/createEvent"));
     app.use(require("./event/getGoals"));
@@ -74,6 +85,7 @@ connectToDatabases().then(() => {
     app.use(require("./groups/createGroup"));
     app.use(require("./groups/getGroup"));
     app.use(require("./groups/getPosts"));
+    app.use(require("./groups/getGroupRules"));
     app.use(require("./groups/getComments"));
     app.use(require("./groups/createPost"));
     app.use(require("./groups/isUserInGroup"));

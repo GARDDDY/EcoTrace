@@ -20,7 +20,9 @@ import android.widget.ScrollView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -31,6 +33,7 @@ import androidx.viewpager2.widget.ViewPager2
 import com.google.common.reflect.TypeToken
 import com.google.gson.Gson
 import com.google.gson.JsonObject
+import com.gy.ecotrace.Globals
 import com.gy.ecotrace.R
 import com.gy.ecotrace.db.DatabaseMethods
 import com.gy.ecotrace.ui.more.ecocalculator.DailyEcoCalcActivity.EcoCalcViewHolder
@@ -40,7 +43,7 @@ class ShowEducationActivity : AppCompatActivity() {
 
     private lateinit var viewModel: EducationViewModel
 
-    private fun addWork(layout: LinearLayout, data: HashMap<String, DatabaseMethods.DataClasses.EduTask>) {
+    private fun startControlWork(layout: LinearLayout, data: HashMap<String, DatabaseMethods.DataClasses.EduTask>) {
         for ((num, work) in data) {
             Log.d("task", work.question)
             val workLayout = layoutInflater.inflate(R.layout.layout_education_task, null)
@@ -76,13 +79,33 @@ class ShowEducationActivity : AppCompatActivity() {
         }
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) { // TODO!!!
+    override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_show_education)
 
+        val toolbar = findViewById<Toolbar>(R.id.toolbar)
+        Globals().initToolbarIconBack(toolbar, applicationContext)
+        toolbar.setNavigationOnClickListener {
+            val builder = AlertDialog.Builder(this)
+            builder.setTitle("Закончить прохождение теста")
+
+            builder.setMessage("Вы потеряете весь достигнутый прогресс")
+            builder.setPositiveButton("Подтвердить") { dialog, which ->
+                onBackPressed()
+            }
+            builder.setNegativeButton("Отмена") { dialog, which ->
+                dialog.dismiss()
+            }
+            val dialog = builder.create()
+            dialog.show()
+        }
+
+        toolbar.title = intent.getStringExtra("testName")
+
         val eduType = intent.getStringExtra("edu")
         val assetManager = applicationContext.assets
+
         val inputStream = assetManager.open("education/$eduType")
         val size = inputStream.available()
         val buffer = ByteArray(size)
@@ -91,44 +114,51 @@ class ShowEducationActivity : AppCompatActivity() {
 
         val dataJson = Gson().fromJson(
             String(buffer, Charsets.UTF_8),
-            JsonObject::class.java)
-        val dataQuestions: HashMap<String, DatabaseMethods.DataClasses.EduFacts> = Gson().fromJson(dataJson.getAsJsonObject("data").toString(), object :
-            TypeToken<HashMap<String, DatabaseMethods.DataClasses.EduFacts>>() {}.type)
+            JsonObject::class.java
+        )
+        val dataQuestions: HashMap<String, DatabaseMethods.DataClasses.EduFacts> =
+            Gson().fromJson(dataJson.getAsJsonObject("data").toString(), object :
+                TypeToken<HashMap<String, DatabaseMethods.DataClasses.EduFacts>>() {}.type)
 
-        val dataWork: HashMap<String, DatabaseMethods.DataClasses.EduTask> = Gson().fromJson(dataJson.getAsJsonObject("control").toString(), object :
-            TypeToken<HashMap<String, DatabaseMethods.DataClasses.EduTask>>() {}.type)
+        val dataWork: HashMap<String, DatabaseMethods.DataClasses.EduTask> =
+            Gson().fromJson(dataJson.getAsJsonObject("control").toString(), object :
+                TypeToken<HashMap<String, DatabaseMethods.DataClasses.EduTask>>() {}.type)
+
 
         val progress: ProgressBar = findViewById(R.id.progressBar)
         viewModel = EducationViewModel()
-
+        viewModel.count(dataQuestions.size)
         val viewPager: ViewPager2 = findViewById(R.id.viewPager)
+        val controlLayout: LinearLayout = findViewById(R.id.controlWorkLayout)
+        val checkButton: Button = findViewById(R.id.doCheckBtn)
+        viewModel.facts.observe(this, Observer {
+            if (it) {
+                viewPager.visibility = View.GONE
+                progress.visibility = View.GONE
+                (controlLayout.parent as ScrollView).visibility = View.VISIBLE
+
+                startControlWork(controlLayout, dataWork)
+                checkButton.visibility = View.VISIBLE
+                checkButton.setOnClickListener {
+                    viewModel.controlEnded(dataWork)
+                    viewModel.end(eduType!!) {
+                        val message = when(it) {
+                            true -> "Вам начислены баллы! Вы ответили верно на ${viewModel.corrects()}/${dataWork.size}"
+                            else -> "Вы ответили верно на ${viewModel.corrects()}/${dataWork.size}"
+                        }
+                        Toast.makeText(this@ShowEducationActivity, message, Toast.LENGTH_SHORT).show()
+                        finish()
+                    }
+                }
+            }
+        })
+
         viewPager.adapter = object : RecyclerView.Adapter<Edu>() {
             override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Edu {
                 val view = if (viewType == 0) {
                     LayoutInflater.from(parent.context).inflate(R.layout.activitylayout_edu_fact, parent, false)
-                } else if (viewType == 1) {
-                    LayoutInflater.from(parent.context).inflate(R.layout.activitylayout_edu_question, parent, false)
                 } else {
-                    val layout = RelativeLayout(applicationContext)
-                    val btn = Button(applicationContext)
-
-                    val paramsMain = LayoutParams(
-                        LayoutParams.MATCH_PARENT,
-                        LayoutParams.MATCH_PARENT
-                    )
-
-                    val params = RelativeLayout.LayoutParams(
-                        RelativeLayout.LayoutParams.WRAP_CONTENT,
-                        RelativeLayout.LayoutParams.WRAP_CONTENT
-                    ).apply {
-                        addRule(RelativeLayout.CENTER_IN_PARENT)
-                    }
-
-                    layout.addView(btn)
-                    btn.layoutParams = params
-                    layout.layoutParams = paramsMain
-                    btn.text = "Пройти контрольный тест"
-                    layout
+                    LayoutInflater.from(parent.context).inflate(R.layout.goto_control, parent, false)
                 }
                 return Edu(view, applicationContext, viewModel)
             }
@@ -137,58 +167,53 @@ class ShowEducationActivity : AppCompatActivity() {
                 holder.bind(position, dataQuestions)
             }
 
-            override fun getItemCount(): Int = dataQuestions.size * 2 + 1
+            override fun getItemCount(): Int = dataQuestions.size + 1
 
             override fun getItemViewType(position: Int): Int {
-                return if (position != itemCount-1) position % 2 else 2
+                return if (position + 1 == itemCount) 1 else 0
             }
 
         }
-
-        viewModel.count(dataQuestions.size)
-
         viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
-                progress.progress = (position / (dataQuestions.size*2+1 - 1).toFloat() * 100).toInt()
+                progress.progress = (position / (dataQuestions.size).toFloat() * 100).toInt()
             }
         })
 
-        val checkButton: Button = findViewById(R.id.doCheckBtn)
-
-        val controlLayout: LinearLayout = findViewById(R.id.controlWorkLayout)
-        viewModel.facts.observe(this, Observer {
-            viewPager.visibility = View.GONE
-            progress.visibility = View.GONE
-            (controlLayout.parent as ScrollView).visibility = View.VISIBLE
-
-            addWork(controlLayout, dataWork)
-            checkButton.visibility = View.VISIBLE
-            checkButton.setOnClickListener {
-                viewModel.controlEnded(dataWork)
-                viewModel.end(eduType!!) {
-                    val message = when(it) {
-                        true -> "Вам начислены баллы! Вы ответили верно на ${viewModel.corrects()}/${dataWork.size}"
-                        else -> "Вы ответили верно на ${viewModel.corrects()}/${dataWork.size}"
-                    }
-                    Toast.makeText(this@ShowEducationActivity, message, Toast.LENGTH_SHORT).show()
-                    finish()
-                }
-            }
-        })
     }
 
     class Edu(private val view: View, private val context: Context, private val viewModel: EducationViewModel): RecyclerView.ViewHolder(view) {
         fun bind(pos: Int, data: HashMap<String, DatabaseMethods.DataClasses.EduFacts>) {
-            val thisPos = (pos / 2).toInt() + 1
-            val thisPosData = data["$thisPos"]
+            val thisPos = pos+1
+            val thisPosData = data["${thisPos}"]
             if (itemViewType == 0) {
                 val factMainTitle: TextView = view.findViewById(R.id.mainTitleFact)
                 val factText: TextView = view.findViewById(R.id.factText)
 
+                factMainTitle.text = "TITLE"//thisPosData.main ?:
                 factText.text = thisPosData?.fact ?: "NONE"
 
-            } else if (itemViewType == 1) {
+
+                val openQuestion = view.findViewById<Button>(R.id.openQuestions)
+                val questionLayout = view.findViewById<RelativeLayout>(R.id.questionLayout)
+                openQuestion.setOnClickListener {
+                    openQuestion.isActivated = !openQuestion.isActivated
+
+                    when (openQuestion.isActivated) {
+                        true -> {
+                            questionLayout.visibility = View.VISIBLE
+                            openQuestion.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, R.drawable.baseline_keyboard_arrow_up_24, 0)
+                            openQuestion.text = "Закрыть вопрос"
+                        }
+                        false -> {
+                            questionLayout.visibility = View.GONE
+                            openQuestion.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, R.drawable.baseline_keyboard_arrow_down_24, 0)
+                            openQuestion.text = "Открыть вопрос"
+                        }
+                    }
+                }
+
                 val questionTitle: TextView = view.findViewById(R.id.questionTitle)
                 val options: LinearLayout = view.findViewById(R.id.optionsLayout)
 

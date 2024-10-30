@@ -34,7 +34,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:text="Изображение"
+                android:text="@string/image"
                 android:textColor="@color/ok_green"
                 android:textSize="20sp" />
         </LinearLayout>
@@ -58,7 +58,7 @@
                 android:layout_height="wrap_content"
                 android:textSize="20sp"
                 android:textColor="@color/ok_green"
-                android:text="Удалить изображение" />
+                android:text="@string/removeImage" />
         </LinearLayout>
 
     </LinearLayout>
@@ -100,7 +100,7 @@
             android:layout_marginVertical="10dp"
             android:backgroundTint="@color/transparent"
             android:ems="10"
-            android:hint="Рассказать о группе больше..."
+            android:hint="@string/tellMoreAboutTheGroup"
             android:inputType="textMultiLine"
             android:isScrollContainer="true"
             android:padding="@dimen/default_PaddingMargin"

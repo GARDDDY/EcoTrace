@@ -73,7 +73,7 @@ class Globals : Application() {
 
     fun getString(key: String): String {
         Log.d("Globals get value", "Got $key (${variablesMapStr[key] ?: '0'})")
-        return variablesMapStr[key] ?: "0"
+        return variablesMapStr[key] ?: ""
     }
 
     fun setString(key: String, value: String) {
@@ -102,9 +102,10 @@ class Globals : Application() {
 
     private fun saveToCache(type: String, data: String) {
         val prefs = getSharedPreferences("consts", MODE_PRIVATE)
+        Log.d("data json", data.toString())
         with(prefs.edit()) {
             putString(type, data)
-            putLong("${type}_timestamp", currentTimeMillis()) // Сохраняем временную метку // todo imporove hashmap save
+            putLong("${type}_timestamp", currentTimeMillis())
             apply()
         }
     }
@@ -135,24 +136,24 @@ class Globals : Application() {
         }
     }
 
-    fun setEventRoles(data: Array<String>) {
-        eventRoles = data
+    fun setEventRoles(data: Any) {
+        eventRoles = data as Array<String>
         saveToCache("eventRoles", Gson().toJson(data))
     }
     fun getEventRoles(): Array<String> {
         return eventRoles!!
     }
 
-    fun setGroupRoles(data: Array<String>) {
-        groupRoles = data
+    fun setGroupRoles(data: Any) {
+        groupRoles = data as Array<String>
         saveToCache("groupRoles", Gson().toJson(data))
     }
     fun getGroupRoles(): Array<String> {
         return groupRoles!!
     }
 
-    fun setUserRoles(data: Array<String>) {
-        userRoles = data
+    fun setUserRoles(data: Any) {
+        userRoles = data as Array<String>
         saveToCache("userRoles", Gson().toJson(data))
     }
     fun getUserRoles(): Array<String> {
@@ -160,32 +161,36 @@ class Globals : Application() {
     }
 
 
-    fun setUserFilters(data: Array<Pair<String, String>>) {
-        usersFilters = data
-        saveToCache("userFilters", Gson().toJson(data))
+    fun setUserFilters(data: Any) {
+        val parsedData = (data as Array<DatabaseMethods.DataClasses.ConstantMap>).map { Pair(it.name, it.description) }.toTypedArray()
+        usersFilters = parsedData
+        saveToCache("usersFilters", Gson().toJson(data))
     }
     fun getUserFilters(): Array<Pair<String, String>> {
         return usersFilters!!
     }
 
-    fun setEventsFilters(data: Array<Pair<String, String>>) {
-        eventsFilters = data
+    fun setEventsFilters(data: Any) {
+        val parsedData = (data as Array<DatabaseMethods.DataClasses.ConstantMap>).map { Pair(it.name, it.description) }.toTypedArray()
+        eventsFilters = parsedData
         saveToCache("eventsFilters", Gson().toJson(data))
     }
     fun getEventsFilters(): Array<Pair<String, String>> {
         return eventsFilters!!
     }
 
-    fun setGroupsFilters(data: Array<Pair<String, String>>) {
-        groupsFilters = data
-        saveToCache("groupFilters", Gson().toJson(data))
+    fun setGroupsFilters(data: Any) {
+        val parsedData = (data as Array<DatabaseMethods.DataClasses.ConstantMap>).map { Pair(it.name, it.description) }.toTypedArray()
+        groupsFilters = parsedData
+        saveToCache("groupsFilters", Gson().toJson(data))
     }
     fun getGroupsFilters(): Array<Pair<String, String>> {
         return groupsFilters ?: arrayOf()
     }
 
-    fun setFiltersColors(data: Array<Pair<String, String>>) {
-        filtersColor = data
+    fun setFiltersColors(data: Any) {
+        val parsedData = (data as Array<DatabaseMethods.DataClasses.ConstantMap>).map { Pair(it.name, it.description) }.toTypedArray()
+        filtersColor = parsedData
         saveToCache("filtersColors", Gson().toJson(data))
     }
     fun getFiltersColors(): Array<Pair<String, String>> {

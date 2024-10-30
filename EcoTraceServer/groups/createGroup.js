@@ -25,7 +25,10 @@ router.post('/createGroup', upload.single('image'), async (req, res) => {
     const userId = req.query.cuid || "0";
     const oauth = req.query.oauth || "0";
 
-    // console.log(data)
+    if (!await checkOAuth2(oauth, userId)) {
+        return res.status(403).json({ error: "You are not signed in! Not allowed ev" });
+    }
+
     const group = data[0];
     const rulesText = data[1];
 
@@ -35,19 +38,17 @@ router.post('/createGroup', upload.single('image'), async (req, res) => {
         return res.status(403).send(["Получите 100 очков опыта, что создавать свои группы!"])
     }
 
-    //check the name validity
+    // todo check the name validity
     const gid = group.groupId === "0" ? uuidv4() : group.groupId;
     const imgName = req.file ? req.file.filename : null;
     
     const [existingGroup] = await connection2.execute("SELECT * FROM `group` WHERE groupId = ?", [gid]);
 
     if (existingGroup.length > 0) {
-        // Если группа существует, обновляем данные
         await connection2.execute("UPDATE `group` SET groupName = ?, groupCreatorId = ?, filters = ?, groupType = ?, groupAbout = ?, groupRules = ?, groupRulesImage = ? WHERE groupId = ?",
             [group.groupName, userId, group.filters, group.groupType, group.groupAbout, rulesText, imgName, gid]
         );
     } else {
-        // Если группы нет, вставляем новую
         await connection2.execute("INSERT INTO `group` (groupId, groupName, groupCreatorId, filters, groupType, groupAbout, groupRules, groupRulesImage) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
             [gid, group.groupName, userId, group.filters, group.groupType, group.groupAbout, rulesText, imgName]
         );

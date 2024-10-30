@@ -20,17 +20,15 @@ router.get('/getEventMembers', async (req, res) => {
     res.setHeader('Content-Type', 'application/json; charset=utf-8');
 
     try {
-        // Запрашиваем пользователей по событию
         const [users] = await connection2.execute(
             `SELECT eventRole, userId FROM events WHERE eventId = ? AND (eventId > ? OR ? IS NULL) ORDER BY eventRole LIMIT 100`,
             [eventId, block, block]
         );
 
-        // Получаем все данные о пользователях
         const data = await Promise.all(users.map(async (element) => {
             const [u] = await connection2.execute(
                 `SELECT username, experience FROM user WHERE userId = ? AND username LIKE ?`,
-                [element.userId, uname ? `${uname}%` : '%'] // Фильтруем по username, начинающемуся с uname
+                [element.userId, uname ? `${uname}%` : '%']
             );
 
             if (u.length > 0) {
@@ -41,10 +39,8 @@ router.get('/getEventMembers', async (req, res) => {
                     role: element.eventRole
                 };
             }
-            return null; // Игнорируем пользователей, не удовлетворяющих условию
+            return null;
         }));
-
-        // Фильтруем null значения и берем только 9 пользователей
         const filteredData = data.filter(item => item !== null).slice(0, 9);
 
         res.json(filteredData);

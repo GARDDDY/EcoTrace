@@ -48,6 +48,7 @@
                 android:layout_height="wrap_content"
                 android:backgroundTint="@color/silver"
                 android:text="Вариант 1"
+                style="@style/CustomRadioButton"
                 android:textColor="@color/ok_green"
                 android:paddingStart="@dimen/default_PaddingMargin"
                 android:textSize="18sp" />

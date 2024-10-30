@@ -1,6 +1,8 @@
 const express = require('express');
-// to sql
+
 const { checkOAuth2 } = require('../tech/oauth');
+const connections = require("../server")
+const connection1 = connections["users"]
 
 const router = express.Router();
 
@@ -16,8 +18,8 @@ router.get('/removeFriend', async (req, res) => {
         return res.status(403).json({ error: "You are not signed in! Not allowed" });
     }
 
-    admin.database().ref("users/"+userId+"/friends/"+requestFrom).remove();
-    admin.database().ref("users/"+requestFrom+"/friends/"+userId).remove();
+    await connection1.execute("delete from friends where userId = ? and senderId = ? or userId = ? and senderId = ?", [userId, requestFrom, requestFrom, userId])
+    res.send([true])
 
 });
 

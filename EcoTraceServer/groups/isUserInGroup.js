@@ -1,4 +1,5 @@
 const express = require('express');
+const { checkOAuth2 } = require('../tech/oauth');
 
 const connections = require("../server")
 const connection1 = connections["users"]
@@ -12,6 +13,10 @@ router.get('/isUserInGroup', async (req, res) => {
     const oauth = req.query.oauth || "0";
 
     res.setHeader('Content-Type', 'application/json; charset=utf-8');
+
+    if (!await checkOAuth2(oauth, userId)) {
+        return res.status(403).json({ error: "You are not signed in! Not allowed ev" });
+    }
 
     try {
         const [userInGroup] = await connection1.execute('SELECT * FROM `groups` WHERE userId = ? and groupId = ?', [userId, groupId]);

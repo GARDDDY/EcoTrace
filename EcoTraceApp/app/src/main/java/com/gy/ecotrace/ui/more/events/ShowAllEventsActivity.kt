@@ -1,5 +1,6 @@
 package com.gy.ecotrace.ui.more.events
 
+import android.app.DatePickerDialog
 import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.Color
@@ -11,6 +12,7 @@ import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
@@ -30,8 +32,10 @@ import com.facebook.shimmer.ShimmerFrameLayout
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.shape.ShapeAppearanceModel
+import com.google.firebase.auth.FirebaseAuth
 import com.gy.ecotrace.Globals
 import com.gy.ecotrace.R
+import com.gy.ecotrace.customs.ETAuth
 import com.gy.ecotrace.db.DatabaseMethods
 import com.gy.ecotrace.db.Repository
 import com.gy.ecotrace.ui.more.friends.SearcherViewModel
@@ -39,6 +43,10 @@ import com.gy.ecotrace.ui.more.friends.SearcherViewModelFactory
 import com.gy.ecotrace.ui.more.profile.ProfileActivity
 import com.yandex.mapkit.search.Line
 import org.w3c.dom.Text
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Locale
+import java.util.TimeZone
 
 class ShowAllEventsViewModelFactory(private val repository: Repository) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
@@ -52,6 +60,7 @@ class ShowAllEventsViewModelFactory(private val repository: Repository) : ViewMo
 
 class ShowAllEventsActivity : AppCompatActivity() {
     private lateinit var showAllViewModel: ShowAllEventsViewModel
+    private val currentUser = ETAuth.getInstance().guid()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -111,6 +120,78 @@ class ShowAllEventsActivity : AppCompatActivity() {
         fabAdd.imageTintList = getColorStateList(R.color.dirt_white)
         fabAdd.setImageResource(R.drawable.baseline_add_24)
 
+        val startReadyLayout = findViewById<LinearLayout>(R.id.whenStartReady)
+
+        val startDate = findViewById<TextView>(R.id.startFromTime)
+        startDate.setOnClickListener {
+            val calendar = Calendar.getInstance()
+            val year = calendar.get(Calendar.YEAR)
+            val month = calendar.get(Calendar.MONTH)
+            val day = calendar.get(Calendar.DAY_OF_MONTH)
+
+            val datePickerDialog = DatePickerDialog(this, { _, selectedYear, selectedMonth, selectedDay ->
+                val selectedDate = Calendar.getInstance().apply {
+                    set(selectedYear, selectedMonth, selectedDay, 0, 0, 0)
+                    set(Calendar.MILLISECOND, 0)
+                }
+
+                val timestampUtc3 = selectedDate.timeInMillis + TimeZone.getDefault().rawOffset + (3 * 60 * 60 * 1000)
+
+                showAllViewModel.startDate = timestampUtc3/1000
+
+                startDate.text = tsToSt(selectedDate.timeInMillis)
+
+                findViewById<ShimmerFrameLayout>(R.id.allEventsLoadingLayout).visibility = View.VISIBLE
+                allEvents.visibility = View.GONE
+                findViewById<TextView>(R.id.noEventsWarning).visibility = View.GONE
+                allEvents.removeAllViews()
+                startReadyLayout.visibility = View.VISIBLE
+
+                showAllViewModel.getEvents(true)
+            }, year, month, day)
+
+            datePickerDialog.show()
+        }
+        val endDate = findViewById<TextView>(R.id.endToTime)
+        endDate.setOnClickListener {
+            val calendar = Calendar.getInstance()
+            val year = calendar.get(Calendar.YEAR)
+            val month = calendar.get(Calendar.MONTH)
+            val day = calendar.get(Calendar.DAY_OF_MONTH)
+
+            val datePickerDialog = DatePickerDialog(this, { _, selectedYear, selectedMonth, selectedDay ->
+                val selectedDate = Calendar.getInstance().apply {
+                    set(selectedYear, selectedMonth, selectedDay, 0, 0, 0)
+                    set(Calendar.MILLISECOND, 0)
+                }
+
+                val timestampUtc3 = selectedDate.timeInMillis + TimeZone.getDefault().rawOffset + (3 * 60 * 60 * 1000)
+
+                showAllViewModel.endDate = timestampUtc3/1000
+
+                endDate.text = tsToSt(selectedDate.timeInMillis)
+
+                findViewById<ShimmerFrameLayout>(R.id.allEventsLoadingLayout).visibility = View.VISIBLE
+                allEvents.visibility = View.GONE
+                findViewById<TextView>(R.id.noEventsWarning).visibility = View.GONE
+                allEvents.removeAllViews()
+
+                showAllViewModel.getEvents(true)
+            }, year, month, day)
+
+            datePickerDialog.show()
+        }
+
+        findViewById<ImageButton>(R.id.clearDates).setOnClickListener {
+            startReadyLayout.visibility = View.GONE
+            startDate.setText(null)
+            showAllViewModel.startDate = null
+            endDate.setText(null)
+            showAllViewModel.endDate = null
+
+            showAllViewModel.getEvents(true)
+        }
+
 
         showAllViewModel.getEvents()
         showAllViewModel.eventsFound.observe(this, Observer {
@@ -124,8 +205,8 @@ class ShowAllEventsActivity : AppCompatActivity() {
                 eventLayout.findViewById<TextView>(R.id.eventCreator).text = event.eventCreatorName
 
                 eventLayout.findViewById<TextView>(R.id.eventStatus).text = when(event.eventStatus) {
-                    0 -> "Еще не началось"
-                    1 -> "Уже проходит"
+                    0 -> "Начнется ${tsToSt(event.startTime*1000)}\nЗакончится ${tsToSt(event.endTime*1000)}"
+                    1 -> "Проходит до\n${tsToSt(event.endTime*1000)}"
                     2 -> "Закончилось"
                     else -> "unreal-event-status"
                 }
@@ -183,22 +264,22 @@ class ShowAllEventsActivity : AppCompatActivity() {
             }
         })
 
-        showAllViewModel.getUserEvents()
-        showAllViewModel.events.observe(this, Observer {
+        showAllViewModel.getUserEvents(currentUser)
+        showAllViewModel.userEvents.observe(this, Observer {
             it?.let{
                 findViewById<LinearLayout>(R.id.userJoinedEvents).visibility = View.VISIBLE
                 val joinedEvents = findViewById<LinearLayout>(R.id.userJoinedEventsLayout)
-                for ((eventId, eventName) in it) {
+                for (event in it) {
                     val eventLayout = layoutInflater.inflate(R.layout.layout_joined_event_short, null)
-                    eventLayout.findViewById<TextView>(R.id.eventName).text = eventName
+                    eventLayout.findViewById<TextView>(R.id.eventName).text = event.eventInfo.eventName
 
                     Glide.with(this)
-                    .load(Globals().getImgUrl("events", eventId))
+                    .load(Globals().getImgUrl("events", event.eventInfo.eventId))
                     .into(eventLayout.findViewById(R.id.eventImage))
 
 
                     eventLayout.setOnClickListener {
-                        Globals.getInstance().setString("CurrentlyWatchingEvent", eventId)
+                        Globals.getInstance().setString("CurrentlyWatchingEvent", event.eventInfo.eventId)
                         startActivity(Intent(this@ShowAllEventsActivity, ShowEventActivity::class.java))
                     }
 
@@ -221,5 +302,10 @@ class ShowAllEventsActivity : AppCompatActivity() {
                 showAllViewModel.getEvents(false)
             }
         }
+    }
+
+    private fun tsToSt(ts: Long): String {
+        val dateFormat = SimpleDateFormat("dd MMMM yyyy", Locale.getDefault())
+        return dateFormat.format(ts)
     }
 }

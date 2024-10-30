@@ -9,7 +9,7 @@
         android:id="@+id/stepName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="План действий по времени"
+        android:text="@string/timeActionsPlan"
         android:textColor="@color/black"
         android:textSize="20sp"
         
@@ -21,7 +21,7 @@
         android:id="@+id/textView41"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Распланируйте свое мероприятие по минутам!"
+        android:text="@string/planYourEventByMinutes"
         
         android:textColor="@color/silver"
         android:textSize="16sp"
@@ -52,7 +52,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:backgroundTint="@color/ok_green"
-        android:text="Добавить время"
+        android:text="@string/addTime"
         
         android:textColor="@color/dirt_white"
         app:layout_constraintBottom_toBottomOf="parent"

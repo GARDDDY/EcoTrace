@@ -24,41 +24,41 @@
         android:layout_marginHorizontal="@dimen/default_PaddingMargin"
         android:orientation="vertical">
 
-        <Button
-            android:id="@+id/option1"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:backgroundTint="@color/silver"
-            android:text="Вариант 1"
-            android:textColor="@color/dirt_white"
-            android:textSize="18sp" />
+<!--        <Button-->
+<!--            android:id="@+id/option1"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:backgroundTint="@color/silver"-->
+<!--            android:text="Вариант 1"-->
+<!--            android:textColor="@color/dirt_white"-->
+<!--            android:textSize="18sp" />-->
 
-        <Button
-            android:id="@+id/option2"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:backgroundTint="@color/silver"
-            android:text="Вариант 2"
-            android:textColor="@color/dirt_white"
-            android:textSize="18sp" />
+<!--        <Button-->
+<!--            android:id="@+id/option2"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:backgroundTint="@color/silver"-->
+<!--            android:text="Вариант 2"-->
+<!--            android:textColor="@color/dirt_white"-->
+<!--            android:textSize="18sp" />-->
 
-        <Button
-            android:id="@+id/option3"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:backgroundTint="@color/silver"
-            android:text="Вариант 3"
-            android:textColor="@color/dirt_white"
-            android:textSize="18sp" />
+<!--        <Button-->
+<!--            android:id="@+id/option3"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:backgroundTint="@color/silver"-->
+<!--            android:text="Вариант 3"-->
+<!--            android:textColor="@color/dirt_white"-->
+<!--            android:textSize="18sp" />-->
 
-        <Button
-            android:id="@+id/option4"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:backgroundTint="@color/silver"
-            android:text="Вариант 4"
-            android:textColor="@color/dirt_white"
-            android:textSize="18sp" />
+<!--        <Button-->
+<!--            android:id="@+id/option4"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:backgroundTint="@color/silver"-->
+<!--            android:text="Вариант 4"-->
+<!--            android:textColor="@color/dirt_white"-->
+<!--            android:textSize="18sp" />-->
     </LinearLayout>
 
     <TextView

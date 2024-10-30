@@ -24,6 +24,7 @@ import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
 import com.gy.ecotrace.Globals
 import com.gy.ecotrace.R
+import com.gy.ecotrace.customs.ETAuth
 import com.gy.ecotrace.db.DatabaseMethods
 import com.gy.ecotrace.db.Repository
 import com.gy.ecotrace.ui.more.groups.viewModels.ShowGroupMembersViewModel
@@ -124,7 +125,7 @@ class ShowGroupMembersActivity : AppCompatActivity() {
 
         val currentGroup = Globals.getInstance().getString("CurrentlyWatchingGroup")
         showGroupMembersViewModel.groupId = currentGroup
-        val currentUser = FirebaseAuth.getInstance().currentUser?.uid ?: "0"
+        val currentUser = ETAuth.getInstance().guid()
 
         showGroupMembersViewModel.getRole {
             userRole = it

@@ -3,11 +3,10 @@
     android:id="@+id/spinner_text"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:ellipsize="marquee"
-    android:singleLine="true"
+    android:ellipsize="end"
+    android:ems="5"
+    android:padding="@dimen/default_PaddingMargin"
     android:textColor="@color/ok_green"
-    android:background="@color/dirt2_white"
-    android:textSize="16sp"
-    android:paddingStart="16dp"
-    android:paddingEnd="16dp"
-    android:gravity="center_vertical" />
+    android:background="@color/dirt_white"
+    android:textSize="15sp"
+    android:text="TEST TEXT" />

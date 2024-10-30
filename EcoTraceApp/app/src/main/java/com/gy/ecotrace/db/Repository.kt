@@ -10,7 +10,7 @@ class Repository(
     private val userDatabase: DatabaseMethods.UserDatabaseMethods,
     private val appDatabase: DatabaseMethods.ApplicationDatabaseMethods
 ) {
-    suspend fun getUser(userId: String): DatabaseMethods.UserDatabaseMethods.User? {
+    suspend fun getUser(userId: String?): DatabaseMethods.UserDatabaseMethods.User? {
         return userDatabase.getUserInfo(userId)
     }
 
@@ -43,22 +43,19 @@ class Repository(
     }
 
 
-    suspend fun getPrivate(userId: String, userPass: String){//: DatabaseMethods.UserDatabaseMethods.UserPrivate? {
-
+    suspend fun getPrivate(): UserDatabaseMethods.UserPrivate {
+        return userDatabase.getUserPrivate()
     }
 
 
-    suspend fun getRules(userId: String){//: DatabaseMethods.UserDatabaseMethods.UserRules {
-
+    suspend fun getRules(): MutableMap<String, Int> {
+        return userDatabase.getUserRules()
     }
 
     suspend fun getUserEvents(userId: String, eGot: String?, sort: Int): MutableList<DatabaseMethods.UserDatabaseMethods.UserEvent>? {
         return userDatabase.getUserEvents(userId, eGot, sort)
     }
 
-    suspend fun getUserEventsShort(startAt: String?): HashMap<String, String>? {
-        return userDatabase.getUserEventsShort(startAt)
-    }
 
     suspend fun getUsernameOnly(userId: String): String {
         return userDatabase.getUsernameOnly(userId)
@@ -82,7 +79,7 @@ class Repository(
         userDatabase.addFriends(userId)
     }
 
-    suspend fun areUsersFriends(userId: String): Boolean {
+    suspend fun areUsersFriends(userId: String): Int {
         return userDatabase.areUsersFriends(userId)
     }
 
@@ -106,8 +103,8 @@ class Repository(
     suspend fun findUsersWithFilters(filters: String, lastUser: String?, name: String?): Pair<Pair<String?, Boolean>, MutableList<DataClasses.FiltersFriendship>> {
         return appDatabase.findUsersWithFilters(filters, lastUser, name)
     }
-    suspend fun findEventsWithFilters(filters: String, newEventId: String?): Pair<Pair<String?, Boolean>, MutableList<DataClasses.Event>> {
-        return appDatabase.findEventsWithFilters(filters, newEventId)
+    suspend fun findEventsWithFilters(filters: String, newEventId: String?, s: Long?, e: Long?): Pair<Pair<String?, Boolean>, MutableList<DataClasses.Event>> {
+        return appDatabase.findEventsWithFilters(filters, newEventId, s, e)
     }
 
     suspend fun getEventGoals(eventId: String): MutableList<String> {
@@ -133,6 +130,7 @@ class Repository(
     suspend fun isUserModerInEvent(eventId: String): Boolean {
         return appDatabase.isUserModerInEvent(eventId)
     }
+
     suspend fun getUserEvent(eventId: String): DatabaseMethods.UserDatabaseMethods.UserEvent {
         return userDatabase.getUserEvent(eventId)
     }
@@ -231,5 +229,25 @@ class Repository(
         return userDatabase.getCalcImage(calcType, imageId)
     }
 
+    suspend fun getGroupRules(groupId: String): MutableList<String?> {
+        return appDatabase.getGroupRules(groupId)
+    }
+
+
+
+
+    // account
+
+    suspend fun sendForgotCode(email: String): Boolean {
+        return DatabaseMethods.Account().sendForgotCode(email)
+    }
+
+    suspend fun checkCode(email: String, code: Int): Boolean {
+        return DatabaseMethods.Account().checkCode(email, code)
+    }
+
+    suspend fun applyPassword(email: String, code: Int, password: String): Boolean {
+        return DatabaseMethods.Account().applyPassword(email, code, password)
+    }
 
 }

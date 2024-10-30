@@ -46,6 +46,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.gson.Gson
 import com.gy.ecotrace.Globals
 import com.gy.ecotrace.R
+import com.gy.ecotrace.customs.ETAuth
 import com.gy.ecotrace.db.DatabaseMethods
 import com.gy.ecotrace.db.Repository
 import com.gy.ecotrace.ui.more.groups.additional.ShowGroupViewModelFactory
@@ -71,7 +72,7 @@ class ShowGroupActivity : AppCompatActivity() {
     private val repository = Repository(DatabaseMethods.UserDatabaseMethods(), DatabaseMethods.ApplicationDatabaseMethods())
     private lateinit var showGroupViewModel: ShowGroupViewModel
 
-    private val currentUser = FirebaseAuth.getInstance().currentUser?.uid ?: "0"
+    private val currentUser = ETAuth.getInstance().guid()
     private lateinit var currentGroupCreator: String
     private val currentGroup = Globals.getInstance().getString("CurrentlyWatchingGroup")
     private var currentGroupName = ""
@@ -99,7 +100,7 @@ class ShowGroupActivity : AppCompatActivity() {
         }
     }
 
-    private fun reapplyJoinBtn(joinButton: MaterialButton, it: Boolean){ // todo
+    private fun reapplyJoinBtn(joinButton: MaterialButton, it: Boolean){
         if (it) {
             joinButton.text = "В группе"
             joinButton.setTextColor(ContextCompat.getColor(applicationContext, R.color.ok_green))
@@ -433,6 +434,12 @@ class ShowGroupActivity : AppCompatActivity() {
 
                 currentGroupName = it.groupName
                 currentGroupCreator = it.groupCreatorId
+
+                showGroupViewModel.getRole {
+                    userRole = it
+                    showGroupViewModel.getOldPosts()
+                    if (it == 0) groupMenu(true)
+                }
             }
         })
         showGroupViewModel.userInGroup.observe(this) {
@@ -440,11 +447,7 @@ class ShowGroupActivity : AppCompatActivity() {
             postCreator(it)
         }
 
-        showGroupViewModel.getRole {
-            userRole = it
-            showGroupViewModel.getOldPosts()
-            if (it == 0) groupMenu(true)
-        }
+
 
 
 

@@ -24,6 +24,10 @@ router.post('/createPost', upload.single('image'), async (req, res) => {
     const userId = req.query.cuid || "0";
     const oauth = req.query.oauth || "0";
 
+    if (!await checkOAuth2(oauth, userId)) {
+        return res.status(403).json({ error: "You are not signed in! Not allowed ev" });
+    }
+
 
     const [userInGroup] = await connection1.execute('SELECT * FROM `groups` WHERE userId = ? and groupId = ?', [userId, groupId]);
 

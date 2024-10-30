@@ -34,7 +34,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/default_PaddingMargin"
-                android:text="Создатель"
+                android:text="@string/creator"
                 android:textColor="@color/ok_green"
                 android:textSize="20sp"
                 app:layout_constraintStart_toStartOf="parent"
@@ -83,7 +83,7 @@
                     android:id="@+id/textView49"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Руководители"
+                    android:text="@string/ceoipmn"
                     android:textColor="@color/ok_green"
                     android:textSize="20sp" />
 
@@ -126,7 +126,7 @@
                     android:id="@+id/role1warningnoone"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Должность руководителя еще никто не занимает!"
+                    android:text="@string/noCeosYet"
                     android:textColor="@color/black"
                     android:textSize="15sp"
                     android:visibility="gone" />
@@ -146,7 +146,7 @@
                     android:id="@+id/textView50"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Помощники"
+                    android:text="@string/helperipmn"
                     android:textColor="@color/ok_green"
                     android:textSize="20sp" />
 
@@ -189,7 +189,7 @@
                     android:id="@+id/role2warningnoone"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="В этой группе еще нет помощников!"
+                    android:text="@string/noHelpersYet"
                     android:textColor="@color/black"
                     android:textSize="15sp"
                     android:visibility="gone" />
@@ -210,7 +210,7 @@
                     android:id="@+id/textView51"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Участники"
+                    android:text="@string/membersipmn"
                     android:textColor="@color/ok_green"
                     android:textSize="20sp" />
             </LinearLayout>
@@ -228,7 +228,7 @@
                     android:id="@+id/role3warningnoone"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="В этой группе нет обычных участников!"
+                    android:text="@string/noMembersInTheGroup"
                     android:textColor="@color/black"
                     android:textSize="15sp"
                     android:visibility="gone" />

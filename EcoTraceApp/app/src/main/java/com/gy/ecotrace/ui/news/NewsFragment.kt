@@ -66,10 +66,6 @@ class NewsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        view.findViewById<TextView>(R.id.userNameText).text =
-            FirebaseAuth.getInstance().currentUser?.displayName ?: "NONE"
-
-
         val lastExit = requireActivity().getSharedPreferences("getData", Context.MODE_PRIVATE)
             .getLong("exit", 0)
         val repository = Repository(DatabaseMethods.UserDatabaseMethods(), DatabaseMethods.ApplicationDatabaseMethods())

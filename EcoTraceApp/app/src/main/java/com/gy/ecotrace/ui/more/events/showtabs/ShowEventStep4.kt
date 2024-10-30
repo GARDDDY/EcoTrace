@@ -26,6 +26,7 @@ import com.facebook.shimmer.ShimmerFrameLayout
 import com.google.firebase.auth.FirebaseAuth
 import com.gy.ecotrace.Globals
 import com.gy.ecotrace.R
+import com.gy.ecotrace.customs.ETAuth
 import com.gy.ecotrace.db.DatabaseMethods
 import com.gy.ecotrace.db.Repository
 import com.gy.ecotrace.ui.more.groups.ShowGroupActivity
@@ -81,7 +82,7 @@ class ShowEventStep4 : Fragment() {
 
                     val manage = userOneLayoutInEvent.findViewById<ImageButton>(R.id.manageUser)
                     if (user.role == 0 ||
-                        (sharedViewModel.event.value?.eventInfo?.eventCreatorId ?: "-") != FirebaseAuth.getInstance().currentUser?.uid){
+                        (sharedViewModel.event.value?.eventInfo?.eventCreatorId ?: "-") != ETAuth.getInstance().guid()){
                         manage.visibility = View.GONE
                     }
 

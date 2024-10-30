@@ -3,6 +3,7 @@ package com.gy.ecotrace.ui.more.profile
 import android.R
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.util.Log
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -61,23 +62,25 @@ class ProfileViewModel(private val repository: Repository) : ViewModel() {
                 newFriends = true
             }
             val friends = repository.getUserFriends(userId, fGot)
-            fGot = try {friends?.last()?.userId} catch (e: Exception) { null }
-            if (fGot != null) {
-                val prevFriends = _friends.value ?: mutableListOf()
-                _friends.postValue(prevFriends.plus(friends!!).toMutableList())
-            }
+            fGot = try {friends.last().userId} catch (e: Exception) { null }
+
+            val prevFriends = _friends.value ?: mutableListOf()
+            _friends.postValue(prevFriends.plus(friends).toMutableList())
         }
     }
 
-    fun areFriends(userId: String, callback: (Boolean) -> Unit) {
+    private val _friend = MutableLiveData<Int>()
+    val friend: LiveData<Int> get() = _friend
+    fun areFriends(userId: String) {
         viewModelScope.launch {
-            callback(repository.areUsersFriends(userId))
+            _friend.postValue(repository.areUsersFriends(userId))
         }
     }
 
     private var eGot: String? = null
     var newEvents = true
     var updEvents = false
+    var foundAllEvents = false
     fun getEvents(userId: String, sortType: Int = 0, new: Boolean = false) {
         viewModelScope.launch {
             if (new) {
@@ -88,10 +91,12 @@ class ProfileViewModel(private val repository: Repository) : ViewModel() {
             val events = repository.getUserEvents(userId, eGot, sortType)
 
             eGot = try {events?.last()?.eventInfo?.eventId} catch (e: Exception) { null }
-            if (eGot != null) {
-                val prevEvents = _events.value ?: mutableListOf()
-                _events.postValue(prevEvents.plus(events!!).toMutableList())
-            }
+
+            Log.d("events", "$eGot   $events")
+
+            if (eGot == null) foundAllEvents = true
+
+            _events.postValue(events ?: mutableListOf())
         }
     }
 
@@ -104,11 +109,10 @@ class ProfileViewModel(private val repository: Repository) : ViewModel() {
                 _groups.value?.clear()
             }
             val groups = repository.getUserGroups(userId, gGot)
-            gGot = try {groups?.last()?.groupInfo?.groupId} catch (e: Exception) { null }
-            if (gGot != null) {
-                val prevGroups = _groups.value ?: mutableListOf()
-                _groups.postValue(prevGroups.plus(groups!!).toMutableList())
-            }
+            gGot = try {groups.last().groupInfo.groupId} catch (e: Exception) { null }
+
+            val prevGroups = _groups.value ?: mutableListOf()
+            _groups.postValue(prevGroups.plus(groups).toMutableList())
         }
     }
 

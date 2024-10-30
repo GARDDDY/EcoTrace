@@ -12,50 +12,67 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true">
 
-        <EditText
-            android:id="@+id/loginData"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/loginDataLayout"
+            android:layout_width="match_parent"
+            android:layout_marginHorizontal="50dp"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/loginData"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/login_email"
+                android:textColorHint="@color/silver"
+                android:textColor="@color/ok_green"
+                android:backgroundTint="@color/ok_green"
+                android:ems="10"
+                android:inputType="textEmailAddress" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/passwordDataLayout"
             android:layout_width="match_parent"
             android:layout_marginHorizontal="50dp"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:hint="@string/login_email"
-            android:textColorHint="@color/silver"
-            android:textColor="@color/ok_green"
-            android:backgroundTint="@color/ok_green"
-            android:ems="10"
-            android:inputType="textEmailAddress" />
+            app:passwordToggleEnabled="true"
+            android:layout_below="@id/loginDataLayout">
 
-        <EditText
-            android:id="@+id/passwordData"
-            android:layout_width="match_parent"
-            android:layout_toStartOf="@id/showPasswordButton"
-            android:layout_marginStart="50dp"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:hint="@string/password"
-            android:textColorHint="@color/silver"
-            android:textColor="@color/ok_green"
-            android:backgroundTint="@color/ok_green"
-            android:ems="10"
-            android:layout_below="@id/loginData"
-            android:inputType="textPassword" />
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/passwordData"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/password"
+                android:textColorHint="@color/silver"
+                android:textColor="@color/ok_green"
+                android:backgroundTint="@color/ok_green"
+                android:ems="10"
+                android:inputType="textPassword"/>
+        </com.google.android.material.textfield.TextInputLayout>
 
-        <ImageButton
-            android:id="@+id/showPasswordButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:backgroundTint="@color/transparent"
-            app:tint="@color/silver"
-            android:layout_alignEnd="@id/loginData"
-            android:layout_below="@id/loginData"
-            app:srcCompat="@drawable/eye_close" />
+<!--        <EditText-->
+<!--            android:id="@+id/passwordData"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_toStartOf="@id/showPasswordButton"-->
+<!--            android:layout_marginStart="50dp"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_centerHorizontal="true"-->
+<!--            android:hint="@string/password"-->
+<!--            android:textColorHint="@color/silver"-->
+<!--            android:textColor="@color/ok_green"-->
+<!--            android:backgroundTint="@color/ok_green"-->
+<!--            android:ems="10"-->
+<!--            android:layout_below="@id/loginData"-->
+<!--            android:inputType="textPassword" />-->
 
         <Button
             android:id="@+id/loginButton"
             android:layout_width="match_parent"
             android:layout_marginHorizontal="50dp"
             android:layout_height="wrap_content"
-            android:layout_below="@id/passwordData"
+            android:layout_below="@id/passwordDataLayout"
             android:layout_marginTop="@dimen/default_PaddingMargin"
             android:textColor="@color/dirt_white"
             android:backgroundTint="@color/ok_green"

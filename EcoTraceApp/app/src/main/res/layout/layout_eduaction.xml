@@ -18,14 +18,20 @@
             android:adjustViewBounds="true"
             tools:srcCompat="@tools:sample/backgrounds/scenic" />
 
+        <com.facebook.shimmer.ShimmerFrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignEnd="@id/educationImage"
+            android:layout_alignBottom="@id/educationImage">
+
         <ImageView
             android:id="@+id/eduStatus"
             android:layout_width="30dp"
             android:layout_height="30dp"
+            android:foreground="@drawable/layout_loading_shimmer"
             app:tint="@color/red_no"
-            app:srcCompat="@drawable/baseline_circle_24"
-            android:layout_alignEnd="@id/educationImage"
-            android:layout_alignBottom="@id/educationImage"/>
+            app:srcCompat="@drawable/baseline_circle_24" />
+        </com.facebook.shimmer.ShimmerFrameLayout>
 
         <TextView
             android:id="@+id/educationName"

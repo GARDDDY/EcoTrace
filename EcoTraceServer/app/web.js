@@ -57,7 +57,7 @@ async function fetchAndStoreNews() {
 }
 
 
-router.get('/web', async (req, res) => {
+router.get('/web', async (req, res) => { // todo auto start not as a page
     const datas = await fetchAndStoreNews()
     const promises = datas.map(async (item) => {
         item.image = await fetchImageFromUrl(item.url);

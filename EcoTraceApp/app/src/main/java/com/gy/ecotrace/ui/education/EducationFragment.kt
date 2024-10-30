@@ -51,7 +51,6 @@ class EducationFragment : Fragment() {
                 val jsonRoot = gson.fromJson(reader, EduJson::class.java)
 
                 val mainData = jsonRoot.main
-                Log.d("file", "Name: ${mainData.name}, Image URL: ${mainData.imageUrl}")
 
                 reader.close()
 
@@ -64,6 +63,7 @@ class EducationFragment : Fragment() {
 
                 eduLayout.setOnClickListener {
                     val edu = Intent(requireActivity(), ShowEducationActivity::class.java)
+                    edu.putExtra("testName", mainData.name)
                     edu.putExtra("edu", file)
                     startActivity(edu)
                 }

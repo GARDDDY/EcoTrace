@@ -46,8 +46,8 @@ class CreateEventStep1: Fragment() {
 
             val filtersLayout: LinearLayout = view.findViewById(R.id.chosenTags)
 
-            val startSpinner: Spinner = view.findViewById(R.id.chooseStartWay)
-            val autostartMembers: EditText = view.findViewById(R.id.autostartWhenMembers)
+//            val startSpinner: Spinner = view.findViewById(R.id.chooseStartWay)
+//            val autostartMembers: EditText = view.findViewById(R.id.autostartWhenMembers)
 
             eventNameEntry.setText(eventClass.eventName)
             eventAboutEntry.setText(eventClass.eventAbout)
@@ -81,26 +81,26 @@ class CreateEventStep1: Fragment() {
                 override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
             })
 
-            startSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-                override fun onItemSelected(selection: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
-                    autostartMembers.visibility = View.GONE
-                    val item = selection!!.selectedItemId
-                    if (item == 1L) autostartMembers.visibility = View.VISIBLE
-                    eventClass.eventStart = "$item;0"
-                }
-
-                override fun onNothingSelected(p0: AdapterView<*>?) {
-                    eventClass.eventStart = "0;0"
-                }
-            }
-            autostartMembers.addTextChangedListener(object : TextWatcher {
-                override fun afterTextChanged(s: Editable?) {
-                    eventClass.eventStart = "1;$s"
-                }
-
-                override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-                override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-            })
+//            startSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+//                override fun onItemSelected(selection: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
+//                    autostartMembers.visibility = View.GONE
+//                    val item = selection!!.selectedItemId
+//                    if (item == 1L) autostartMembers.visibility = View.VISIBLE
+//                    eventClass.eventStart = "$item;0"
+//                }
+//
+//                override fun onNothingSelected(p0: AdapterView<*>?) {
+//                    eventClass.eventStart = "0;0"
+//                }
+//            }
+//            autostartMembers.addTextChangedListener(object : TextWatcher {
+//                override fun afterTextChanged(s: Editable?) {
+//                    eventClass.eventStart = "1;$s"
+//                }
+//
+//                override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+//                override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+//            })
             val usedTags = try {
                 eventClass.filters.split(',').map { it.toInt()-1 }.toMutableList()
             } catch (e: Exception) {
@@ -154,13 +154,13 @@ class CreateEventStep1: Fragment() {
                     else filter.setBackgroundColor(Color.parseColor(colors[dat].first))
                 }
 
-                val startData = eventClass.eventStart.split(';').map { it.toInt() }
-                Log.d("sd", startData.toString())
-                startSpinner.setSelection(startData[0])
-                if (startData[0] == 1) {
-                    autostartMembers.visibility = View.VISIBLE
-                    autostartMembers.setText(startData[1].toString())
-                }
+//                val startData = eventClass.eventStart.split(';').map { it.toInt() }
+//                Log.d("sd", startData.toString())
+//                startSpinner.setSelection(startData[0])
+//                if (startData[0] == 1) {
+//                    autostartMembers.visibility = View.VISIBLE
+//                    autostartMembers.setText(startData[1].toString())
+//                }
 
 
 

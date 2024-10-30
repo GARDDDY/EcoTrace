@@ -45,7 +45,7 @@
             android:ems="10"
             android:gravity="start|top"
             android:backgroundTint="@color/ok_green"
-            android:hint="Оставить комментарий..."
+            android:hint="@string/leaveAComment"
             android:inputType="textMultiLine"
             android:textColorHint="@color/silver" />
 

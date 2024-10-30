@@ -24,7 +24,7 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/default_PaddingMargin"
             android:clickable="true"
-            android:background="?attr/selectableItemBackground"
+
             android:orientation="horizontal">
 
             <ImageView
@@ -71,7 +71,7 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/default_PaddingMargin"
             android:clickable="true"
-            android:background="?attr/selectableItemBackground"
+
             android:orientation="horizontal">
 
             <ImageView
@@ -116,7 +116,7 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/default_PaddingMargin"
             android:clickable="true"
-            android:background="?attr/selectableItemBackground"
+
             android:orientation="horizontal">
 
             <ImageView
@@ -170,7 +170,7 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/default_PaddingMargin"
             android:clickable="true"
-            android:background="?attr/selectableItemBackground"
+
             android:orientation="horizontal">
 
             <ImageView
@@ -215,7 +215,7 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/default_PaddingMargin"
             android:clickable="true"
-            android:background="?attr/selectableItemBackground"
+
             android:orientation="horizontal">
 
             <ImageView
@@ -254,95 +254,95 @@
             android:layout_marginBottom="@dimen/default_PaddingMargin"
             android:background="@color/ok_green" />
 
-        <LinearLayout
-            android:id="@+id/settingsOpenLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="@dimen/default_PaddingMargin"
-            android:clickable="true"
-            android:background="?attr/selectableItemBackground"
-            android:orientation="horizontal">
+<!--        <LinearLayout-->
+<!--            android:id="@+id/settingsOpenLayout"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginHorizontal="@dimen/default_PaddingMargin"-->
+<!--            android:clickable="true"-->
 
-            <ImageView
-                android:layout_width="64dp"
-                android:layout_height="64dp"
-                android:layout_marginEnd="@dimen/default_PaddingMargin"
-                android:src="@drawable/baseline_settings_24"
-                app:tint="@color/ok_green" />
+<!--            android:orientation="horizontal">-->
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
+<!--            <ImageView-->
+<!--                android:layout_width="64dp"-->
+<!--                android:layout_height="64dp"-->
+<!--                android:layout_marginEnd="@dimen/default_PaddingMargin"-->
+<!--                android:src="@drawable/baseline_settings_24"-->
+<!--                app:tint="@color/ok_green" />-->
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Настройки"
-                    android:textColor="@color/black"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
+<!--            <LinearLayout-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:orientation="vertical">-->
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Найстройте параметры приложения под себя!"
-                    android:textColor="@color/black" />
-            </LinearLayout>
+<!--                <TextView-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:text="Настройки"-->
+<!--                    android:textColor="@color/black"-->
+<!--                    android:textSize="18sp"-->
+<!--                    android:textStyle="bold" />-->
 
-        </LinearLayout>
+<!--                <TextView-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:text="Найстройте параметры приложения под себя!"-->
+<!--                    android:textColor="@color/black" />-->
+<!--            </LinearLayout>-->
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginHorizontal="@dimen/default_PaddingMargin"
-            android:layout_marginBottom="@dimen/default_PaddingMargin"
-            android:background="@color/ok_green" />
+<!--        </LinearLayout>-->
 
-        <LinearLayout
-            android:id="@+id/howToUseOpenLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="@dimen/default_PaddingMargin"
-            android:clickable="true"
-            android:background="?attr/selectableItemBackground"
-            android:orientation="horizontal">
+<!--        <View-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="1dp"-->
+<!--            android:layout_marginHorizontal="@dimen/default_PaddingMargin"-->
+<!--            android:layout_marginBottom="@dimen/default_PaddingMargin"-->
+<!--            android:background="@color/ok_green" />-->
 
-            <ImageView
-                android:layout_width="64dp"
-                android:layout_height="64dp"
-                android:layout_marginEnd="@dimen/default_PaddingMargin"
-                android:src="@drawable/baseline_question_mark_24"
-                app:tint="@color/ok_green" />
+<!--        <LinearLayout-->
+<!--            android:id="@+id/howToUseOpenLayout"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginHorizontal="@dimen/default_PaddingMargin"-->
+<!--            android:clickable="true"-->
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
+<!--            android:orientation="horizontal">-->
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Как пользоваться?"
-                    android:textColor="@color/black"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
+<!--            <ImageView-->
+<!--                android:layout_width="64dp"-->
+<!--                android:layout_height="64dp"-->
+<!--                android:layout_marginEnd="@dimen/default_PaddingMargin"-->
+<!--                android:src="@drawable/baseline_question_mark_24"-->
+<!--                app:tint="@color/ok_green" />-->
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Вы новичок или забыли, что и как работает? Этот раздел поможет!"
-                    android:textColor="@color/black" />
-            </LinearLayout>
+<!--            <LinearLayout-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:orientation="vertical">-->
 
-        </LinearLayout>
+<!--                <TextView-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:text="Помощь"-->
+<!--                    android:textColor="@color/black"-->
+<!--                    android:textSize="18sp"-->
+<!--                    android:textStyle="bold" />-->
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginHorizontal="@dimen/default_PaddingMargin"
-            android:layout_marginBottom="@dimen/default_PaddingMargin"
-            android:background="@color/ok_green" />
+<!--                <TextView-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:text="Помощь с приложением"-->
+<!--                    android:textColor="@color/black" />-->
+<!--            </LinearLayout>-->
+
+<!--        </LinearLayout>-->
+
+<!--        <View-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="1dp"-->
+<!--            android:layout_marginHorizontal="@dimen/default_PaddingMargin"-->
+<!--            android:layout_marginBottom="@dimen/default_PaddingMargin"-->
+<!--            android:background="@color/ok_green" />-->
 
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
