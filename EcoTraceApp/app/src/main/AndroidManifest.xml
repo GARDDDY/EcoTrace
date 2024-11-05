@@ -31,19 +31,10 @@
             android:name=".ui.news.NewsActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.more.events.showtabs.ValidateParticipantActivity"
-            android:exported="false" />
-        <activity
             android:name=".ui.more.friends.PersonalShareActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.more.ecocalculator.DailyEcoCalcResultsActivity"
-            android:exported="false" />
-        <activity
             android:name=".ui.more.ecocalculator.DailyEcoCalcActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.more.ecocalculator.daily.FoodEcoCalcActivity"
             android:exported="false" />
         <activity
             android:name=".ui.more.ecocalculator.EcologicalCalculatorActivity"
@@ -110,7 +101,7 @@
         <activity
             android:name=".ui.more.profile.ProfileActivity"
             android:exported="true"
-            android:label="@string/profile"
+            android:label="@string/myProfile"
             android:screenOrientation="fullSensor" />
         <activity
             android:name=".MainActivity"

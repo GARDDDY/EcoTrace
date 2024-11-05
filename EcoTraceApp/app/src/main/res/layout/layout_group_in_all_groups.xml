@@ -61,6 +61,9 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/groupTagsScrollView"
             android:layout_marginTop="@dimen/default_PaddingMargin"
+            android:textColor="@color/black"
+            android:hint="@string/noDescription"
+            android:textColorHint="@color/silver"
             android:layout_marginHorizontal="@dimen/default_PaddingMargin"
             android:text="group-description" />
 
@@ -88,6 +91,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="15dp"
                 android:clickable="true"
+                android:textColor="@color/black"
                 android:text="groupCreator"
                 android:textSize="15sp" />
         </LinearLayout>
@@ -102,6 +106,7 @@
             android:layout_marginTop="15dp"
             android:layout_toEndOf="@+id/creatorLayout"
             android:drawablePadding="10dp"
+            android:textColor="@color/black"
             android:drawableStart="@drawable/baseline_people_24"
             android:text="-1"
             android:textSize="15sp" />

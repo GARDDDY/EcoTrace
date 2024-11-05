@@ -1,21 +1,32 @@
 package com.gy.ecotrace.ui.education
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewModelScope
 import com.bumptech.glide.Glide
+import com.facebook.shimmer.ShimmerFrameLayout
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.gy.ecotrace.R
 import com.gy.ecotrace.databinding.FragmentEducationBinding
+import com.gy.ecotrace.db.DatabaseMethods
+import com.gy.ecotrace.db.Repository
 import com.yandex.mapkit.search.Line
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.InputStreamReader
 
 class EducationFragment : Fragment() {
@@ -68,12 +79,47 @@ class EducationFragment : Fragment() {
                     startActivity(edu)
                 }
 
+                getEduStatus(Regex("\\d+").find(file)!!.value.toInt()) {
+                    requireActivity().runOnUiThread {
+                        val status = eduLayout.findViewById<ImageView>(R.id.eduStatus)
+                        val loading = eduLayout.findViewById<ShimmerFrameLayout>(R.id.eduLoading)
+                        Log.d("edu stayusi", "$it")
+
+                        loading.visibility = View.GONE
+                        status.visibility = View.VISIBLE
+                        it?.let {
+                            when (it) {
+                                false -> status.imageTintList = ContextCompat.getColorStateList(
+                                    requireContext(),
+                                    R.color.red_no
+                                )
+
+                                true -> status.imageTintList = ContextCompat.getColorStateList(
+                                    requireContext(),
+                                    R.color.ok_green
+                                )
+                            }
+                        }
+                    }
+                }
+
                 allEducations.addView(eduLayout)
             } catch (e: Exception) {
                 Log.e("file", "Error reading or parsing file: $file", e)
             }
         }
 
+    }
+
+
+    private fun getEduStatus(edu: Int, callback: (Boolean?) -> Unit) {
+        GlobalScope.launch {
+            val data = Repository(DatabaseMethods.UserDatabaseMethods(), DatabaseMethods.ApplicationDatabaseMethods()).getEduStatus(edu)
+
+            withContext(Dispatchers.IO) {
+                callback(data)
+            }
+        }
     }
 
 }

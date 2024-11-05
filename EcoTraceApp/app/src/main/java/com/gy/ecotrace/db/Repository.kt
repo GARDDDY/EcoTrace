@@ -120,11 +120,15 @@ class Repository(
         return appDatabase.getEventMembers(eventId, startAfter, username)
     }
 
-    suspend fun joinEvent(eventId: String) {
-        userDatabase.joinEvent(eventId)
+    suspend fun joinEvent(eventId: String, callback: (Boolean) -> Unit) {
+        userDatabase.joinEvent(eventId) {
+            callback(it)
+        }
     }
-    suspend fun leaveEvent(eventId: String) {
-        userDatabase.leaveEvent(eventId)
+    suspend fun leaveEvent(eventId: String, callback: (Boolean) -> Unit) {
+        userDatabase.leaveEvent(eventId) {
+            callback(it)
+        }
     }
 
     suspend fun isUserModerInEvent(eventId: String): Boolean {
@@ -172,6 +176,9 @@ class Repository(
     suspend fun deleteGroup(groupId: String): Boolean {
         return appDatabase.deleteGroup(groupId)
     }
+    suspend fun deleteEvent(eventId: String): Boolean {
+        return appDatabase.deleteEvent(eventId)
+    }
 
     suspend fun deletePost(groupId: String, postId: Int): Boolean {
         return appDatabase.deletePost(groupId, postId)
@@ -188,12 +195,21 @@ class Repository(
         return appDatabase.uploadImage(folder, imageId, imageData)
     }
 
-    suspend fun joinGroup(groupId: String): Boolean {
-        return userDatabase.joinGroup(groupId)
+    fun joinGroup(groupId: String, callback: (Boolean) -> Unit) {
+        userDatabase.joinGroup(groupId) {
+            callback(it)
+        }
     }
-    suspend fun leaveGroup(groupId: String): Boolean {
-        return userDatabase.leaveGroup(groupId)
+    fun leaveGroup(groupId: String, callback: (Boolean) -> Unit) {
+        userDatabase.leaveGroup(groupId) {
+            callback(it)
+        }
     }
+
+    suspend fun setUserRoleInEvent(userId: String, eventId: String, role: Int): Boolean {
+        return appDatabase.setUserRoleInEvent(userId, eventId, role)
+    }
+
     suspend fun isUserInGroup(groupId: String): Boolean {
         return userDatabase.isUserInGroup(groupId)
     }
@@ -212,7 +228,7 @@ class Repository(
     suspend fun isGroupNameAvailable(groupName: String): String? {
         return appDatabase.isGroupNameAvailable(groupName)
     }
-    suspend fun createGroup(groupData: DatabaseMethods.DataClasses.Group, textRules: String?, imageRules: Bitmap?): String? {
+    suspend fun createGroup(groupData: DatabaseMethods.DataClasses.GroupChange, textRules: String?, imageRules: Bitmap?): String? {
         return appDatabase.createGroup(groupData, textRules, imageRules)
     }
     suspend fun getUserRating(inCountry: Boolean): MutableList<DatabaseMethods.DataClasses.Rating> {
@@ -222,15 +238,22 @@ class Repository(
         return userDatabase.saveEcoCalc(data, calcType, callback)
     }
 
-    suspend fun getCountCalculators(calcType: Int): Int {
-        return userDatabase.getCountCalculators(calcType)
+    suspend fun getCountCalculators(): String {
+        return userDatabase.getCountCalculators()
     }
     suspend fun getCalcImage(calcType: Int, imageId: Int): Bitmap? {
         return userDatabase.getCalcImage(calcType, imageId)
     }
+    suspend fun getCalcAdvices(calcType: Int, image: Int): Array<String> {
+        return userDatabase.getCalcAdvices(calcType, image)
+    }
 
     suspend fun getGroupRules(groupId: String): MutableList<String?> {
         return appDatabase.getGroupRules(groupId)
+    }
+
+    suspend fun getEduStatus(edu: Int): Boolean? {
+        return userDatabase.getEduStatus(edu)
     }
 
 

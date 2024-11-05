@@ -28,7 +28,7 @@ router.get('/getUpdates', async (req, res) => {
     );
 
     if (events.length === 0) {
-        return res.json({ started: 0, ended: 0 });
+        return res.json([ 0, 0, usercall[0].fullname || usercall[0].username ]);
     }
     const eventsIds = events.map(event => event.eventId);
     const eventIds = eventsIds.map(id => `'${id}'`).join(', ');
@@ -43,7 +43,7 @@ router.get('/getUpdates', async (req, res) => {
         [sinceTime]
     );
 
-    res.json([eventsStarted[0].count,eventsEnded[0].count, usercall[0].fullname ? usercall[0].fullname : usercall[0].username]);
+    res.json([eventsStarted[0].count,eventsEnded[0].count, usercall[0].fullname || usercall[0].username]);
 });
 
 module.exports = router;

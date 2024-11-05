@@ -46,7 +46,7 @@
       "sliders": {
         "divideSpecifiersToMax": true,
         "minValue": 0,
-        "maxValue": 10000,
+        "maxValue": 3000,
         "valueType": "гр."
       }
     },
@@ -69,7 +69,7 @@
       "sliders": {
         "divideSpecifiersToMax": true,
         "minValue": 0,
-        "maxValue": 10000,
+        "maxValue": 3000,
         "valueType": "гр."
       }
     },
@@ -96,7 +96,7 @@
       "sliders": {
         "divideSpecifiersToMax": true,
         "minValue": 0,
-        "maxValue": 10000,
+        "maxValue": 3000,
         "valueType": "гр."
       }
     },
@@ -108,7 +108,7 @@
 
       "sliders": {
         "minValue": 0,
-        "maxValue": 10000,
+        "maxValue": 3000,
         "valueType": "гр."
       }
     }

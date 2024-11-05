@@ -22,7 +22,7 @@
         android:textAlignment="center"
         android:textSize="12sp"
         android:layout_marginHorizontal="@dimen/default_PaddingMargin"
-        android:text="Уточняйте данные, во время прохождения тестов, чтобы здесь появились данные!"/>
+        android:text="@string/specifyDataWhileTakingTestsSoDataWillAppearHere"/>
 
     <LinearLayout
         android:id="@+id/foodImages"
@@ -35,6 +35,7 @@
         android:id="@+id/foodAdvices"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/default_PaddingMargin"
         android:orientation="vertical" />
 
     <View

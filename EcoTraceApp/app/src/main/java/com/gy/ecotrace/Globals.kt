@@ -72,12 +72,10 @@ class Globals : Application() {
     }
 
     fun getString(key: String): String {
-        Log.d("Globals get value", "Got $key (${variablesMapStr[key] ?: '0'})")
         return variablesMapStr[key] ?: ""
     }
 
     fun setString(key: String, value: String) {
-        Log.d("Globals set value", "Set $key ${variablesMapStr[key]} -> $value")
         variablesMapStr[key] = value
     }
 
@@ -102,7 +100,6 @@ class Globals : Application() {
 
     private fun saveToCache(type: String, data: String) {
         val prefs = getSharedPreferences("consts", MODE_PRIVATE)
-        Log.d("data json", data.toString())
         with(prefs.edit()) {
             putString(type, data)
             putLong("${type}_timestamp", currentTimeMillis())
@@ -113,7 +110,7 @@ class Globals : Application() {
     fun isCacheExpired(type: String): Boolean {
         val prefs = getSharedPreferences("consts", MODE_PRIVATE)
         val timestamp = prefs.getLong("${type}_timestamp", 0)
-        return currentTimeMillis() - timestamp > 30L * 24 * 60 * 60 * 1000 // 30 дней
+        return currentTimeMillis() - timestamp > 30L * 24 * 60 * 60 * 1000
     }
 
 

@@ -28,7 +28,7 @@
             android:ems="10"
             android:gravity="center"
             android:textColor="@color/ok_green"
-            android:hint="Введите название (необязательно)"
+            android:hint="@string/enterTheName_notNecessarily"
             android:inputType="text" />
 
         <LinearLayout
@@ -55,7 +55,7 @@
                 android:textColor="@color/ok_green"
                 android:textSize="20sp"
                 android:textStyle="bold"
-                android:text="Радиус:" />
+                android:text="@string/radius_2dot" />
 
             <TextView
                 android:id="@+id/circleRadiusValue"
@@ -80,7 +80,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="20dp"
                 android:paddingEnd="5dp"
-                android:text="Цвет заливки"
+                android:text="@string/fillColor"
                 android:textColor="@color/ok_green"
                 android:textSize="16sp" />
 
@@ -96,7 +96,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="50dp"
                 android:paddingEnd="5dp"
-                android:text="Цвет границы"
+                android:text="@string/strokeColor"
                 android:textColor="@color/ok_green"
                 android:textSize="16sp" />
 
@@ -117,7 +117,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/black"
-                android:text="Связать со временем" />
+                android:text="@string/linkToTheTime" />
 
             <Spinner
                 android:id="@+id/connectWithTime"
@@ -133,14 +133,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:backgroundTint="@color/ok_green"
-            android:text="Переместить" />
+            android:text="@string/move" />
 
         <Button
             android:id="@+id/deleteObject"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:backgroundTint="@color/red_no"
-            android:text="Удалить" />
+            android:text="@string/delete" />
 
 
     </LinearLayout>

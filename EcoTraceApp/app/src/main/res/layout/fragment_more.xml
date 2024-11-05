@@ -43,7 +43,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Мой профиль"
+                    android:text="@string/myProfile"
                     android:textColor="@color/black"
                     android:textSize="18sp"
                     android:textStyle="bold" />
@@ -52,7 +52,7 @@
                     android:id="@+id/openProfileDescriptionText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Ваш профиль"
+                    android:text="@string/yourProfile"
                     android:textColor="@color/black" />
             </LinearLayout>
 
@@ -89,7 +89,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Экологический калькулятор"
+                    android:text="@string/ecologicalCalculator"
                     android:textColor="@color/black"
                     android:textSize="18sp"
                     android:textStyle="bold" />
@@ -97,7 +97,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Хотите узнать о вашем влиянии на окружающую среду?"
+                    android:text="@string/wannaKnowAboutYourImpactOnTheEnvironment"
                     android:textColor="@color/black" />
             </LinearLayout>
 
@@ -134,7 +134,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Друзья"
+                    android:text="@string/friends"
                     android:textColor="@color/black"
                     android:textSize="18sp"
                     android:textStyle="bold" />
@@ -142,7 +142,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Отличный способ быстро посмотреть список своих друзей и найти новых!"
+                    android:text="@string/theBestWayToSeeYourFriendsAndFindNewOnes"
                     android:textColor="@color/black" />
             </LinearLayout>
 
@@ -188,7 +188,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Мероприятия"
+                    android:text="@string/events"
                     android:textColor="@color/black"
                     android:textSize="18sp"
                     android:textStyle="bold" />
@@ -196,7 +196,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Найдите подходящее для себя мероприятие или создайте новое!"
+                    android:text="@string/findASuitableEventForYouOrCreateANewOne"
                     android:textColor="@color/black" />
             </LinearLayout>
 
@@ -233,7 +233,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Группы"
+                    android:text="@string/groups"
                     android:textColor="@color/black"
                     android:textSize="18sp"
                     android:textStyle="bold" />
@@ -241,7 +241,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Вступите в группу или создайте свою!"
+                    android:text="@string/joinAGroupOrCreateYourOwn"
                     android:textColor="@color/black" />
             </LinearLayout>
 

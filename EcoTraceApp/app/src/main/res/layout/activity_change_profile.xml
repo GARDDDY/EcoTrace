@@ -237,20 +237,19 @@
                         android:textColor="@color/black"
                         android:textColorHint="@color/silver" />
                 </com.google.android.material.textfield.TextInputLayout>
-
-
-
-                <ImageButton
-                    android:id="@+id/applyEmail"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:backgroundTint="@color/transparent"
-                    android:visibility="gone"
-                    android:layout_centerVertical="true"
-                    app:tint="@color/ok_green"
-                    android:layout_alignParentEnd="true"
-                    tools:src="@drawable/baseline_check_24" />
             </RelativeLayout>
+
+<!--            todo-->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/applyEmail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/ok_green"
+                android:textColor="@color/dirt_white"
+                android:text="apply new email"
+                android:layout_marginTop="5dp"
+                android:visibility="gone"
+                android:layout_below="@id/newPasswordLayout" />
 
             <Space
                 android:layout_width="match_parent"
@@ -265,6 +264,7 @@
                     android:id="@+id/currentPasswordLayout"
                     android:layout_width="match_parent"
                     style="@style/CustomTextInputLayout"
+                    app:passwordToggleEnabled="true"
                     android:layout_height="wrap_content">
 
                     <com.google.android.material.textfield.TextInputEditText
@@ -274,6 +274,7 @@
                         android:layout_height="wrap_content"
                         android:textColor="@color/black"
                         android:textColorHint="@color/silver"
+                        android:inputType="textPassword"
                         android:hint="@string/currentPassword" />
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -282,6 +283,7 @@
                     android:layout_width="match_parent"
                     android:layout_below="@id/currentPasswordLayout"
                     style="@style/CustomTextInputLayout"
+                    app:passwordToggleEnabled="true"
                     android:layout_height="wrap_content">
 
                     <com.google.android.material.textfield.TextInputEditText
@@ -291,10 +293,12 @@
                         android:layout_height="wrap_content"
                         android:textColor="@color/black"
                         android:textColorHint="@color/silver"
+                        android:inputType="textPassword"
                         android:hint="@string/newPassword" />
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.button.MaterialButton
+                    android:id="@+id/applyNewPassword"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:backgroundTint="@color/ok_green"

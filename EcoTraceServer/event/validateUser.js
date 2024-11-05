@@ -1,4 +1,5 @@
 const express = require('express');
+const { checkOAuth2 } = require('../tech/oauth');
 
 const connections = require("../server")
 const connection1 = connections["users"]
@@ -6,9 +7,9 @@ const connection2 = connections["events"]
 
 const router = express.Router();
 
-router.post('/validateUser', async (req, res) => {
+router.get('/validateUser', async (req, res) => { // todo set on get
     const userIdToValidate = req.query.uid;
-    const userId = req.query.cuid || '0';
+    const userId = req.query.cid || '0';
     const oauth = req.query.oauth || '0';
     const eventId = req.query.eid || '0';
 
@@ -40,9 +41,15 @@ router.post('/validateUser', async (req, res) => {
     );
 
     const [eData] = await connection2.execute(
-        `select eventCountMembers, eventCreatorId from event WHERE eventId = ?`,
+        `select eventCreatorId from event WHERE eventId = ?`,
         [eventId]
     );
+    const [members] = await connection1.execute('select count(*) as total from events where eventId = ?', [eventId])
+    const [userRole] = await connection1.execute('select eventRole, validated from events where userId = ? and eventId = ?', [userIdToValidate, eventId])
+
+    if (userRole[0].validated === 1) {
+        return res.send([false])
+    }
 
     const [creatorExp] = await connection1.execute(
         `select experience from user WHERE userId = ?`,
@@ -54,10 +61,10 @@ router.post('/validateUser', async (req, res) => {
         [userIdToValidate]
     );
 
-    const addExp = Math.floor((creatorExp[0]*0.01 + eData[0].eventCountMembers * (currentExp + 1)*0.002)*(2 - userRole))
+    const addExp = Math.floor((creatorExp[0]*0.01 + members[0].total * (currentExp + 1)*0.002)*(2 - userRole[0].userRole))
     console.log(addExp);
 
-    res.send(true);
+    res.send([true]);
 });
 
 module.exports = router;

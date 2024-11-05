@@ -9,9 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
-import android.widget.Toast
 import androidx.fragment.app.Fragment
-import com.google.firebase.auth.FirebaseAuth
 import com.gy.ecotrace.Globals
 import com.gy.ecotrace.R
 import com.gy.ecotrace.customs.ETAuth
@@ -35,13 +33,13 @@ class MoreFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        if (ETAuth.getInstance().guid() == "") {
+        if (ETAuth.getInstance().getUID() == "") {
             view.findViewById<TextView>(R.id.openProfileDescriptionText).text =
                 "У вас еще нет аккаунта, создайте его, нажав сюда!"
         }
         view.findViewById<LinearLayout>(R.id.profileOpenLayout).setOnClickListener {
             val currentUser = Globals.getInstance().getString("CurrentlyWatching")
-            val currentLogged = ETAuth.getInstance().guid()
+            val currentLogged = ETAuth.getInstance().getUID()
             Log.d("Logged in as", currentLogged)
 //            if (currentUser == "") {
                 if (currentLogged == "") {

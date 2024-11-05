@@ -27,6 +27,10 @@ router.get('/isUserValidated', async (req, res) => {
         `SELECT validated FROM events WHERE userId = ? and eventId = ?`, [userId, eventId]
     );
 
+    if (valid.length === 0) {
+        return res.send([false])
+    }
+
     res.send([Boolean(valid[0].validated)]);
 });
 

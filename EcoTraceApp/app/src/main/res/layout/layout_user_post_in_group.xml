@@ -119,8 +119,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="18sp"
+            android:textColor="@color/black"
             android:layout_marginEnd="@dimen/default_PaddingMargin"
-            android:text="Посмотреть"/>
+            android:text="@string/open"/>
 
         <TextView
             android:id="@+id/commentsCountPost"
@@ -129,6 +130,7 @@
             android:visibility="visible"
             android:textSize="18sp"
             android:layout_gravity="center"
+            android:textColor="@color/black"
             android:text="0 комментариев" />
     </LinearLayout>
 
@@ -154,7 +156,7 @@
             android:ems="10"
             android:backgroundTint="@color/ok_green"
             android:gravity="start|top"
-            android:hint="Оставить комментарий..."
+            android:hint="@string/leaveAComment"
             android:inputType="textMultiLine"
             android:textColorHint="@color/silver" />
 

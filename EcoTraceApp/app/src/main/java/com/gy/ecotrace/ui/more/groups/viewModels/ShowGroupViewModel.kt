@@ -37,7 +37,12 @@ class ShowGroupViewModel(private val repository: Repository) : ViewModel() {
     var fetching = false
 
 
+    var anyBreak = false
     fun getOldPosts(new: Boolean = false) {
+        if (anyBreak) {
+            anyBreak = false
+            return
+        }
         viewModelScope.launch {
             if (new) {
                 lastPostId = null
@@ -113,21 +118,31 @@ class ShowGroupViewModel(private val repository: Repository) : ViewModel() {
         }
     }
 
-    fun leaveGroup() {
+    fun leaveGroup(callback: (Boolean) -> Unit) {
         viewModelScope.launch {
-            _userInGroup.postValue(!repository.leaveGroup(groupId))
+            repository.leaveGroup(groupId) {
+                callback(!it)
+            }
         }
     }
 
-    fun joinGroup() {
+    fun joinGroup(callback: (Boolean) -> Unit) {
         viewModelScope.launch {
-            _userInGroup.postValue(repository.joinGroup(groupId))
+            repository.joinGroup(groupId) {
+                callback(it)
+            }
         }
     }
 
     fun delete(callback: (Boolean) -> Unit) {
         viewModelScope.launch {
             callback(repository.deleteGroup(groupId))
+        }
+    }
+
+    fun getRules(callback: (Array<String?>) -> Unit) {
+        viewModelScope.launch {
+            callback(repository.getGroupRules(groupId).toTypedArray())
         }
     }
 }

@@ -71,7 +71,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="5dp"
                             android:textColor="@color/ok_green"
-                            android:text="участник" />
+                            android:text="@string/memberiped" />
 
                 </LinearLayout>
 

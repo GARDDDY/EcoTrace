@@ -18,18 +18,13 @@ import android.widget.LinearLayout
 import android.widget.PopupWindow
 import android.widget.ScrollView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
-import com.facebook.shimmer.ShimmerFrameLayout
-import com.google.firebase.auth.FirebaseAuth
 import com.gy.ecotrace.Globals
 import com.gy.ecotrace.R
 import com.gy.ecotrace.customs.ETAuth
-import com.gy.ecotrace.db.DatabaseMethods
-import com.gy.ecotrace.db.Repository
-import com.gy.ecotrace.ui.more.groups.ShowGroupActivity
 import com.gy.ecotrace.ui.more.profile.ProfileActivity
 
 class ShowEventStep4 : Fragment() {
@@ -61,7 +56,10 @@ class ShowEventStep4 : Fragment() {
             Log.d("users", it.toString())
             it?.let {
                 view.findViewById<ScrollView>(R.id.loadingLayout).visibility = View.GONE
-                allMembers.removeAllViews()
+                if (sharedViewModel.new) {
+                    allMembers.removeAllViews()
+                    sharedViewModel.new = false
+                }
 
                 if (it.size == 0) {
                     // no one
@@ -75,14 +73,13 @@ class ShowEventStep4 : Fragment() {
                     userOneLayoutInEvent.findViewById<TextView>(R.id.user_role_in_event_user_in_event_layout).text =
                         eventRoles[user.role]
 
-                    userOneLayoutInEvent.findViewById<TextView>(R.id.user_rank_user_in_event_layout).text =
-                        "none"//Globals().rankToString(user.experience)
+                    userOneLayoutInEvent.findViewById<TextView>(R.id.user_rank_user_in_event_layout).text = ""
                     userOneLayoutInEvent.findViewById<TextView>(R.id.user_experience_user_in_event_layout).text =
                         user.experience.toString()
 
                     val manage = userOneLayoutInEvent.findViewById<ImageButton>(R.id.manageUser)
                     if (user.role == 0 ||
-                        (sharedViewModel.event.value?.eventInfo?.eventCreatorId ?: "-") != ETAuth.getInstance().guid()){
+                        (sharedViewModel.event.value?.eventInfo?.eventCreatorId ?: "-") != ETAuth.getInstance().getUID()){
                         manage.visibility = View.GONE
                     }
 
@@ -103,10 +100,16 @@ class ShowEventStep4 : Fragment() {
                         if (user.role == 1) toHelper.visibility = View.GONE
 
                         toMember.setOnClickListener {
-                            sharedViewModel.setUserRole(user.userId, 2)
+                            sharedViewModel.setUserRole(user.userId, 2) {
+                                Toast.makeText(requireActivity(), if (it) "${user.username} теперь просто участник!" else "Ошибка!", Toast.LENGTH_SHORT).show()
+                                sharedViewModel.getEventMembers(new=true)
+                            }
                         }
                         toHelper.setOnClickListener {
-                            sharedViewModel.setUserRole(user.userId, 1)
+                            sharedViewModel.setUserRole(user.userId, 1) {
+                                Toast.makeText(requireActivity(), if (it) "${user.username} теперь новый помощник!" else "Ошибка!", Toast.LENGTH_SHORT).show()
+                                sharedViewModel.getEventMembers(new=true)
+                            }
                         }
 
                         val location = IntArray(2)
@@ -136,8 +139,18 @@ class ShowEventStep4 : Fragment() {
                 }
             }
         })
+        val nameSearch = view.findViewById<EditText>(R.id.nameSearcher)
 
-        view.findViewById<EditText>(R.id.nameSearcher).addTextChangedListener(object : TextWatcher{
+        view.findViewById<ScrollView>(R.id.membersScrollView).setOnScrollChangeListener { v, scrollX, scrollY, oldScrollX, oldScrollY ->
+            if (!sharedViewModel.searching and !sharedViewModel.foundAll) {
+                if (scrollX >= (v as ScrollView).getChildAt(0).width - v.width) {
+                    sharedViewModel.searching = true
+                    sharedViewModel.getEventMembers(nameSearch.text.toString())
+                }
+            }
+        }
+
+        nameSearch.addTextChangedListener(object : TextWatcher{
             override fun afterTextChanged(p0: Editable?) {
                 view.findViewById<ScrollView>(R.id.loadingLayout).visibility = View.VISIBLE
                 allMembers.visibility = View.GONE

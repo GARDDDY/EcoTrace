@@ -1,12 +1,9 @@
 package com.gy.ecotrace.ui.more.groups
 
 import android.app.Activity
-import android.content.ClipData
-import android.content.ClipboardManager
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
@@ -23,14 +20,12 @@ import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.PopupWindow
-import android.widget.ScrollView
 import android.widget.TextView
 import android.widget.Toast
 import android.widget.Toolbar
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import androidx.core.view.children
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
@@ -38,32 +33,25 @@ import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
-import com.facebook.shimmer.Shimmer
-import com.facebook.shimmer.ShimmerDrawable
 import com.facebook.shimmer.ShimmerFrameLayout
-import com.google.firebase.auth.FirebaseAuth
 import com.google.gson.Gson
 import com.gy.ecotrace.Globals
 import com.gy.ecotrace.R
 import com.gy.ecotrace.customs.ETAuth
 import com.gy.ecotrace.db.DatabaseMethods
 import com.gy.ecotrace.db.Repository
-import com.gy.ecotrace.ui.more.groups.additional.ShowGroupViewModelFactory
 import com.gy.ecotrace.ui.more.groups.additional.ShowPostWithCommentsViewModelFactory
-import com.gy.ecotrace.ui.more.groups.viewModels.ShowGroupViewModel
 import com.gy.ecotrace.ui.more.groups.viewModels.ShowPostWithCommentsViewModel
 import com.gy.ecotrace.ui.more.profile.ProfileActivity
-import org.w3c.dom.Text
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
-import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 
 class ShowPostWithCommentsActivity : AppCompatActivity() {
 
-    private val currentUser = ETAuth.getInstance().guid()
+    private val currentUser = ETAuth.getInstance().getUID()
     private var userRole: Int = 4
 
     private lateinit var showPostViewModel: ShowPostWithCommentsViewModel
@@ -179,32 +167,34 @@ class ShowPostWithCommentsActivity : AppCompatActivity() {
                 }
                 var hasImage = false
                 val postImage: ImageView = commentLayout.findViewById(R.id.postContentImage)
+                Log.d("image", post.commentContentImage.toString())
                 if (post.commentContentImage != null) {
                     Glide.with(this@ShowPostWithCommentsActivity)
                         .load(DatabaseMethods.ApplicationDatabaseMethods().getImageLink("posts", post.commentContentImage!!))
-                        .listener(object : RequestListener<Drawable>{ // important!!!
-                            override fun onLoadFailed(
-                                e: GlideException?,
-                                model: Any?,
-                                target: Target<Drawable>?,
-                                isFirstResource: Boolean
-                            ): Boolean {
-                                postImage.visibility = View.GONE
-                                return false
-                            }
-
-                            override fun onResourceReady(
-                                resource: Drawable?,
-                                model: Any?,
-                                target: Target<Drawable>?,
-                                dataSource: DataSource?,
-                                isFirstResource: Boolean
-                            ): Boolean {
-                                postImage.visibility = View.VISIBLE
-                                return false
-                            }
-                        })
+//                        .listener(object : RequestListener<Drawable>{ // important!!!
+//                            override fun onLoadFailed(
+//                                e: GlideException?,
+//                                model: Any?,
+//                                target: Target<Drawable>?,
+//                                isFirstResource: Boolean
+//                            ): Boolean {
+//                                postImage.visibility = View.GONE
+//                                return false
+//                            }
+//
+//                            override fun onResourceReady(
+//                                resource: Drawable?,
+//                                model: Any?,
+//                                target: Target<Drawable>?,
+//                                dataSource: DataSource?,
+//                                isFirstResource: Boolean
+//                            ): Boolean {
+//                                postImage.visibility = View.VISIBLE
+//                                return false
+//                            }
+//                        })
                         .into((postImage))
+                    postImage.visibility = View.VISIBLE
                     hasImage = true
                 }
 
@@ -280,6 +270,15 @@ class ShowPostWithCommentsActivity : AppCompatActivity() {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
         })
+        sendComment.setOnClickListener {
+            showPostViewModel.sendComment {
+                if (it) {
+                    Toast.makeText(applicationContext, "Комментарий опубликован", Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(applicationContext, "Произошла ошибка!", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
 
         attachImage = findViewById(R.id.postAttachImage)
 

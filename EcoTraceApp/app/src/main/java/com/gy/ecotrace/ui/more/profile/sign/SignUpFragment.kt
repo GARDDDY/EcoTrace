@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.InputType
 import android.text.TextWatcher
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.MotionEvent
@@ -24,6 +25,7 @@ import com.google.android.material.textfield.TextInputEditText
 import com.gy.ecotrace.Globals
 import com.gy.ecotrace.R
 import com.gy.ecotrace.ui.more.events.showtabs.ShowEventViewModel
+import kotlin.math.log
 import kotlin.random.Random
 
 class SignUpFragment : Fragment() {
@@ -61,10 +63,10 @@ class SignUpFragment : Fragment() {
 
         val filtersLayout: LinearLayout = view.findViewById(R.id.userFiltersLayout)
         val tagsColors: Array<Pair<String, String>> = Globals.getInstance().getFiltersColors()
-        val allEventTags: Array<Pair<String, String>> = Globals.getInstance().getUserFilters()
-        for (tag in allEventTags.indices) {
+        val allUserTags: Array<Pair<String, String>> = Globals.getInstance().getUserFilters()
+        for (tag in allUserTags.indices) {
             val tagButton = layoutInflater.inflate(R.layout.widget_tag_filter_button, null) as MaterialButton
-            tagButton.text = allEventTags[tag].first
+            tagButton.text = allUserTags[tag].first
             tagButton.textSize = 18F
             tagButton.setTextColor(Color.parseColor(tagsColors[tag].second))
             tagButton.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.transparent))
@@ -72,24 +74,25 @@ class SignUpFragment : Fragment() {
             tagButton.strokeColor = ColorStateList.valueOf(Color.parseColor(tagsColors[tag].first))
 
             tagButton.setOnClickListener {
+                val prevFilters = try {
+                    sharedViewModel.user.filters!!.split(",").map { it.toInt() }.toMutableList()
+                } catch (e: Exception) {
+                    mutableListOf()
+                }
                 tagButton.isActivated = !tagButton.isActivated
-
-                val currentFilters = try {sharedViewModel.user.filters!!.map { it.toInt() }.toMutableList()} catch (e: Exception) { mutableListOf() }
-
-                if(!tagButton.isActivated) {
-                    tagButton.setBackgroundColor(
-                        ContextCompat.getColor(requireContext(), R.color.transparent))
-
-                    currentFilters.remove(tag)
-
-                }
-
-                else {
+                if (!tagButton.isActivated) {
+                    tagButton
+                        .setBackgroundColor(
+                            ContextCompat
+                                .getColor(requireContext(), R.color.transparent)
+                        )
+                    prevFilters.remove(tag+1)
+                } else {
                     tagButton.setBackgroundColor(Color.parseColor(tagsColors[tag].first))
-                    currentFilters.add(tag)
+                    prevFilters.add(tag+1)
+                    prevFilters.sort()
                 }
-
-                sharedViewModel.user.filters = currentFilters.joinToString { "," }
+                sharedViewModel.user.filters = try {prevFilters.joinToString { "," }} catch (e: Exception) { null }
             }
 
             filtersLayout.addView(tagButton)
@@ -124,14 +127,22 @@ class SignUpFragment : Fragment() {
                 loginEntry.backgroundTintList = ColorStateList.valueOf(
                     ContextCompat.getColor(requireContext(), R.color.ok_green)
                 )
+                sharedViewModel.user.username = loginEntry.text.toString()
                 criteria++
             } else loginEntry.backgroundTintList = ColorStateList.valueOf(
                 ContextCompat.getColor(requireContext(), R.color.red_no)
             )
 
-            if (criteria == 3) {
-                Toast.makeText(requireActivity(), "Regged", Toast.LENGTH_LONG).show()
-            }
+//            if (criteria == 3) {
+                sharedViewModel.user.fullname = fullnameEntry.text.toString()
+                sharedViewModel.signUp(emailEntry.text.toString(), passwordEntry.text.toString()) {
+                    if (it) {
+                        requireActivity().runOnUiThread {
+                            requireActivity().recreate()
+                        }
+                    }
+                }
+//            }
         }
         view.findViewById<TextView>(R.id.gotoLogin).setOnClickListener {
             replacerHub.replaceFragment(SignInFragment())

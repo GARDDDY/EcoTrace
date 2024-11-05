@@ -9,7 +9,7 @@
         android:backgroundTint="@color/ok_green"
         android:drawableEnd="@drawable/baseline_arrow_forward_ios_24"
         android:drawableTint="@color/dirt_white"
-        android:text="Перейти к контрольному тесту"
+        android:text="@string/goToControlWork"
         android:layout_centerInParent="true"
         android:textColor="@color/dirt_white">
 

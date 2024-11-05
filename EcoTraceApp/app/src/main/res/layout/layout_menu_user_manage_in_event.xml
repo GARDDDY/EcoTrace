@@ -31,7 +31,7 @@
             android:background="@color/dirt2_white"
             android:textSize="16sp"
             android:textColor="@color/black"
-            android:text="Сделать помощником" />
+            android:text="@string/makeAHelper" />
 
         <TextView
             android:id="@+id/tomember"
@@ -44,6 +44,6 @@
             android:background="@color/dirt2_white"
             android:textSize="16sp"
             android:textColor="@color/black"
-            android:text="Сделать участником" />
+            android:text="@string/makeAMember" />
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

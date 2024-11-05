@@ -94,7 +94,7 @@
             android:layout_below="@id/groupImage"
             android:layout_marginVertical="5dp"
             android:layout_marginHorizontal="@dimen/default_PaddingMargin"
-            android:hint="Нет описания"
+            android:hint="@string/noDescription"
             android:textColorHint="@color/silver"
             android:textColor="@color/black"
             android:text="Lorem ipsum" />

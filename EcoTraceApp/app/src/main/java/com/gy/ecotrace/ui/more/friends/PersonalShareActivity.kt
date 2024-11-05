@@ -18,7 +18,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
-import com.google.firebase.auth.FirebaseAuth
 import com.google.zxing.BarcodeFormat
 import com.google.zxing.qrcode.QRCodeWriter
 import com.gy.ecotrace.BuildConfig
@@ -29,7 +28,7 @@ import com.gy.ecotrace.db.DatabaseMethods
 
 class PersonalShareActivity : AppCompatActivity() {
     private var mainHost = BuildConfig.SERVER_API_URI
-    private val currentUser = ETAuth.getInstance().guid()
+    private val currentUser = ETAuth.getInstance().getUID()
 
     private fun applyQr(qrImage: ImageView, text: String) {
         val width = qrImage.width

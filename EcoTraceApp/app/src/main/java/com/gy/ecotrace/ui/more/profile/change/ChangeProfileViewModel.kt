@@ -6,6 +6,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.gy.ecotrace.customs.ETAuth
 import com.gy.ecotrace.db.DatabaseMethods
 import com.gy.ecotrace.db.Repository
 import kotlinx.coroutines.launch
@@ -19,8 +20,9 @@ class ChangeProfileViewModel(private val repository: Repository) : ViewModel() {
     fun getRules() {
         viewModelScope.launch {
             val rules = repository.getRules()
-            classRules = rules
-            _rules.postValue(rules)
+            classRules.clear()
+            classRules.putAll(rules)
+            _rules.postValue(classRules.toMutableMap())
         }
     }
 
@@ -36,7 +38,7 @@ class ChangeProfileViewModel(private val repository: Repository) : ViewModel() {
         viewModelScope.launch {
             val private = repository.getPrivate()
             classPrivate = private
-            _private.postValue(private)
+            _private.postValue(private.copy())
         }
     }
 
@@ -44,11 +46,11 @@ class ChangeProfileViewModel(private val repository: Repository) : ViewModel() {
         classPrivate = private
     }
 
-    private val _public = MutableLiveData<DatabaseMethods.UserDatabaseMethods.User>()
-    val public: LiveData<DatabaseMethods.UserDatabaseMethods.User> get() = _public
+    private val _public = MutableLiveData<DatabaseMethods.UserDatabaseMethods.UserChange>()
+    val public: LiveData<DatabaseMethods.UserDatabaseMethods.UserChange> get() = _public
     var firstUsername = "NONE?"
     var firstAboutMe: String? = null
-    var classPublic = DatabaseMethods.UserDatabaseMethods.User()
+    var classPublic = DatabaseMethods.UserDatabaseMethods.UserChange()
 
     var profileImage: Bitmap? = null
 
@@ -60,15 +62,20 @@ class ChangeProfileViewModel(private val repository: Repository) : ViewModel() {
         viewModelScope.launch {
             val userData = repository.getUser(null)
             if (userData != null) {
-                classPublic = userData
                 firstUsername = userData.username
-                firstAboutMe = userData.aboutMe
-                _public.postValue(userData)
+                firstAboutMe = userData.about_me
+                _public.postValue(DatabaseMethods.UserDatabaseMethods.UserChange(
+                    username = userData.username,
+                    country_code = userData.country_code,
+                    about_me = userData.about_me,
+                    filters = userData.filters,
+                    fullname = userData.fullname
+                ))
             }
         }
     }
 
-    fun applyPublic(public: DatabaseMethods.UserDatabaseMethods.User) {
+    fun applyPublic(public: DatabaseMethods.UserDatabaseMethods.UserChange) {
         classPublic = public
     }
 
@@ -77,12 +84,8 @@ class ChangeProfileViewModel(private val repository: Repository) : ViewModel() {
             callback(false)
         }
         viewModelScope.launch {
-            callback(false)//repository.isUsernameAvailable(username))
+            callback(false)//repository.isUsernameAvailable(username)) todo
         }
-    }
-
-    fun setPassword() {
-
     }
 
 
@@ -90,15 +93,13 @@ class ChangeProfileViewModel(private val repository: Repository) : ViewModel() {
         viewModelScope.launch {
             if (classPublic != public.value) {
                 Log.d("changes", "in public")
-//                repository.setUserPublic(classPublic)
-            }
-            if (classPrivate != private.value) {
-                Log.d("changes", "in private")
-//                repository.setUserPrivate(classPublic)
+                ETAuth.getInstance().set(classPublic) {
+                    if (!it) { }
+                }
             }
             if (classRules != rules.value) {
                 Log.d("changes", "in rules")
-//                repository.setUserRules(classPublic)
+                ETAuth.getInstance().setRules(classRules) {}
             }
             callback(true)
         }

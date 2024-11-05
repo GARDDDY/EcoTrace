@@ -14,7 +14,7 @@
         android:layout_marginHorizontal="@dimen/default_PaddingMargin"
         android:backgroundTint="@color/ok_green"
         android:ems="10"
-        android:hint="Найти участника"
+        android:hint="@string/findAMember"
         android:inputType="text"
         android:textColor="@color/ok_green"
         android:textColorHint="@color/silver"
@@ -23,6 +23,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <ScrollView
+        android:id="@+id/membersScrollView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:scrollbars="none"
@@ -148,7 +149,7 @@
                             android:textStyle="italic" />
                     </LinearLayout>
 
-                    <ImageButton
+                    <ImageButton android:backgroundTint="@color/transparent"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:layout_gravity="end"
@@ -246,7 +247,7 @@
                             android:textStyle="italic" />
                     </LinearLayout>
 
-                    <ImageButton
+                    <ImageButton android:backgroundTint="@color/transparent" 
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:layout_gravity="end"
@@ -344,7 +345,7 @@
                             android:textStyle="italic" />
                     </LinearLayout>
 
-                    <ImageButton
+                    <ImageButton android:backgroundTint="@color/transparent"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:layout_gravity="end"
@@ -442,7 +443,7 @@
                             android:textStyle="italic" />
                     </LinearLayout>
 
-                    <ImageButton
+                    <ImageButton android:backgroundTint="@color/transparent"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:layout_gravity="end"
@@ -540,7 +541,7 @@
                             android:textStyle="italic" />
                     </LinearLayout>
 
-                    <ImageButton
+                    <ImageButton android:backgroundTint="@color/transparent"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:layout_gravity="end"
@@ -638,7 +639,7 @@
                             android:textStyle="italic" />
                     </LinearLayout>
 
-                    <ImageButton
+                    <ImageButton android:backgroundTint="@color/transparent"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:layout_gravity="end"
@@ -736,7 +737,7 @@
                             android:textStyle="italic" />
                     </LinearLayout>
 
-                    <ImageButton
+                    <ImageButton android:backgroundTint="@color/transparent"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:layout_gravity="end"
@@ -834,7 +835,7 @@
                             android:textStyle="italic" />
                     </LinearLayout>
 
-                    <ImageButton
+                    <ImageButton android:backgroundTint="@color/transparent"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:layout_gravity="end"
@@ -932,7 +933,7 @@
                             android:textStyle="italic" />
                     </LinearLayout>
 
-                    <ImageButton
+                    <ImageButton android:backgroundTint="@color/transparent"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:layout_gravity="end"

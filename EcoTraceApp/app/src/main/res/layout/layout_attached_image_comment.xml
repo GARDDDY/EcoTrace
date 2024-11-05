@@ -24,7 +24,7 @@
             android:layout_height="wrap_content"
             android:backgroundTint="@color/red_no"
             android:textColor="@color/dirt_white"
-            android:text="Удалить изображение" />
+            android:text="@string/removeImage" />
 
         <Button
             android:id="@+id/reattachImage"
@@ -32,6 +32,6 @@
             android:layout_height="wrap_content"
             android:backgroundTint="@color/ok_green"
             android:textColor="@color/dirt_white"
-            android:text="Прикрепить другое изображение" />
+            android:text="@string/attachAnotherImage" />
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

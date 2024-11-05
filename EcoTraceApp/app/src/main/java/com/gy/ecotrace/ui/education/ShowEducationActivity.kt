@@ -16,6 +16,7 @@ import android.widget.RadioButton
 import android.widget.RadioGroup
 import android.widget.RelativeLayout
 import android.widget.RelativeLayout.LayoutParams
+import android.widget.RelativeLayout.getDefaultSize
 import android.widget.ScrollView
 import android.widget.TextView
 import android.widget.Toast
@@ -88,13 +89,13 @@ class ShowEducationActivity : AppCompatActivity() {
         Globals().initToolbarIconBack(toolbar, applicationContext)
         toolbar.setNavigationOnClickListener {
             val builder = AlertDialog.Builder(this)
-            builder.setTitle("Закончить прохождение теста")
+            builder.setTitle(getString(R.string.endTheTest))
 
-            builder.setMessage("Вы потеряете весь достигнутый прогресс")
-            builder.setPositiveButton("Подтвердить") { dialog, which ->
+            builder.setMessage(getString(R.string.youWillLoseAllTheProgress))
+            builder.setPositiveButton(getString(R.string.confirm)) { dialog, which ->
                 onBackPressed()
             }
-            builder.setNegativeButton("Отмена") { dialog, which ->
+            builder.setNegativeButton(getString(R.string.cancel)) { dialog, which ->
                 dialog.dismiss()
             }
             val dialog = builder.create()
@@ -204,12 +205,12 @@ class ShowEducationActivity : AppCompatActivity() {
                         true -> {
                             questionLayout.visibility = View.VISIBLE
                             openQuestion.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, R.drawable.baseline_keyboard_arrow_up_24, 0)
-                            openQuestion.text = "Закрыть вопрос"
+                            openQuestion.text = context.getString(R.string.closeQuestion)
                         }
                         false -> {
                             questionLayout.visibility = View.GONE
                             openQuestion.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, R.drawable.baseline_keyboard_arrow_down_24, 0)
-                            openQuestion.text = "Открыть вопрос"
+                            openQuestion.text = context.getString(R.string.openQuestion)
                         }
                     }
                 }
@@ -240,7 +241,7 @@ class ShowEducationActivity : AppCompatActivity() {
                             val tintColor =
                                 ContextCompat.getColorStateList(context, R.color.red_no)
                             option.backgroundTintList = tintColor
-                            status.text = "К сожалению, это неверный ответ!"
+                            status.text = context.getString(R.string.unfortunatelyItIsWrongAnswer)
                         }
 
                         viewModel.used(thisPos)
@@ -251,7 +252,7 @@ class ShowEducationActivity : AppCompatActivity() {
             } else {
                 ((view as RelativeLayout).getChildAt(0) as Button).setOnClickListener {
                     if (!viewModel.isAllCompleted()) {
-                        Toast.makeText(context, "Вы не прошли все тесты!", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, context.getString(R.string.youHaveNotTakenAllTheTests), Toast.LENGTH_SHORT).show()
                         return@setOnClickListener
                     }
                     Log.d("task", "goto")

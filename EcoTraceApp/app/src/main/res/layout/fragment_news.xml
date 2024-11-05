@@ -45,7 +45,7 @@
                             android:id="@+id/greetingText"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Здравствуйте, "
+                            android:text="@string/hello"
                             android:textColor="@color/ok_green"
                             android:textSize="20sp"
                             android:textStyle="bold" />
@@ -75,7 +75,7 @@
                         android:layout_height="wrap_content"
                         android:layout_below="@id/greeting"
                         android:layout_marginEnd="5dp"
-                        android:text="Пока Вас не было..."
+                        android:text="@string/duringYourAbsence"
                         android:textColor="@color/silver"
                         android:textSize="18sp" />
 
@@ -124,7 +124,7 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="началось"
+                                android:text="@string/started"
                                 android:textColor="@color/silver"
                                 android:textSize="16sp" />
 
@@ -164,7 +164,7 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="закончилось"
+                                android:text="@string/ended"
                                 android:textColor="@color/silver"
                                 android:textSize="16sp" />
 
@@ -178,7 +178,7 @@
                         android:layout_height="wrap_content"
                         android:layout_below="@id/greeting"
                         android:layout_toEndOf="@id/tw1"
-                        android:text="ничего не случилось!"
+                        android:text="@string/nothingHappened"
                         android:textColor="@color/ok_green"
                         android:textSize="18sp"
                         android:visibility="gone" />
@@ -206,7 +206,7 @@
                         android:id="@+id/tw21"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Обучение"
+                        android:text="@string/education"
                         android:textColor="@color/ok_green"
                         android:textSize="20sp"
                         android:textStyle="bold" />
@@ -216,7 +216,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_below="@id/tw21"
-                        android:text="Вы прошли все доступные обучающие курсы! Так держать!"
+                        android:text="@string/youHavePassedAllTheEducations"
                         android:textColor="@color/ok_green"
                         android:textSize="18sp"
                         android:visibility="gone" />
@@ -226,7 +226,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_below="@id/tw21"
-                        android:text="Вы еще не прошли эти обучающие курсы!"
+                        android:text="@string/youHaveNotPassedAllEducationsSeeOnEducationPage"
                         android:textColor="@color/ok_green"
                         android:textSize="18sp"
                         android:visibility="gone" />
@@ -409,7 +409,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Новости"
+                    android:text="@string/news"
                     android:textColor="@color/ok_green"
                     android:textSize="20sp"
                     android:textStyle="bold" />

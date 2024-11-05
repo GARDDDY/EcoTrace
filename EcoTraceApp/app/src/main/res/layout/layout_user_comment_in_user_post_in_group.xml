@@ -78,6 +78,7 @@
             android:layout_below="@+id/upperInfoPost"
             android:layout_marginHorizontal="@dimen/default_PaddingMargin"
             android:layout_marginTop="@dimen/default_PaddingMargin"
+            android:textColor="@color/black"
             android:text="WMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWM"
             android:visibility="gone" />
 

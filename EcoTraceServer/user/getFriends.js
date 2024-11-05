@@ -43,8 +43,8 @@ router.get('/getUserFriends', async (req, res) => {
                 (friends.senderId != ? and friends.senderId = user.userId)
                 or
                 (friends.userId != ? and friends.userId = user.userId)
-                where (? is null or friends.senderId > ? or friends.userId > ?)
-                limit 6`, [userId, userId, block, block, block])
+                where (? is null or friends.senderId > ? and friends.userId = ? or friends.userId > ? and friends.senderId = ?)
+                limit 6`, [userId, userId, block, block, userId, block, userId])
 
             return res.json(friends)
 

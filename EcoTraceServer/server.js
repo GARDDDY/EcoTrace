@@ -19,10 +19,6 @@ async function connectToDatabases() {
     const connectionPromises = dbs.map(async (db) => {
         try {
             const connection = await mysql.createConnection({
-                // host     : process.env.MYSQL_ADDON_HOST,
-                // database : process.env.MYSQL_ADDON_DB,
-                // user     : process.env.MYSQL_ADDON_USER,
-                // password : process.env.MYSQL_ADDON_PASSWORD
                 host: "127.0.0.1",
                 port: 3306,
                 user: "root",
@@ -58,6 +54,8 @@ connectToDatabases().then(() => {
     app.use(require("./user/applyEdu"));
     app.use(require("./user/areUsersFriends"));
     app.use(require("./user/getRules"));
+    app.use(require("./user/register"));
+    app.use(require("./user/set"));
     app.use(require("./user/getPrivate"));
     app.use(require("./user/getAllUsers"));
     app.use(require("./user/getEcoCalc"));
@@ -69,16 +67,21 @@ connectToDatabases().then(() => {
     app.use(require("./user/getUserEmail"));
     app.use(require("./user/addFriend"));
     app.use(require("./user/removeFriend"));
+    app.use(require("./user/getEduStatus"));
 
     app.use(require("./event/createEvent"));
     app.use(require("./event/getGoals"));
     app.use(require("./event/getTimes"));
+    app.use(require("./event/deleteEvent"));
     app.use(require("./event/getCoords"));
+    app.use(require("./event/deleteEvent"));
     app.use(require("./event/getMembers"));
     app.use(require("./event/getAllEvents"));
     app.use(require("./event/getUserEventData"));
     app.use(require("./event/isUserModerInEvent"));
     app.use(require("./event/validateUser"));
+    app.use(require("./event/getEvent"));
+    app.use(require("./event/setEventRole"));
     app.use(require("./event/isUserValidated"));
 
     app.use(require("./groups/getAllGroups"));
@@ -88,6 +91,12 @@ connectToDatabases().then(() => {
     app.use(require("./groups/getGroupRules"));
     app.use(require("./groups/getComments"));
     app.use(require("./groups/createPost"));
+    app.use(require("./groups/deletePost"));
+    app.use(require("./groups/deleteGroup"));
+    app.use(require("./groups/createComment")); // todo
+    app.use(require("./groups/deleteComment")); // todo
+    app.use(require("./groups/joinGroup"));
+    app.use(require("./groups/leaveGroup"));
     app.use(require("./groups/isUserInGroup"));
     app.use(require("./groups/getGroupMembers"));
     app.use(require("./groups/setUserRoleInGroup"));

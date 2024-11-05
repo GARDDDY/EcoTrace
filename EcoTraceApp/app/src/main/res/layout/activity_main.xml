@@ -43,6 +43,9 @@
         app:layout_constraintRight_toRightOf="parent"
         app:itemIconTint="@color/ok_green"
         android:background="@color/dirt2_white"
+        app:itemRippleColor="@color/dirt_white"
+        app:itemActiveIndicatorStyle="@color/dirt_white"
+        app:itemTextColor="@color/ok_green"
         app:menu="@menu/bottom_nav_menu" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

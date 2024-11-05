@@ -3,45 +3,24 @@ package com.gy.ecotrace.db
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.provider.ContactsContract.Data
 import android.util.Log
-import android.widget.Toast
 import com.google.common.reflect.TypeToken
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.auth.UserProfileChangeRequest
-import com.google.firebase.database.ChildEventListener
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.Exclude
 import java.util.concurrent.TimeUnit
-import com.google.firebase.database.GenericTypeIndicator
-import com.google.firebase.database.Query
-import com.google.firebase.database.ValueEventListener
-import com.google.firebase.database.getValue
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.storage.FirebaseStorage
 import com.google.gson.Gson
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
-import com.google.protobuf.Value
 import com.gy.ecotrace.BuildConfig
 import com.gy.ecotrace.Globals
 import com.gy.ecotrace.customs.ETAuth
 import com.yandex.mapkit.geometry.Point
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.tasks.await
 import okhttp3.Call
 import okhttp3.Callback
-import okhttp3.MediaType
-import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody
-import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.Response
 import java.io.ByteArrayOutputStream
 import java.io.IOException
@@ -117,7 +96,7 @@ object DatabaseMethods {
                         .build()
 
                     val request = Request.Builder()
-                        .url("${BuildConfig.SERVER_API_URI}$pageGetName?$fields&cid=${ETAuth.getInstance().guid()}&oauth=$token")
+                        .url("${BuildConfig.SERVER_API_URI}$pageGetName?$fields&cid=${ETAuth.getInstance().getUID()}&oauth=$token")
                         .build()
 
                     Log.d("final url", request.url.toString())
@@ -210,55 +189,64 @@ object DatabaseMethods {
             })
         }
 
-        fun requestPOST(pageGetName: String, jsonData: String, fields: String, img: Bitmap? = null, callback: (Response?) -> Unit) {
+        fun requestPOST(
+            pageGetName: String,
+            jsonData: String,
+            fields: String,
+            img: Bitmap? = null,
+            callback: (Response?) -> Unit
+        ) {
             ETAuth.getInstance().authtkn { token ->
-                if (!token.isNullOrEmpty()) {
-                    val client = OkHttpClient()
+                val client = OkHttpClient()
 
-                    val requestBodyBuilder = MultipartBody.Builder()
-                        .setType(MultipartBody.FORM)
-                        .addFormDataPart("jsonData", jsonData)
-                    img?.let {
-                        Log.d("img", "adding img")
-                        val stream = ByteArrayOutputStream()
-                        it.compress(Bitmap.CompressFormat.PNG, 100, stream)
-                        val byteArray = stream.toByteArray()
-                        requestBodyBuilder.addFormDataPart(
-                            "image", "image.png", RequestBody.create(
-                                "image/png".toMediaTypeOrNull(), byteArray
-                            )
+                val requestBodyBuilder = MultipartBody.Builder()
+                    .setType(MultipartBody.FORM)
+                    .addFormDataPart("jsonData", jsonData)
+                img?.let {
+                    Log.d("img", "adding img")
+                    val stream = ByteArrayOutputStream()
+                    it.compress(Bitmap.CompressFormat.PNG, 100, stream)
+                    val byteArray = stream.toByteArray()
+                    requestBodyBuilder.addFormDataPart(
+                        "image", "image.png", RequestBody.create(
+                            "image/png".toMediaTypeOrNull(), byteArray
                         )
+                    )
+                }
+
+                val requestBody = requestBodyBuilder.build()
+
+                val request = Request.Builder()
+                    .url(
+                        "${BuildConfig.SERVER_API_URI}$pageGetName?$fields&cuid=${
+                            ETAuth.getInstance().getUID()
+                        }&oauth=$token"
+                    )
+                    .post(requestBody)
+                    .build()
+
+                Log.wtf("final url", request.url.toString())
+
+                client.newCall(request).enqueue(object : Callback {
+                    override fun onFailure(call: Call, e: IOException) {
+                        Log.d("End", "Failed to send data ${e.message}")
+                        callback(null)
                     }
 
-                    val requestBody = requestBodyBuilder.build()
-
-                    val request = Request.Builder()
-                        .url("${BuildConfig.SERVER_API_URI}$pageGetName?$fields&cuid=${ETAuth.getInstance().guid()}&oauth=$token")
-                        .post(requestBody)
-                        .build()
-
-                    Log.wtf("final url", request.url.toString())
-
-                    client.newCall(request).enqueue(object : Callback {
-                        override fun onFailure(call: Call, e: IOException) {
-                            Log.d("End", "Failed to send data ${e.message}")
+                    override fun onResponse(call: Call, response: Response) {
+                        if (response.isSuccessful) {
+                            Log.d("End", "Data successfully sent!")
+                            callback(response)
+                        } else {
+                            Log.d(
+                                "End",
+                                "Failed to send data ${response.code} ${response.message}"
+                            )
                             callback(null)
                         }
+                    }
+                })
 
-                        override fun onResponse(call: Call, response: Response) {
-                            if (response.isSuccessful) {
-                                Log.d("End", "Data successfully sent!")
-                                callback(response)
-                            } else {
-                                Log.d(
-                                    "End",
-                                    "Failed to send data ${response.code} ${response.message}"
-                                )
-                                callback(null)
-                            }
-                        }
-                    })
-                }
             }
         }
     }
@@ -270,7 +258,7 @@ object DatabaseMethods {
         )
 
         data class Country(
-            var name: String = "Скрыто",
+            var name: String? = null,
             var code: String? = null
         )
 
@@ -293,13 +281,24 @@ object DatabaseMethods {
             var eventId: String = "0",
             var eventName: String = "",
             var eventAbout: String? = null,
-            var eventStatus: Int = 0 /* 0 - Предстоит 1 - Проходит 2 - Закончилось*/,
+            var eventStatusString: String = "",
+            var eventStatus: Int = 0,
+            var minTime: Long = 0,
+            var maxTime: Long = 0,
             var eventCountMembers: Int = 0,
             var startTime: Long = 0,
             var endTime: Long = 0,
             var eventCreatorId: String = "",
             var eventCreatorName: String = "",
             var filters: String = ""
+        )
+
+        data class EventChange(
+            var eventId: String? = null,
+            var eventName: String? = null,
+            var eventAbout: String? = null,
+            var filters: String? = null,
+
         )
 
         // groups
@@ -317,6 +316,16 @@ object DatabaseMethods {
 
             var filters: String = "",
             var groupType: Int = 0 /* 0 - открытая  1 - по заявкам  2 - закрытая*/
+        )
+
+        data class GroupChange(
+            var groupId: String? = null,
+            var groupName: String? = null,
+            var groupAbout: String? = null,
+            var filters: String? = null,
+            var groupType: Int? = null,
+            var groupRulesText: String? = null,
+            var groupRulesImage: String? = null
         )
 
         data class Comment(
@@ -455,8 +464,16 @@ object DatabaseMethods {
             var gender: Int = 0,
             var country_code: String? = null,
             var filters: String? = "",
-            var aboutMe: String? = "",
+            var about_me: String? = "",
             var experience: Int = 0
+        )
+
+        data class UserChange(
+            var username: String? = null,
+            var country_code: String? = null,
+            var about_me: String? = null,
+            var filters: String? = null,
+            var fullname: String? = null
         )
 
         data class UserPrivate(
@@ -491,10 +508,11 @@ object DatabaseMethods {
                     it.resume(response?.body?.string())
                 }
             }
-        } // servs
+        } 
 
         fun saveEcoCalc(data: MutableList<DataClasses.EcoCalcSaveData>, calcType: Int, callback: (String) -> Unit) {
             val jsonData = Gson().toJson(data)
+            Log.d("ecoData", jsonData)
             Tech().requestPOST("setEcoData", jsonData, "calcType=$calcType") { response ->
                 if (response == null) {
                     callback("Произошла ошибка")
@@ -519,12 +537,27 @@ object DatabaseMethods {
             return "TODO METHOD"
         }
 
-        suspend fun joinEvent(eventId: String) {
-            Tech().requestGETAuth("joinEvent", "eventId=$eventId") {}
-        }// servs
-        suspend fun leaveEvent(eventId: String) {
-            Tech().requestGETAuth("leaveEvent","eventId=$eventId") {}
-        }// servs
+        suspend fun joinEvent(eventId: String, callback: (Boolean) -> Unit) {
+            Tech().requestGETAuth("joinEvent", "eventId=$eventId") { response ->
+                if (response == null) {
+                    callback(false)
+                    return@requestGETAuth
+                }
+
+                callback(Gson().fromJson(response, Array<Boolean>::class.java)[0])
+            }
+        }
+        suspend fun leaveEvent(eventId: String, callback: (Boolean) -> Unit) {
+            Tech().requestGETAuth("leaveEvent","eventId=$eventId") {
+                    response ->
+                if (response == null) {
+                    callback(false)
+                    return@requestGETAuth
+                }
+
+                callback(Gson().fromJson(response, Array<Boolean>::class.java)[0])
+            }
+        }
 
         suspend fun getUserInfo(userId: String?): User? {
             return suspendCoroutine {
@@ -596,7 +629,7 @@ object DatabaseMethods {
                     it.resume(userGroups.toMutableList())
                 }
             }
-        } // servs
+        } 
 
         suspend fun getUserEvents(userId: String, eGot: String?, sort: Int): MutableList<UserEvent>? {
             return suspendCoroutine {
@@ -611,7 +644,7 @@ object DatabaseMethods {
                     it.resume(userEvents.toMutableList())
                 }
             }
-        } // servs
+        } 
         suspend fun getUserEvent(eventId: String): UserEvent {
             return suspendCoroutine {
                 Tech().requestGETAuth("getUserEventData", "eventId=$eventId") { response ->
@@ -701,6 +734,19 @@ object DatabaseMethods {
             }
         }
 
+        suspend fun getEduStatus(edu: Int): Boolean? {
+            return suspendCoroutine {
+                Tech().requestGETAuth("eduStatus", "edu=$edu") { response ->
+                    if (response == null) {
+                        it.resume(null)
+                        return@requestGETAuth
+                    }
+
+                    it.resume(Gson().fromJson(response, Array<Boolean?>::class.java)[0])
+                }
+            }
+        }
+
         suspend fun sendEdu(eduType: Int): Boolean {
             return suspendCoroutine {
                 Tech().requestGETAuth("applyEdu", "edu=$eduType") { response ->
@@ -716,7 +762,7 @@ object DatabaseMethods {
 
         fun removeFriends(userId: String) {
             Tech().requestGETAuth("removeFriend","uid=$userId") {}
-        }// servs
+        }
         fun addFriends(userId: String) {
             Tech().requestGETAuth("addFriend","uid=$userId") {}
         }
@@ -737,40 +783,39 @@ object DatabaseMethods {
             }
         }
 
-        suspend fun joinGroup(groupId: String): Boolean {
-            return suspendCoroutine {
-                Tech().requestGETAuth("joinGroup", "gid=$groupId") { response ->
-                    if (response == null) {
-                        it.resume(false)
-                        return@requestGETAuth
-                    }
-
-                    it.resume(response.toBoolean())
+        fun joinGroup(groupId: String, callback: (Boolean) -> Unit) {
+            Tech().requestGETAuth("joinGroup", "gid=$groupId") { response ->
+                if (response == null) {
+                    callback(false)
+                    return@requestGETAuth
                 }
-            }
-        }// servs
-        suspend fun leaveGroup(groupId: String): Boolean {
-            return suspendCoroutine {
-                Tech().requestGETAuth("leaveGroup", "gid=$groupId") { response ->
-                    if (response == null) {
-                        it.resume(false)
-                        return@requestGETAuth
-                    }
 
-                    it.resume(response.toBoolean())
+                callback(Gson().fromJson(response, Array<Boolean>::class.java)[0])
+            }
+        }
+
+        
+        fun leaveGroup(groupId: String, callback: (Boolean) -> Unit) {
+            Tech().requestGETAuth("leaveGroup", "gid=$groupId") { response ->
+                if (response == null) {
+                    callback(false)
+                    return@requestGETAuth
                 }
-            }
-        }// servs
 
-        suspend fun getCountCalculators(calcType: Int): Int {
+                callback(Gson().fromJson(response, Array<Boolean>::class.java)[0])
+            }
+        }
+
+        suspend fun getCountCalculators(): String {
             return suspendCoroutine {
-                Tech().requestGET("calc/getNumImages", "cType=$calcType") { response ->
+                Tech().requestGET("calc/getNumImages", "") { response ->
                     if (response == null) {
-                        it.resume(0)
+                        it.resume("")
                         return@requestGET
                     }
 
-                    it.resume(response.body?.string().toString().toInt())
+                    val responseBody = response.body?.string()
+                    it.resume(Gson().fromJson(responseBody, Array<String>::class.java)[0])
 
                 }
             }
@@ -778,7 +823,7 @@ object DatabaseMethods {
 
         suspend fun getCalcImage(calcType: Int, imageId: Int): Bitmap? {
             return suspendCoroutine { continuation ->
-                Tech().requestGET("calc/getImage", "cType=$calcType&img=$imageId&cid=${ETAuth.getInstance().guid()}") { response ->
+                Tech().requestGET("calc/getImage", "cType=$calcType&img=$imageId&cid=${ETAuth.getInstance().getUID()}") { response ->
                     if (response == null) {
                         continuation.resume(null)
                         return@requestGET
@@ -786,6 +831,20 @@ object DatabaseMethods {
 
                     val bitmap = BitmapFactory.decodeStream(response.body?.byteStream())
                     continuation.resume(bitmap)
+                }
+            }
+        }
+
+        suspend fun getCalcAdvices(calcType: Int, imageId: Int): Array<String> {
+            return suspendCoroutine { continuation ->
+                Tech().requestGET("calc/getAdvices", "cType=$calcType&img=$imageId&cid=${ETAuth.getInstance().getUID()}") { response ->
+                    if (response == null) {
+                        continuation.resume(arrayOf())
+                        return@requestGET
+                    }
+
+                    val responseBody = response.body?.string()
+                    continuation.resume(Gson().fromJson(responseBody, Array<String>::class.java))
                 }
             }
         }
@@ -819,6 +878,20 @@ object DatabaseMethods {
             }
         }
 
+        suspend fun setUserRoleInEvent(userId: String, eventId: String, role: Int): Boolean {
+            return suspendCoroutine {
+                Tech().requestGETAuth("setEventRole", "uid=$userId&eid=$eventId&role=$role") { response ->
+                    if (response == null) {
+                        it.resume(false)
+                        return@requestGETAuth
+                    }
+
+                    it.resume(Gson().fromJson(response, Array<Boolean>::class.java)[0])
+
+                }
+            }
+        }
+
 
         suspend fun getGroup(groupId: String): DataClasses.Group {
             return suspendCoroutine {
@@ -847,7 +920,7 @@ object DatabaseMethods {
             }
         }
 
-        suspend fun createGroup(groupData: DataClasses.Group, text: String?, image: Bitmap?): String? {
+        suspend fun createGroup(groupData: DataClasses.GroupChange, text: String?, image: Bitmap?): String? {
             return suspendCoroutine {
                 Tech().requestPOST("createGroup", Gson().toJson(arrayOf(groupData, text)), "", image) { response ->
                     if (response == null){
@@ -908,7 +981,7 @@ object DatabaseMethods {
                     it.resume(responseBody.toInt())
                 }
             }
-        }// servs
+        }
 
         suspend fun setUserRoleInGroup(groupId: String, userId: String, role: Int): Boolean {
             return suspendCoroutine {
@@ -916,14 +989,14 @@ object DatabaseMethods {
                     it.resume(Gson().fromJson(it1, Array<Boolean>::class.java)[0])
                 }
             }
-        }// servs
+        }
         suspend fun kickUserFromGroup(groupId: String, userId: String): Boolean {
             return suspendCoroutine {
                 Tech().requestGETAuth("kickUserFromGroup", "gid=$groupId&uid=$userId") { it1 ->
                     it.resume(Gson().fromJson(it1, Array<Boolean>::class.java)[0])
                 }
             }
-        }// servs
+        }
 
         suspend fun getPosts(groupId: String, lastId: Int?): Pair<Boolean, Array<DataClasses.Post>?> {
             return suspendCoroutine {
@@ -949,7 +1022,7 @@ object DatabaseMethods {
                     it.resume(resultPair)
                 }
             }
-        }// servs
+        }
         suspend fun getNewPosts(groupId: String, lastId: Int?): Array<DataClasses.Post>? {
             return suspendCoroutine {
                 Tech().requestGETAuth("getNewPosts", "gid=$groupId&lastGot=$lastId") { response ->
@@ -967,7 +1040,7 @@ object DatabaseMethods {
                     it.resume(if (data?.get(0) == null) null else data)
                 }
             }
-        }// servs
+        }
         suspend fun getPostComments(groupId: String, postId: Int, lastComment: Int?): MutableList<DataClasses.Comment> {
             return suspendCoroutine {
                 Tech().requestGETAuth("getComments", "gid=$groupId&pid=$postId&lastGot=$lastComment") { response ->
@@ -982,7 +1055,7 @@ object DatabaseMethods {
                     it.resume(data.toMutableList())
                 }
             }
-        }// servs
+        }
 
 
         suspend fun getUserRoleInGroup(groupId: String): Int {
@@ -1013,7 +1086,7 @@ object DatabaseMethods {
                     it.resume(Gson().fromJson(responseBody, Array<Boolean>::class.java)[0])
                 }
             }
-        }// servs
+        }
 
         suspend fun getNumComments(groupId: String, postId: Int): Int {
             return suspendCoroutine {
@@ -1047,11 +1120,24 @@ object DatabaseMethods {
 
                 }
             }
-        }// servs
+        }
 
         suspend fun deleteGroup(groupId: String): Boolean {
             return suspendCoroutine {
                 Tech().requestGETAuth("deleteGroup", "gid=$groupId") { response ->
+                    if (response == null) {
+                        it.resume(false)
+                        return@requestGETAuth
+                    }
+
+                    it.resume(Gson().fromJson(response, Array<Boolean>::class.java)[0])
+                }
+            }
+        }
+
+        suspend fun deleteEvent(eventId: String): Boolean {
+            return suspendCoroutine {
+                Tech().requestGETAuth("deleteEvent", "eid=$eventId") { response ->
                     if (response == null) {
                         it.resume(false)
                         return@requestGETAuth
@@ -1120,7 +1206,7 @@ object DatabaseMethods {
                     eventId.resume(it.toString())
                 }
             }
-        }// servs
+        }
 
         suspend fun findEventsWithFilters(
             filters: String,
@@ -1333,7 +1419,11 @@ object DatabaseMethods {
         suspend fun validateUser(userId: String, eventId: String): Boolean {
             return suspendCoroutine {
                 Tech().requestGETAuth("validateUser","uid=$userId&eid=$eventId") { response ->
-                    it.resume(response != null)
+                    if (response == null) {
+                        it.resume(false)
+                        return@requestGETAuth
+                    }
+                    it.resume(Gson().fromJson(response, Array<Boolean>::class.java)[0])
                 }
             }
         }
@@ -1380,87 +1470,99 @@ object DatabaseMethods {
             }
         }
 
-    }// servs
+    }
 
     class Account {
 
-        private fun insertUserData(userData: UserDatabaseMethods.User, uid: String, callback: (Boolean) -> Unit) { // todo
-            Tech().requestPOST("register", Gson().toJson(userData), ""){
-                callback(it != null)
+        data class UserWithSecret(
+            val user: UserDatabaseMethods.User,
+            val secret: MutableList<String>?
+        )
+
+        // todo all server
+        fun checkEmail(e: String, callback: (Boolean) -> Unit) {
+            Tech().requestGETAuth("cm", "e=${Tech().hash256(e)}"){ response ->
+                if (response == null) {
+                    callback(false)
+                    return@requestGETAuth
+                }
+
+                callback(Gson().fromJson(response, Array<Boolean>::class.java)[0])
+            }
+        }
+         fun changeEmail(from: String?, email: String, callback: (Boolean) -> Unit) {
+            Tech().requestPOST("setm", Gson().toJson(arrayOf(from , email)), "") { response ->
+                if (response == null) {
+                    callback(false)
+                    return@requestPOST
+                }
+
+                val responseBody = response.body?.string()
+
+                callback(Gson().fromJson(responseBody, Array<Boolean>::class.java)[0])
             }
         }
 
-        private fun getToken(user: FirebaseUser?, isNewToken: Boolean = false, callback: (String?) -> Unit) {
-            if (user != null) {
-                user.getIdToken(isNewToken)
-                    .addOnCompleteListener { tokenTask ->
-                        if (tokenTask.isSuccessful) {
-                            val token: String? = tokenTask.result.token
-                            callback(token)
-                        } else {
-                            Toast.makeText(Tech().context(), "Аутентификация не удалась!", Toast.LENGTH_LONG).show()
-                            callback(null) // token error
-                        }
-                    }
-            } else {
-                Toast.makeText(Tech().context(), "Регистрация не удалась!", Toast.LENGTH_LONG).show()
-                if (signOut()) {
-                    callback(null)
+         fun changePassword(previous: String, password: String, callback: (Boolean) -> Unit) {
+             Tech().requestPOST("setp", Gson().toJson(arrayOf(Tech().hash256(previous), Tech().hash256(password))), "") { response ->
+                 if (response == null) {
+                     callback(false)
+                     return@requestPOST
+                 }
+
+                 val responseBody = response.body?.string()
+
+                 callback(Gson().fromJson(responseBody, Array<Boolean>::class.java)[0])
+             }
+        }
+
+        fun setData(user: UserDatabaseMethods.UserChange, callback: (Boolean) -> Unit) { // todo
+            Tech().requestPOST("set", Gson().toJson(user), "") { response ->
+                if (response == null) {
+                    callback(false)
+                    return@requestPOST
                 }
+                val responseBody = response.body?.string()
+                callback(Gson().fromJson(responseBody, Array<Boolean>::class.java)[0])
+            }
+        }
+        fun setRules(rules: MutableMap<String, Int>, callback: (Boolean) -> Unit) {
+            Tech().requestPOST("setr", Gson().toJson(rules), "") { response ->
+                if (response == null) {
+                    callback(false)
+                    return@requestPOST
+                }
+                val responseBody = response.body?.string()
+                callback(Gson().fromJson(responseBody, Array<Boolean>::class.java)[0])
             }
         }
 
-        fun createAccount(email: String, password: String, userData: UserDatabaseMethods.User, callback: (Boolean) -> Unit) {
-            val auth = FirebaseAuth.getInstance()
-            auth.createUserWithEmailAndPassword(email, password)
-                .addOnCompleteListener { signUp ->
-                    if (signUp.isSuccessful) {
-                        val user: FirebaseUser? = auth.currentUser
-                        user?.updateProfile(UserProfileChangeRequest.Builder()
-                            .setDisplayName(userData.fullname ?: userData.username)
-                            .build())
-                        getToken(user, true) { uid ->
-                            if (uid == null) callback(false)
-                            else insertUserData(userData, uid) { callback(it) }
-                        }
-                    } else {
-                        Toast.makeText(Tech().context(), "Регистрация заблокирована!", Toast.LENGTH_LONG).show()
-                        callback(false) // auth error
-                    }
+        fun setAvatar(image: Bitmap, callback: (Boolean) -> Unit) {
+            Tech().requestPOST("seta", "", "", image) { response ->
+                if (response == null) {
+                    callback(false)
+                    return@requestPOST
+                }
+                val responseBody = response.body?.string()
+                callback(Gson().fromJson(responseBody, Array<Boolean>::class.java)[0])
+            }
+        }
+
+        fun createAccount(email: String, password: String, userData: UserDatabaseMethods.User, callback: (Array<String?>) -> Unit) {
+            val data = UserWithSecret(userData, mutableListOf(email, Tech().hash256(password)))
+            Tech().requestPOST("create", Gson().toJson(data), ""){ response ->
+                if (response == null) {
+                    callback(arrayOf(null, null))
+                    return@requestPOST
                 }
 
+                val responseBody = response.body?.string()
+
+                callback(Gson().fromJson(responseBody, Array<String?>::class.java))
+            }
         }
 
         fun loginIntoAccount(email: String, password: String, callback: (String?) -> Unit) {
-//            val auth = FirebaseAuth.getInstance()
-//            auth.signInWithEmailAndPassword(email, password)
-//                .addOnCompleteListener { signInTask ->
-//                    Log.d("login", "$email $password")
-//                    if (signInTask.isSuccessful) {
-//                        val user: FirebaseUser? = auth.currentUser
-//
-//                        if (user == null) {
-//                            callback(null)
-//                            return@addOnCompleteListener
-//                        }
-//                        FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
-//                            if (task.isSuccessful) {
-//                                val token = task.result
-//                                val userDevices = FirebaseFirestore.getInstance().collection("users").document(user.uid).collection("notifications")
-//                                userDevices.document(token).set(mapOf("token" to token, "timestamp" to System.currentTimeMillis()))
-//                                    .addOnSuccessListener {
-//                                        callback(user.uid)
-//                                    }
-//                                    .addOnFailureListener {
-//                                        callback(null)
-//                                    }
-//                            }
-//                        }
-//                    } else {
-//                        Toast.makeText(Tech().context(), "Не удалось войти в аккаунт!", Toast.LENGTH_LONG).show()
-//                        callback(null) // auth error
-//                    }
-//                }
             val auth = ETAuth.getInstance()
             Tech().requestGET("login", "email=$email&password=${Tech().hash256(password)}") { response ->
 
@@ -1474,8 +1576,8 @@ object DatabaseMethods {
                 try {
                     val data = Gson().fromJson(responseBody, Array<String>::class.java)
 
-                    auth.auid(data[0])
-                    auth.ausertkn(data[1])
+                    auth.applyUID(data[0])
+                    auth.applyUserToken(data[1])
 
                     callback(data[0])
                 } catch (e: Exception)
@@ -1488,20 +1590,18 @@ object DatabaseMethods {
 
         fun signOut(): Boolean {
             val auth = ETAuth.getInstance()
-//            val auth = FirebaseAuth.getInstance()
-//            auth.signOut()
 
-            auth.auid()
-            auth.ausertkn()
+            auth.applyUID()
+            auth.applyUserToken()
 
             Globals.getInstance().setString("CurrentlyWatching", "0")
 
             return true
         }
 
-        suspend fun sendForgotCode(email: String): Boolean {
+        suspend fun sendForgotCode(email: String, codeType: Int = 0): Boolean {
             return suspendCoroutine {
-                Tech().requestGET("sendCode", "email=$email") { response ->
+                Tech().requestGET("sendCode", "email=$email&code=$codeType") { response -> // todo server codeType tion
                     if (response == null) {
                         it.resume(false)
                         return@requestGET

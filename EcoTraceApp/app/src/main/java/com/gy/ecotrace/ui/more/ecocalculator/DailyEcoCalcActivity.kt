@@ -52,9 +52,16 @@ class DailyEcoCalcActivity : AppCompatActivity() {
             onBackPressed()
         }
         val calcType = intent.getIntExtra("calcType", -1)
-        val calcNameToItsType = arrayOf("Пища", "Вода", "Отходы", "Энергия", "Транспорт")
+        val calcNameToItsType = arrayOf(
+            getString(R.string.food),
+            getString(R.string.water),
+            getString(R.string.trash),
+            getString(R.string.energy),
+            getString(R.string.transport)
+        )
         if (calcType == -1) {
-            Toast.makeText(applicationContext, "Данные не были переданы!", Toast.LENGTH_SHORT).show()
+            Toast.makeText(applicationContext, getString(R.string.dataWasNotGiven), Toast.LENGTH_SHORT)
+                .show()
             finish()
         }
 
@@ -63,11 +70,17 @@ class DailyEcoCalcActivity : AppCompatActivity() {
         val isUpd = averagesDataMap.get("upd").toString().toBoolean()
         val isFirst = averagesDataMap.get("first").toString().toBoolean()
         val noInDays = averagesDataMap.get("days").toString().toInt()
-        val averagesData = (Gson().fromJson(averagesDataMap?.get("data"), JsonObject::class.java) ?: JsonObject()).asMap().map { it.value.toString() }.toMutableList()
+        val averagesData = (Gson().fromJson(averagesDataMap?.get("data"), JsonObject::class.java)
+            ?: JsonObject()).asMap().map { it.value.toString() }.toMutableList()
 
-        findViewById<TextView>(R.id.calcName).text = "${calcNameToItsType[calcType]}${if (isUpd) " (добавление данных)" else ""}"
+        findViewById<TextView>(R.id.calcName).text =
+            "${calcNameToItsType[calcType]}${if (isUpd) getString(R.string.dataAddition) else ""}"
         if (isUpd) {
-            Toast.makeText(this@DailyEcoCalcActivity, "Вы обновляете свои данные! Указывайте только новополученные изменения!", Toast.LENGTH_LONG).show()
+            Toast.makeText(
+                this@DailyEcoCalcActivity,
+                getString(R.string.youAreUpdatingYourDataOnlyNewChanges),
+                Toast.LENGTH_LONG
+            ).show()
         }
         val assetManager = applicationContext.assets
         val fileName = "ecological-calculators/${calcType}1.json"
@@ -80,9 +93,11 @@ class DailyEcoCalcActivity : AppCompatActivity() {
 
         val dataJson = Gson().fromJson(
             String(buffer, Charsets.UTF_8),
-            JsonObject::class.java)
-        val dataQuestions: HashMap<String, DatabaseMethods.DataClasses.EcoCalcQuestion> = Gson().fromJson(dataJson.getAsJsonObject("tests").toString(), object :
-            TypeToken<HashMap<String, DatabaseMethods.DataClasses.EcoCalcQuestion>>() {}.type)
+            JsonObject::class.java
+        )
+        val dataQuestions: HashMap<String, DatabaseMethods.DataClasses.EcoCalcQuestion> =
+            Gson().fromJson(dataJson.getAsJsonObject("tests").toString(), object :
+                TypeToken<HashMap<String, DatabaseMethods.DataClasses.EcoCalcQuestion>>() {}.type)
 //        val dataFormulas: HashMap<String, DatabaseMethods.DataClasses.Formula> = Gson().fromJson(dataJson.getAsJsonObject("formulas").toString(), object :
 //            TypeToken<HashMap<String, DatabaseMethods.DataClasses.Formula>>() {}.type)
 
@@ -99,8 +114,17 @@ class DailyEcoCalcActivity : AppCompatActivity() {
         viewPager.isUserInputEnabled = false
         viewPager.adapter = object : RecyclerView.Adapter<EcoCalcViewHolder>() {
             override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EcoCalcViewHolder {
-                val view = LayoutInflater.from(parent.context).inflate(R.layout.activitylayout_ecological_calculator_layout, parent, false)
-                return EcoCalcViewHolder(view, applicationContext, findViewById(R.id.main), averagesData, viewModel, isFirst, noInDays)
+                val view = LayoutInflater.from(parent.context)
+                    .inflate(R.layout.activitylayout_ecological_calculator_layout, parent, false)
+                return EcoCalcViewHolder(
+                    view,
+                    applicationContext,
+                    findViewById(R.id.main),
+                    averagesData,
+                    viewModel,
+                    isFirst,
+                    noInDays
+                )
             }
 
             override fun onBindViewHolder(holder: EcoCalcViewHolder, position: Int) {
@@ -134,19 +158,19 @@ class DailyEcoCalcActivity : AppCompatActivity() {
         val saveAndExit: Button = findViewById(R.id.saveAndExit)
         saveAndExit.setOnClickListener {
             if (!isUpd && !viewModel.isEnoughAnswers()) {
-                Toast.makeText(this, "Вы ответили не на все вопросы!", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.youHaveNotAnsweredAllQuestion), Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
             if (isUpd && !updating) {
                 val builder = AlertDialog.Builder(this)
-                builder.setTitle("Обновление данных")
-                builder.setMessage("Убедитесть, что в этот раз вы только добавляли новые данные, без учета предыдущих сегодняшнего дня!")
-                builder.setPositiveButton("Подтвердить") { dialog, _ ->
+                builder.setTitle(getString(R.string.dataUpdate))
+                builder.setMessage(getString(R.string.makeSureYouHaveUpdatedYouDataByAddingOnlyNewChanges))
+                builder.setPositiveButton(R.string.confirm) { dialog, _ ->
                     updating = true
                     dialog.dismiss()
                 }
-                builder.setNegativeButton("Отмена") { dialog, _ ->
+                builder.setNegativeButton(getString(R.string.cancel)) { dialog, _ ->
                     dialog.dismiss()
                 }
                 val dialog = builder.create()
@@ -161,10 +185,11 @@ class DailyEcoCalcActivity : AppCompatActivity() {
                 }
             }
         }
-        viewModel.end.observe(this, Observer{
+        viewModel.end.observe(this, Observer {
             Log.d("end", "$it")
             if (it) {
-                saveAndExit.foregroundTintList = ContextCompat.getColorStateList(applicationContext, R.color.ok_green)
+                saveAndExit.foregroundTintList =
+                    ContextCompat.getColorStateList(applicationContext, R.color.ok_green)
             }
         })
 
@@ -178,7 +203,7 @@ class DailyEcoCalcActivity : AppCompatActivity() {
         private val viewModel: EcoCalcViewModel,
         private val isFirst: Boolean,
         private val noInDays: Int
-    ): RecyclerView.ViewHolder(view) {
+    ) : RecyclerView.ViewHolder(view) {
         private val testQuestion: TextView = view.findViewById(R.id.testQuestion)
         private val specifier: TextView = view.findViewById(R.id.specifyData)
         private val seekBar: SeekBar = view.findViewById(R.id.seekBar)
@@ -196,14 +221,22 @@ class DailyEcoCalcActivity : AppCompatActivity() {
         val specifyCurrent: TextView = view.findViewById(R.id.currentValueSpecify)
         val specifyCurrentValue: TextView = view.findViewById(R.id.valueTypeToCurrentSpecify)
 
-        fun bind(pos: Int, questions: HashMap<String, DatabaseMethods.DataClasses.EcoCalcQuestion>, viewModel: EcoCalcViewModel) {
-            val item = questions["${pos+1}"]!!
+        fun bind(
+            pos: Int,
+            questions: HashMap<String, DatabaseMethods.DataClasses.EcoCalcQuestion>,
+            viewModel: EcoCalcViewModel
+        ) {
+            val item = questions["${pos + 1}"]!!
             val thisClass = viewModel.getAnswer(pos)
 
             val minValueValue = item.sliders.minValue
             val maxValueValue = item.sliders.maxValue
 
-            testQuestion.text = if (isFirst) item.qNoData else if (noInDays > 1) item.qNoDataInTime.replace("%s %d", getDays(noInDays)) else item.qData
+            testQuestion.text =
+                if (isFirst) item.qNoData else if (noInDays > 1) item.qNoDataInTime.replace(
+                    "%s %d",
+                    getDays(noInDays)
+                ) else item.qData
 
             // sliders texts
             minValue.text = minValueValue.toString()
@@ -258,7 +291,7 @@ class DailyEcoCalcActivity : AppCompatActivity() {
                 }
             })
 
-            currentValue.addTextChangedListener(object : TextWatcher{
+            currentValue.addTextChangedListener(object : TextWatcher {
                 override fun afterTextChanged(p0: Editable?) {
                     seekBar.progress = p0.toString().toInt()
                 }
@@ -268,7 +301,12 @@ class DailyEcoCalcActivity : AppCompatActivity() {
             })
         }
 
-        private fun showSpecifyPopup(specify: DatabaseMethods.DataClasses.EcoCalcQuestion, thisClass: DatabaseMethods.DataClasses.EcoCalcSaveData, minMax: Pair<Int, Int>, holder: View) {
+        private fun showSpecifyPopup(
+            specify: DatabaseMethods.DataClasses.EcoCalcQuestion,
+            thisClass: DatabaseMethods.DataClasses.EcoCalcSaveData,
+            minMax: Pair<Int, Int>,
+            holder: View
+        ) {
             val mainFrame = FrameLayout(context).apply {
                 setBackgroundColor(Color.parseColor("#75000000"))
             }
@@ -280,13 +318,16 @@ class DailyEcoCalcActivity : AppCompatActivity() {
                 val specLayout = LayoutInflater.from(context)
                     .inflate(R.layout.layout_specify_ecocalc, null)
                 specLayout.findViewById<TextView>(R.id.specifyType).text = spec.value.name
-                specLayout.findViewById<TextView>(R.id.valueTypeToMin).text = specify.sliders.valueType
+                specLayout.findViewById<TextView>(R.id.valueTypeToMin).text =
+                    specify.sliders.valueType
                 val minValue = specLayout.findViewById<TextView>(R.id.minValue)
                 minValue.text = minMax.first.toString()
-                specLayout.findViewById<TextView>(R.id.valueTypeToMax).text = specify.sliders.valueType
+                specLayout.findViewById<TextView>(R.id.valueTypeToMax).text =
+                    specify.sliders.valueType
                 val maxValue = specLayout.findViewById<TextView>(R.id.maxValue)
                 maxValue.text = minMax.second.toString()
-                specLayout.findViewById<TextView>(R.id.valueTypeToCurrent).text = specify.sliders.valueType
+                specLayout.findViewById<TextView>(R.id.valueTypeToCurrent).text =
+                    specify.sliders.valueType
                 val seekBar: SeekBar = specLayout.findViewById(R.id.seekBar)
                 val currValue = specLayout.findViewById<EditText>(R.id.currentValue)
                 seekBar.min = minMax.first
@@ -327,10 +368,11 @@ class DailyEcoCalcActivity : AppCompatActivity() {
                     }
                 })
 
-                currValue.addTextChangedListener(object: TextWatcher {
+                currValue.addTextChangedListener(object : TextWatcher {
                     override fun afterTextChanged(p0: Editable?) {
                         seekBar.progress = p0.toString().toInt()
                     }
+
                     override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
                     override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
                 })
@@ -339,20 +381,27 @@ class DailyEcoCalcActivity : AppCompatActivity() {
             }
 
 
-            mainFrame.addView(popupView, FrameLayout.LayoutParams(
+            mainFrame.addView(
+                popupView, FrameLayout.LayoutParams(
+                    FrameLayout.LayoutParams.MATCH_PARENT,
+                    FrameLayout.LayoutParams.WRAP_CONTENT,
+                    Gravity.CENTER
+                )
+            )
+            val popupWindow = PopupWindow(
+                mainFrame,
                 FrameLayout.LayoutParams.MATCH_PARENT,
-                FrameLayout.LayoutParams.WRAP_CONTENT,
-                Gravity.CENTER
-            ))
-            val popupWindow = PopupWindow(mainFrame, FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT, true)
+                FrameLayout.LayoutParams.MATCH_PARENT,
+                true
+            )
             popupWindow.showAtLocation(mainLayout, Gravity.CENTER, 0, 0)
         }
 
         private fun getDays(days: Int): String {
             return when {
-                days % 10 == 1 && days % 100 != 11 -> "день"
-                days % 10 in 2..4 && (days % 100 < 10 || days % 100 >= 20) -> "дня"
-                else -> "дней"
+                days % 10 == 1 && days % 100 != 11 -> context.getString(R.string.dayiped)
+                days % 10 in 2..4 && (days % 100 < 10 || days % 100 >= 20) -> context.getString(R.string.dayrped)
+                else -> context.getString(R.string.dayrpgetmn)
             }
         }
 

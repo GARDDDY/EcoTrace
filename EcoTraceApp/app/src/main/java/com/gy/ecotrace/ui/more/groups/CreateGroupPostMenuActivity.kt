@@ -5,53 +5,33 @@ import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
-import android.view.Gravity
-import android.view.View
-import android.view.ViewGroup
-import android.view.ViewGroup.LayoutParams
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
-import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
-import android.widget.PopupWindow
-import android.widget.RelativeLayout
-import android.widget.Spinner
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
-import androidx.core.view.setMargins
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
-import com.google.firebase.auth.FirebaseAuth
 import com.gy.ecotrace.Globals
 import com.gy.ecotrace.R
 import com.gy.ecotrace.customs.ETAuth
 import com.gy.ecotrace.db.DatabaseMethods
 import com.gy.ecotrace.db.Repository
 import com.gy.ecotrace.ui.more.groups.additional.CreateGroupPostMenuViewModelFactory
-import com.gy.ecotrace.ui.more.groups.additional.ShowGroupViewModelFactory
 import com.gy.ecotrace.ui.more.groups.viewModels.CreateGroupPostMenuViewModel
-import com.gy.ecotrace.ui.more.groups.viewModels.ShowGroupViewModel
-import com.yandex.mapkit.search.Line
-import org.w3c.dom.Text
 
 class CreateGroupPostMenuActivity : AppCompatActivity() {
 
-    private val currentUser = ETAuth.getInstance().guid()
+    private val currentUser = ETAuth.getInstance().getUID()
     private lateinit var showGroupViewModel: CreateGroupPostMenuViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {

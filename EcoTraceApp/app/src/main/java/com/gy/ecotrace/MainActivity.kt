@@ -3,8 +3,6 @@ package com.gy.ecotrace
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.widget.TextView
-import android.widget.Toast
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar;
@@ -13,26 +11,14 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
-import com.bumptech.glide.Glide
-import com.google.firebase.auth.FirebaseAuth
 import com.google.gson.Gson
-import com.google.gson.JsonArray
-import com.google.gson.JsonObject
-import com.google.gson.reflect.TypeToken
 import com.gy.ecotrace.customs.ETAuth
 import com.gy.ecotrace.databinding.ActivityMainBinding
 import com.gy.ecotrace.db.DatabaseMethods
 import com.yandex.mapkit.MapKitFactory
-import com.yandex.maps.mobile.BuildConfig
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import java.time.LocalDateTime
-import java.time.ZoneOffset
-import java.util.Properties
 
 
 class MainActivity : AppCompatActivity() {
@@ -44,7 +30,8 @@ class MainActivity : AppCompatActivity() {
         ETAuth.initialize(this)
 
         // todo EDUCATION status
-        // todo bugfixes, apply CHANGE_PROFILE, CREATE_PROFILE
+        // todo todo, send comments in group, CREATE group and events
+        // todo bugfixes, CREATE_PROFILE??
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -62,7 +49,7 @@ class MainActivity : AppCompatActivity() {
         navView.setupWithNavController(navController)
 
 
-        val loggedUser = ETAuth.getInstance().guid()
+        val loggedUser = ETAuth.getInstance().getUID()
         Globals.getInstance().setString("CurrentlyWatching", loggedUser ?: "0")
 
         startService(Intent(this, AppService::class.java))
@@ -71,7 +58,6 @@ class MainActivity : AppCompatActivity() {
 
 
         fun applyData(type: Int, data1: String) {
-            Log.d("data got, parsing", data1.toString())
             val data: Any = try {
                 Gson().fromJson(data1, Array<String>::class.java)
             } catch (e: Exception) {
@@ -79,10 +65,9 @@ class MainActivity : AppCompatActivity() {
                     val jsonObject = Gson().fromJson(data1, Array<DatabaseMethods.DataClasses.ConstantMap>::class.java)
                     jsonObject
                 } catch (e: Exception) {
-                    Log.e("unable to unparse", data1.toString(), e)
+                    Log.wtf("unable to unparse", "", e)
                 }
             }
-            Log.d("data parsed, saving", data.toString())
 
             when (type) {
                 0 -> Globals.getInstance().setEventRoles(data)
@@ -105,20 +90,17 @@ class MainActivity : AppCompatActivity() {
                 val inCacheType = Globals.getInstance().constCache(inCache[type])
 
                 if (inCacheType == null || Globals.getInstance().isCacheExpired(inCache[type])) {
-                    Log.wtf("No valid", "No valid ${inCache[type]} found. Fetching...")
                     val job = launch {
                         DatabaseMethods.Tech().requestGET("constants", "type=$type") { response ->
                             if (response == null) {
                                 return@requestGET
                             }
                             val responseBody = response.body?.string()
-                            Log.e("Response", responseBody.toString())
                             applyData(type, responseBody ?: "")
                         }
                     }
                     pendingRequests.add(job)
                 } else {
-                    Log.d("getting from cache", inCacheType)
                     applyData(type, inCacheType)
                 }
             }

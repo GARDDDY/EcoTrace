@@ -16,7 +16,7 @@
             android:id="@+id/tw1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Персональная информация"
+            android:text="@string/personalInfo"
             android:textColor="@color/black"
             android:textSize="18sp"
             android:layout_centerHorizontal="true" />
@@ -55,7 +55,7 @@
                 android:layout_height="wrap_content"
                 android:textColorHint="@color/silver"
                 android:inputType="textPassword"
-                android:hint="Пароль" />
+                android:hint="@string/password" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
@@ -72,7 +72,7 @@
                 android:layout_height="wrap_content"
                 android:textColorHint="@color/silver"
                 android:inputType="text"
-                android:hint="Ваше имя" />
+                android:hint="@string/howToCallYou" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <RadioGroup
@@ -88,14 +88,14 @@
                 android:id="@+id/genderMale"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Мужчина"
+                android:text="@string/male"
                 android:textColor="@color/black" />
 
             <androidx.appcompat.widget.AppCompatRadioButton
                 android:id="@+id/genderFemale"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Женщина"
+                android:text="@string/female"
                 android:textColor="@color/black" />
 
             <com.google.android.material.radiobutton.MaterialRadioButton
@@ -104,7 +104,7 @@
                 android:layout_height="wrap_content"
                 android:checked="true"
                 android:drawableTint="@color/ok_green"
-                android:text="Не указывать пол"
+                android:text="@string/noSpecify"
                 android:textColor="@color/black" />
         </RadioGroup>
 
@@ -112,7 +112,7 @@
             android:id="@+id/tw2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Публичная информация"
+            android:text="@string/publicInfo"
             android:textColor="@color/black"
             android:textSize="18sp"
             android:layout_centerHorizontal="true"
@@ -133,7 +133,7 @@
                 android:layout_height="wrap_content"
                 android:textColorHint="@color/silver"
                 android:inputType="textEmailAddress"
-                android:hint="Никнейм" />
+                android:hint="@string/username" />
         </com.google.android.material.textfield.TextInputLayout>
 
 
@@ -159,7 +159,7 @@
             android:id="@+id/registerButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Зарегистрироваться"
+            android:text="@string/register"
             android:textColor="@color/dirt_white"
             android:backgroundTint="@color/ok_green"
             android:layout_below="@id/userFilters"
@@ -179,13 +179,13 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/silver"
-                android:text="Есть аккаунт?"/>
+                android:text="@string/haveAnAccount"/>
 
             <TextView
                 android:id="@+id/gotoLogin"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Войти"
+                android:text="@string/login"
                 android:textColor="@color/black"
                 android:layout_marginStart="16dp"/>
         </LinearLayout>
@@ -195,7 +195,7 @@
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:textColor="@color/silver"
-            android:text="* - заполнение данных обязательно"
+            android:text="@string/dataFillNecessarily"
             android:layout_below="@id/ll1"
             android:layout_marginTop="16dp"/>
     </RelativeLayout>

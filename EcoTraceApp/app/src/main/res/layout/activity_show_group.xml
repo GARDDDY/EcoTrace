@@ -61,6 +61,7 @@
                     android:text="group-Name"
                     android:textSize="20sp"
                     android:textStyle="bold"
+                    android:textColor="@color/black"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/groupImage" />
@@ -71,6 +72,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/default_PaddingMargin"
                     android:text="group-About"
+                    android:textColor="@color/silver"
                     android:hint="@string/noDescription"
                     android:textColorHint="@color/silver"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -116,6 +118,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:gravity="center"
+                        android:textColor="@color/black"
                         android:text="Участники: "
                         android:textSize="16sp" />
 
@@ -125,6 +128,7 @@
                         android:layout_height="match_parent"
                         android:gravity="center"
                         android:text="999"
+                        android:textColor="@color/black"
                         android:textSize="16sp" />
 
                     <ImageView
@@ -161,6 +165,7 @@
                         android:layout_height="match_parent"
                         android:gravity="center"
                         android:text="@string/rules"
+                        android:textColor="@color/black"
                         android:textSize="16sp" />
 
                     <ImageView
@@ -188,9 +193,11 @@
                 <RelativeLayout
                     android:id="@+id/menuCreatePost"
                     android:layout_width="match_parent"
-                    android:layout_height="150dp"
+                    android:layout_height="wrap_content"
+                    android:minHeight="150dp"
                     android:layout_marginHorizontal="@dimen/default_PaddingMargin"
                     android:layout_marginTop="@dimen/default_PaddingMargin"
+                    android:paddingBottom="@dimen/default_PaddingMargin"
                     android:background="@drawable/bottom_rounded_border"
                     android:clickable="true"
                     android:visibility="visible"
@@ -201,8 +208,8 @@
 
                     <ImageView
                         android:id="@+id/attachedImage"
-                        android:layout_width="wrap_content"
-                        android:layout_height="200dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
                         android:layout_above="@id/attachImage"
                         android:layout_below="@+id/upperUpper"
                         android:layout_marginHorizontal="@dimen/default_PaddingMargin"

@@ -26,5 +26,8 @@
     "path": "^0.12.7",
     "puppeteer": "^23.3.0",
     "socket.io": "^4.7.5"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0"
   }
 }

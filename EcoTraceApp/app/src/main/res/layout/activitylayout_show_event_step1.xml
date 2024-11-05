@@ -55,7 +55,7 @@
                 android:id="@+id/textView28"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Статус мероприятия"
+                android:text="@string/eventStatus"
                 android:textAlignment="center"
                 android:textColor="@color/black"
                 android:textSize="20sp" />
@@ -107,7 +107,7 @@
             android:layout_marginVertical="@dimen/default_PaddingMargin"
             android:backgroundTint="@color/ok_green"
             android:textColor="@color/dirt_white"
-            android:text="Присоединиться" />
+            android:text="@string/join" />
 
     </LinearLayout>
 
@@ -118,7 +118,7 @@
         android:layout_marginStart="177dp"
         android:layout_marginTop="15dp"
         android:layout_marginEnd="177dp"
-        android:hint="Нет описания"
+        android:hint="@string/noDescription"
         android:paddingHorizontal="15dp"
         android:text="event-About"
         android:textSize="16sp"

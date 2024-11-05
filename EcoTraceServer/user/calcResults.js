@@ -83,6 +83,50 @@ const specifies = {
           "name": "С добавками",
           "color": "51, 87, 255"
         }
+    },
+    "35": {
+        "0": {
+            "name": "ЭП",
+            "color": "255, 0, 0"
+        },
+        "1": {
+            "name": "ЭП",
+            "color": "255, 0, 0"
+        },
+        "2": {
+            "name": "ЭП",
+            "color": "255, 0, 0"
+        },
+        "3": {
+            "name": "ЭП",
+            "color": "255, 0, 0"
+        },
+        "4": {
+            "name": "ЭП",
+            "color": "255, 0, 0"
+        }
+    },
+    "44": {
+        "0": {
+            "name": "ЭП",
+            "color": "255, 0, 0"
+        },
+        "1": {
+            "name": "ЭП",
+            "color": "255, 0, 0"
+        },
+        "2": {
+            "name": "ЭП",
+            "color": "255, 0, 0"
+        },
+        "3": {
+            "name": "ЭП",
+            "color": "255, 0, 0"
+        },
+        "4": {
+            "name": "ЭП",
+            "color": "255, 0, 0"
+        }
     }
 }
 
@@ -92,79 +136,133 @@ const advices = {
     0: ""
 }
 
-router.get('/calc/getNumImages', async (req, res) => {
-    const calcType = req.query.cType || 0;
+const imagesAvailableFor = [
+    "0_1",
+    "0_2",
+    "0_3",
+    "3_5"
+]
 
-    res.json(calcType == 0 && 3 || 0)//images[calcType].length || 0)
+router.get('/calc/getNumImages', async (req, res) => {
+    res.send([imagesAvailableFor.join()])
 });
 
-router.get('/calc/getImage', async (req, res) => {
+
+function sDay(day) {
+    const lastDigit = day % 10
+
+    if (Math.floor(day / 10) % 10 === 1) {
+        return "дней"
+    }
+
+    switch (lastDigit) {
+        case 1:
+            return "день";
+        case 2:
+        case 3:
+        case 4:
+            return "дня";
+        default:
+            return "дней";
+    }
+}
+
+function toStringPeriod(per) {
+    if (per === 0) {
+        return "Вчера"
+    } else if (per === 1) {
+        return "Позавчера"
+    } else {
+        return `${per+1} ${sDay(per+1)} назад`
+    }
+}
+
+function daysSince(timestamp) {
+    const now = Date.now();
+    const difference = now - timestamp; 
+    const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+    return days;
+}
+
+router.get('/calc/getImage', async (req, res) => { // todo
     const calcType = req.query.cType || 0;
     const imageId = req.query.img || 0;
     const userId = req.query.cid || '0';
 
-    const inMonth = new Date();
-    inMonth.setMonth(inMonth.getMonth() - 1);
-    const startAt = inMonth.getTime();
+    try {
+    const yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+    yesterday.setHours(0,0,0,0)
 
-    const [data] = await connection2.execute('select date, `data` from `dataspecify` where userId = ? and date >= ? and calculator = ?', [userId, startAt, calcType]);
+    const weekAgo = new Date(yesterday);
+    weekAgo.setDate(yesterday.getDate() - 7);
+    weekAgo.setHours(0,0,0,0)
 
-    console.log(data)
+    console.log(weekAgo.getTime(), yesterday.getTime())
+
+
+    const [data] = await connection2.execute('select date, `data` from `dataspecify` where userId = ? and date >= ? and date <= ? and calculator = ?', 
+        [userId, weekAgo.getTime(), yesterday.getTime(), calcType]);
+
+
+    const graphData = []
+    const labelsAll = []
+
+    data.forEach(element => {
+        const values = element.data.split("$")
+        const date = element.date;
+
+        const needed = values[imageId].split(";")
+
+        const groupData = []
+        needed.forEach(element =>{
+            const spec = element.split("_")
+
+            const specName = specifies[`${calcType}${imageId}`][parseInt(spec[0])-1]
+            const specValue = spec[1]
+
+            groupData.push({lD: specName, v: specValue})
+            labelsAll.push(toStringPeriod(daysSince(date)))
+        })
+
+        graphData.push(groupData)
+        
+    });
+
+    console.log(graphData)
+
+    res.status(200)
+
+    const labels = [...new Set(labelsAll)].reverse();
+    console.log(labels)
+
+    const values = {};
+    graphData.forEach(data =>{
+        data.forEach(e => {
+            if (values[e.lD.name] == null) {
+                values[e.lD.name] = {
+                    label: e.lD.name,
+                    backgroundColor: `rgba(${e.lD.color}, 0.6)`,
+                    borderColor: `rgba(${e.lD.color}, 1)`,
+
+                    data: [e.v]
+                }
+            } else {
+                values[e.lD.name].data.push(e.v)
+            }
+        })
+    })
+
+    console.log(values)
     
-    const names = Object.values(specifies[`${calcType}${imageId}`]);
-    
-    const uData = data.map(item => {
-        const values = item.data.split('$')[calcType].split(';');
-        return values;
-    });
 
-    const usingData = new Array(names.length * uData.length).fill(null);
-    uData.forEach((entry, index) => {
-        entry.forEach(val => {
-            const fastData = val.split('_');
-            usingData[index * names.length + parseInt(fastData[0]) - 1] = parseInt(fastData[1]);
-        });
-    });
-
-    const uDates = data.map(item => {
-        const date = new Date(item.date);
-        return `${date.getDate()}.${date.getMonth() + 1}.${date.getFullYear()}`;
-    });
-
-    const usingDates = [];
-    for (let i = 0; i < names.length * data.length; i++) {
-        usingDates.push(uDates[Math.floor(i / names.length)]);
-    }
-
-    const labels = [];
-    for (let i = 0; i < usingData.length; i++) {
-        labels.push(names[i % names.length]);
-    }
-
-    const dataFull = [];
-    usingData.forEach((val, index) => {
-        let someData = names[index % names.length];
-        let ind = index - 9 * Math.floor(index / names.length);
-
-        if (!dataFull[ind]) {
-            dataFull[ind] = {
-                data: [val],
-                backgroundColor: `rgba(${someData.color}, 0.2)`,
-                borderColor: `rgba(${someData.color}, 1)`,
-                borderWidth: 1,
-                label: someData.name
-            };
-        } else {
-            dataFull[ind].data.push(val);
-        }
-    });
 
 
     const configuration = {
         type: 'bar',
         data: {
-            labels: uDates,
-            datasets: dataFull
+            labels: labels,
+            datasets: Object.values(values)
         },
         options: {
             plugins: {
@@ -196,6 +294,10 @@ router.get('/calc/getImage', async (req, res) => {
                             size: 20
                         }
                     }
+                },
+                x : {
+                    autoSkip: true,
+                    maxTicksLimit: 10
                 }
             }
         },
@@ -211,20 +313,54 @@ router.get('/calc/getImage', async (req, res) => {
             }
         }]
     };
+    
 
     const image = await chartJSNodeCanvas.renderToBuffer(configuration);
-
     res.set('Content-Type', 'image/png');
     res.send(image);
+} catch (e) {
+    res.set('Content-Type', 'image/png');
+    res.send(null);
+}
+
+    
 });
 
 
 
+function getGenderString(g) {
+    return g == 0 && "мужчин" || "женщин"
+}
+
 router.get('/calc/getAdvices', async (req, res) => {
     const calcType = req.query.cType || 0;
+    const image = req.query.img || 1;
+    const userId = req.query.cid || '0';
 
-    res.send(images[calcType] || 0)
+    const [userGender] = await connection1.execute("select gender from user where userId = ?", [userId])
+    const [sameUserGenders] = await connection1.execute('select userId from user where gender = ?', [userGender[0].gender])
 
+    const usersIds = sameUserGenders.map(user => user.userId);
+    const placeholders = usersIds.map(a => `"${a}"`).join(', ');
+
+    const [averageForThisGender] = await connection2.execute(`SELECT calculator, userId, SUBSTRING_INDEX(SUBSTRING_INDEX(data, '$', ?), '$', -1) as data, date FROM dataspecify WHERE userId IN (${placeholders}) and calculator = ?`, [image, calcType]);
+
+const values = [];
+
+averageForThisGender.forEach(entry => {
+    const numbers = entry.data.split(';').map(item => parseInt(item.split('_')[1]));
+    values.push(...numbers);
+});
+const totalSum = values.reduce((acc, value) => acc + value, 0);
+
+const averageByRows = values.length > 0 ? totalSum / values.length : 0;
+const uniqueUsers = new Set(averageForThisGender.map(entry => entry.userId)).size;
+const averageByUsers = uniqueUsers > 0 ? totalSum / uniqueUsers : 0;
+
+res.send([`Среднее значение для всех ${getGenderString(userGender[0].gender)} на сервисе = ${averageByRows} гр.`, 
+        `Среднее значение для всех уникальных ${getGenderString(userGender[0].gender)} на сервисе = ${averageByUsers} гр.`]);
+
+// todo
 });
 
 module.exports = router;

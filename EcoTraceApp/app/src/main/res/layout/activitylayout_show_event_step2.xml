@@ -5,28 +5,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/NoTimesFound"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingVertical="15dp"
-        android:text="Организатор не запланировал события на это мероприятие!"
-        android:textColor="@color/black"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        android:textAlignment="center"
-        android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_marginHorizontal="@dimen/default_PaddingMargin"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/NoTimesFound">
+        app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
             android:id="@+id/planLayoutTimes"

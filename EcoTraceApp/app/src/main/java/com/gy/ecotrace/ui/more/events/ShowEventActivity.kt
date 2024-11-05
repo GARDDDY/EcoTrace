@@ -28,7 +28,6 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
-import com.google.firebase.auth.FirebaseAuth
 import com.google.mlkit.vision.barcode.BarcodeScanning
 import com.google.mlkit.vision.common.InputImage
 import com.gy.ecotrace.BuildConfig
@@ -44,9 +43,7 @@ import com.gy.ecotrace.ui.more.events.showtabs.ShowEventStep3
 import com.gy.ecotrace.ui.more.events.showtabs.ShowEventStep4
 import com.gy.ecotrace.ui.more.events.showtabs.ShowEventViewModel
 import com.gy.ecotrace.ui.more.events.showtabs.ShowEventViewModelFactory
-import com.gy.ecotrace.ui.more.profile.ProfileActivity
 import com.yandex.mapkit.MapKitFactory
-import java.net.URL
 
 class ShowEventActivity : AppCompatActivity() {
     private lateinit var eventViewModel: ShowEventViewModel
@@ -122,7 +119,7 @@ class ShowEventActivity : AppCompatActivity() {
         eventViewModel.event.observe(this, Observer {
 
             createQr.setOnClickListener { _ ->
-                val currentUser = ETAuth.getInstance().guid()
+                val currentUser = ETAuth.getInstance().getUID()
                 val qrActivity = Intent(this@ShowEventActivity, PersonalShareActivity::class.java)
                 qrActivity.putExtra("valid", true)
                 qrActivity.putExtra("link", "eventparticipanrvalidation?uid=$currentUser&eid=$currentEvent")
@@ -134,7 +131,7 @@ class ShowEventActivity : AppCompatActivity() {
                 startActivity(qrActivity)
             }
 
-            if (it.eventInfo.eventStatus == 1) {
+            if (it.eventInfo.eventStatus == 1 && it.isUserInEvent) {
                 eventViewModel.isUserValidated { valid ->
                     if (!valid) createQr.visibility = View.VISIBLE
                 }
@@ -152,20 +149,23 @@ class ShowEventActivity : AppCompatActivity() {
                 toolbar.inflateMenu(R.menu.popup_menu_event)
                 toolbar.setOnMenuItemClickListener {
                     when (it.itemId) {
-                        R.id.action_settings -> {
-                            Globals.getInstance().setString("CurrentlyEditingEvent", currentEvent)
-                            val myIntent = Intent(this, CreateEventActivity::class.java)
-                            startActivity(myIntent)
-                            true
-                        }
+//                        R.id.action_settings -> {
+//                            Globals.getInstance().setString("CurrentlyEditingEvent", currentEvent)
+//                            val myIntent = Intent(this, CreateEventActivity::class.java)
+//                            startActivity(myIntent)
+//                            true
+//                        }
                         R.id.action_logout -> {
                             val builder = AlertDialog.Builder(this)
                             builder.setTitle("Удаление мероприятия")
 
                             builder.setMessage("Вы действительно хотите безвозвратно удалить это мероприятие?")
                             builder.setPositiveButton("Подтвердить") { dialog, which ->
-                                // delete
-                                finish()
+                                eventViewModel.deleteEvent {
+                                    if (it) {
+                                        finish()
+                                    }
+                                }
                             }
                             builder.setNegativeButton("Отмена") { dialog, which ->
                                 dialog.dismiss()

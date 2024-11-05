@@ -30,7 +30,6 @@ class CreateEventViewModel(private val repository: Repository): ViewModel() {
         } else {
             viewModelScope.launch {
                 val eventData = repository.getEvent(currentEvent)
-                eventData.filters = eventData.filters.split(':')[1]
                 _eventData.postValue(eventData)
             }
         }

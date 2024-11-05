@@ -8,26 +8,20 @@ import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
-import android.provider.ContactsContract.Data
 import android.provider.MediaStore
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
-import android.view.Gravity
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
-import android.widget.ArrayAdapter
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.Spinner
-import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
-import androidx.core.view.updatePadding
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.google.android.material.button.MaterialButton
@@ -70,7 +64,7 @@ class CreateGroupStep1 : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val currentGroup = sharedViewModel.groupClass.groupId
+        val currentGroup = Globals.getInstance().getString("CurrentlyWatchingGroup")
 
         val groupName: EditText = view.findViewById(R.id.groupName)
         groupName.setText(sharedViewModel.groupClass.groupName)
@@ -105,7 +99,7 @@ class CreateGroupStep1 : Fragment() {
         })
 
         val groupTags: LinearLayout = view.findViewById(R.id.groupTags)
-        val activeTags = try{sharedViewModel.groupClass.filters.split(',').map { it.toInt() }.toMutableList()} catch (e: Exception) {
+        val activeTags = try{sharedViewModel.groupClass.filters!!.split(',').map { it.toInt() }.toMutableList()} catch (e: Exception) {
             emptyList()}
 
         val tags: Array<Pair<String, String>> = Globals.getInstance().getGroupsFilters()
@@ -130,7 +124,7 @@ class CreateGroupStep1 : Fragment() {
             filter.setOnClickListener {
                 filter.isActivated = !filter.isActivated
                 val group = sharedViewModel.groupClass
-                val groupFilters = try{group.filters.split(',').map { it.toInt() }.toMutableList()} catch (e: Exception) { emptyList<Int>() }.toMutableList()
+                val groupFilters = try{group.filters!!.split(',').map { it.toInt() }.toMutableList()} catch (e: Exception) { emptyList<Int>() }.toMutableList()
 
                 if(!filter.isActivated) {
                     filter.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.transparent))
@@ -152,7 +146,7 @@ class CreateGroupStep1 : Fragment() {
 
         val groupType = view.findViewById<Spinner>(R.id.groupType)
 
-        groupType.setSelection(sharedViewModel.groupClass.groupType)
+        groupType.setSelection(sharedViewModel.groupClass.groupType ?: 0)
         groupType.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 val group = sharedViewModel.groupClass

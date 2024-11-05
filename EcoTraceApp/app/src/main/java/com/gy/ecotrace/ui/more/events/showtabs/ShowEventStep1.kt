@@ -35,6 +35,8 @@ import com.gy.ecotrace.db.DatabaseMethods
 import com.gy.ecotrace.db.Repository
 import com.gy.ecotrace.ui.more.events.createsteps.CreateEventViewModel
 import com.yandex.mapkit.search.Line
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 class ShowEventStep1 : Fragment() {
 
@@ -67,6 +69,11 @@ class ShowEventStep1 : Fragment() {
             1 -> ", когда наберется ${values[1]} ${members(values[1])}"
             else -> "-"
         }
+    }
+
+    private fun toLocalTime(ts: Long): String {
+        val dateFormat = SimpleDateFormat("dd MMMM yyyy", Locale.getDefault())
+        return dateFormat.format(ts*1000)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -106,11 +113,11 @@ class ShowEventStep1 : Fragment() {
             view.findViewById<TextView>(R.id.eventName).text = event.eventName
             view.findViewById<TextView>(R.id.eventAbout).text = event.eventAbout
             view.findViewById<TextView>(R.id.eventCountMembers).text = "${event.eventCountMembers} ${members(event.eventCountMembers)}"
-            view.findViewById<TextView>(R.id.eventStartDate).text = when(event.eventStatus) {
-                0 -> "Начнется ${event.startTime}"
-                1 -> "Проходит"
-                2 -> "Закончилось"
-                else -> "неизвестно"
+            view.findViewById<TextView>(R.id.eventStartDate).text = when (event.eventStatus) {
+                0 -> "Начнется с ${toLocalTime(event.minTime)}\nи продлится по ${toLocalTime(event.maxTime)}"
+                1 -> "Проходит до ${toLocalTime(event.maxTime)}"
+                2 -> "Проходило с ${toLocalTime(event.minTime)}\nпо ${toLocalTime(event.maxTime)}"
+                else -> "???"
             }
 
             val tags: Array<Pair<String, String>> = Globals.getInstance().getEventsFilters()

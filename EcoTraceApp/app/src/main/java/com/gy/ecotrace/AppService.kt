@@ -6,15 +6,11 @@ import android.content.Intent
 import android.os.Handler
 import android.os.IBinder
 import android.os.Looper
-import android.util.Log
-import java.io.File
-import java.security.Timestamp
-import java.sql.Time
 import java.util.Date
 
 class AppService: Service() {
     private val handler = Handler(Looper.getMainLooper())
-    private val cleanupIntervalMillis: Long = 10 * 60 * 1000 // 10 минут
+    private val cleanupIntervalMillis: Long = 10 * 60 * 1000
 
     override fun onCreate() {
         super.onCreate()
@@ -46,6 +42,5 @@ class AppService: Service() {
     override fun onDestroy() {
         super.onDestroy()
         getSharedPreferences("getData", Context.MODE_PRIVATE).edit().putLong("exit", System.currentTimeMillis()).apply()
-        Log.d("Destroy", "bye-bye")
     }
 }

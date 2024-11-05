@@ -12,7 +12,7 @@
             android:id="@+id/goalText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:hint="Цель"
+            android:hint="@string/goal"
             android:layout_weight="1"
             android:textColor="@color/black"
             android:textColorHint="@color/silver" />

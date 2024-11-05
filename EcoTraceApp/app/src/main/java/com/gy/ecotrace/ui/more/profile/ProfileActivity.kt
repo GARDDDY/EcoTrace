@@ -29,7 +29,6 @@ import androidx.lifecycle.Observer
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.bumptech.glide.Glide
 import com.facebook.shimmer.ShimmerFrameLayout
-import com.google.firebase.auth.FirebaseAuth
 import com.gy.ecotrace.Globals
 import com.gy.ecotrace.R
 import com.gy.ecotrace.customs.ETAuth
@@ -44,7 +43,7 @@ import java.util.Locale
 class ProfileActivity : AppCompatActivity() {
     private lateinit var userViewModel: ProfileViewModel
     private var currentUser = Globals.getInstance().getString("CurrentlyWatching")
-    private var loggedUser = ETAuth.getInstance().guid()
+    private var loggedUser = ETAuth.getInstance().getUID()
     private lateinit var toolbar: Toolbar
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -231,7 +230,7 @@ class ProfileActivity : AppCompatActivity() {
 
 
                 val about = findViewById<TextView>(R.id.userAboutProfile)
-                about.text = user.aboutMe
+                about.text = user.about_me
                 about.setOnClickListener {
                     about.isActivated = !about.isActivated
                     about.maxLines = if (about.isActivated) Int.MAX_VALUE else 3
@@ -239,7 +238,7 @@ class ProfileActivity : AppCompatActivity() {
                 findViewById<TextView>(R.id.userExperienceProfile).text = user.experience.toString()
 
                 val expToRanks = mutableMapOf(
-                    100 to "rank1",
+                    0 to "rank1",
                     300 to "rank2",
                     700 to "rank3",
                     1200 to "rank4",
@@ -253,7 +252,7 @@ class ProfileActivity : AppCompatActivity() {
                         .getImageLink(
                             "\$ranks",
                             expToRanks[expToRanks.keys.filter { it <= user.experience }
-                                .maxOrNull()]!!
+                                .maxOrNull()] ?: "0"
                         )
                     )
                     .into(findViewById(R.id.userExperienceImageProfile))
@@ -293,6 +292,9 @@ class ProfileActivity : AppCompatActivity() {
 
 
         userViewModel.graph.observe(this, Observer { graph ->
+            if (userViewModel.graphReq) {
+                return@Observer
+            }
             findViewById<ShimmerFrameLayout>(R.id.userEcoDataInformationLayoutLoading).visibility =
                 View.GONE
             findViewById<LinearLayout>(R.id.userEcoDataInformationLayout).visibility = View.VISIBLE
@@ -308,6 +310,7 @@ class ProfileActivity : AppCompatActivity() {
                             }.toMutableList()
 
                         updateGraph()
+                        userViewModel.graphReq = true
                         Log.d("sending", "from types")
                         userViewModel.getUserGraphs(currentUser, lastTime, lastTypes)
                     }
@@ -323,6 +326,7 @@ class ProfileActivity : AppCompatActivity() {
                     ) {
                         lastTime = position
                         updateGraph()
+                        userViewModel.graphReq = true
                         Log.d("sending", "from times")
                         userViewModel.getUserGraphs(currentUser, lastTime, lastTypes)
                     }
@@ -354,9 +358,18 @@ class ProfileActivity : AppCompatActivity() {
             findViewById<ShimmerFrameLayout>(R.id.userEventsInformationLayoutLoading).visibility =
                 View.GONE
             findViewById<LinearLayout>(R.id.userEventsInformationLayout).visibility = View.VISIBLE
-            findViewById<TextView>(R.id.noEventsWarning).visibility = View.GONE
-            findViewById<RelativeLayout>(R.id.allEventsLayout).visibility = View.VISIBLE
             val eventsLayout: LinearLayout = findViewById(R.id.eventsLayout)
+
+            if (events.size == 0 && eventsLayout.childCount == 0) {
+                findViewById<TextView>(R.id.noEventsWarning).visibility = View.VISIBLE
+                eventSort.visibility = View.GONE
+            } else {
+                findViewById<TextView>(R.id.noEventsWarning).visibility = View.GONE
+                eventSort.visibility = View.VISIBLE
+            }
+
+            findViewById<RelativeLayout>(R.id.allEventsLayout).visibility = View.VISIBLE
+
             if (userViewModel.newEvents) {
                 eventsLayout.removeAllViews()
                 userViewModel.newEvents = false
@@ -371,14 +384,12 @@ class ProfileActivity : AppCompatActivity() {
                     eventName
                 activityOneLayout.findViewById<TextView>(R.id.eventCountMembers).text =
                     event.eventInfo.eventCountMembers.toString()
-                activityOneLayout.findViewById<TextView>(R.id.eventUserRole).text =
-                    eventRoles[event.eventRole]
-                val eventStatusString: String = when (event.eventInfo.eventStatus) {
-                    0 -> "Еще не началось!"
-                    1 -> "Уже проходит!"
-                    2 -> "Закончилось"
-                    else -> "error-unreal-status"
+                val userRole = activityOneLayout.findViewById<TextView>(R.id.eventUserRole)
+                userRole.text = eventRoles[event.eventRole]
+                if (!event.isValidated) {
+                    userRole.setTextColor(ContextCompat.getColor(applicationContext, R.color.red_no))
                 }
+                val eventStatusString: String = event.eventInfo.eventStatusString
 
                 activityOneLayout.findViewById<TextView>(R.id.eventStatus).text =
                     eventStatusString
@@ -492,42 +503,46 @@ class ProfileActivity : AppCompatActivity() {
             findViewById<ShimmerFrameLayout>(R.id.userGroupsInformationLayoutLoading).visibility =
                 View.GONE
             findViewById<LinearLayout>(R.id.userGroupsInformationLayout).visibility = View.VISIBLE
-            groups?.let {
+
+            if (groups.size == 0) {
+                findViewById<TextView>(R.id.noGroupsWarning).visibility = View.VISIBLE
+            } else {
                 findViewById<TextView>(R.id.noGroupsWarning).visibility = View.GONE
-                val groupsLayout: LinearLayout = findViewById(R.id.groupsLayout)
-                groupsLayout.removeAllViews()
-                for (group in groups) {
-                    val groupName = group.groupInfo.groupName
-                    val groupId = group.groupInfo.groupId
-                    val groupOneLayout =
-                        layoutInflater.inflate(R.layout.layout_user_group, null)
-                    groupOneLayout.findViewById<TextView>(R.id.groupName).text =
-                        groupName
-                    groupOneLayout.findViewById<TextView>(R.id.groupAbout).text =
-                        group.groupInfo.groupAbout
-                    Glide.with(this)
-                        .load(Globals().getImgUrl("groups", groupId))
-                        .centerInside()
-                        .into(groupOneLayout.findViewById(R.id.groupImage))
+            }
+            val groupsLayout: LinearLayout = findViewById(R.id.groupsLayout)
+            groupsLayout.removeAllViews()
+            for (group in groups) {
+                val groupName = group.groupInfo.groupName
+                val groupId = group.groupInfo.groupId
+                val groupOneLayout =
+                    layoutInflater.inflate(R.layout.layout_user_group, null)
+                groupOneLayout.findViewById<TextView>(R.id.groupName).text =
+                    groupName
+                groupOneLayout.findViewById<TextView>(R.id.groupAbout).text =
+                    group.groupInfo.groupAbout
+                Glide.with(this)
+                    .load(Globals().getImgUrl("groups", groupId))
+                    .centerInside()
+                    .into(groupOneLayout.findViewById(R.id.groupImage))
 
-                    groupOneLayout.setOnClickListener {
-                        Globals.getInstance()
-                            .setString("CurrentlyWatchingGroup", groupId)
-                        startActivity(Intent(this, ShowGroupActivity::class.java))
-                    }
+                groupOneLayout.setOnClickListener {
+                    Globals.getInstance()
+                        .setString("CurrentlyWatchingGroup", groupId)
+                    startActivity(Intent(this, ShowGroupActivity::class.java))
+                }
 
-                    groupsLayout.addView(groupOneLayout)
-                    if (groups.last() != group) {
-                        val space = View(applicationContext)
-                        val dpDefault =
-                            resources.getDimensionPixelSize(R.dimen.default_PaddingMargin)
-                        val layoutParams =
-                            ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, dpDefault)
-                        space.layoutParams = layoutParams
-                        groupsLayout.addView(space)
-                    }
+                groupsLayout.addView(groupOneLayout)
+                if (groups.last() != group) {
+                    val space = View(applicationContext)
+                    val dpDefault =
+                        resources.getDimensionPixelSize(R.dimen.default_PaddingMargin)
+                    val layoutParams =
+                        ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, dpDefault)
+                    space.layoutParams = layoutParams
+                    groupsLayout.addView(space)
                 }
             }
+
         })
         val refresh = findViewById<SwipeRefreshLayout>(R.id.refreshProfile)
         refresh.setOnRefreshListener {

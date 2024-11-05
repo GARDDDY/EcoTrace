@@ -22,7 +22,6 @@ import android.widget.TextView
 import android.widget.Toast
 import android.widget.Toolbar
 import androidx.activity.enableEdgeToEdge
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageAnalysis
@@ -39,7 +38,6 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.bumptech.glide.Glide
 import com.facebook.shimmer.ShimmerFrameLayout
 import com.google.android.material.button.MaterialButton
-import com.google.firebase.auth.FirebaseAuth
 import com.google.mlkit.vision.barcode.BarcodeScanning
 import com.google.mlkit.vision.common.InputImage
 import com.gy.ecotrace.BuildConfig
@@ -65,7 +63,7 @@ class SearcherViewModelFactory(private val repository: Repository) : ViewModelPr
 class UsersSearchFriends : AppCompatActivity() {
     private var mainHost = BuildConfig.SERVER_API_URI
     private lateinit var searcherViewModel: SearcherViewModel
-    private var loggedUser = ETAuth.getInstance().guid()
+    private var loggedUser = ETAuth.getInstance().getUID()
 
 
     private val handler = Handler(Looper.getMainLooper())
@@ -274,7 +272,7 @@ class UsersSearchFriends : AppCompatActivity() {
         val friendScrollView: ScrollView = findViewById(R.id.scrollViewMain)
         friendScrollView.setOnScrollChangeListener { v, scrollX, scrollY, oldScrollX, oldScrollY ->
             if (!searcherViewModel.updUsers && !searcherViewModel.foundAllUsers) {
-                if (scrollX >= (v as HorizontalScrollView).getChildAt(0).width - v.width) {
+                if (scrollX >= (v as ScrollView).getChildAt(0).width - v.width) {
                     searcherViewModel.updUsers = true
                     searcherViewModel.findAllUsers()
                 }

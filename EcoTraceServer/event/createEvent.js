@@ -7,7 +7,7 @@ const connection2 = connections["events"]
 
 const router = express.Router();
 
-router.post('/createEvent', async (req, res) => {
+router.post('/createEvent', async (req, res) => { // todo
     const data = req.body;
     const userId = req.query.cuid || '0';
     const oAuth = req.query.oauth || '0';
@@ -65,8 +65,8 @@ router.post('/createEvent', async (req, res) => {
             console.error('Error inserting data:', error);
           }
 
-    await connection1.execute(`INSERT INTO events (userId, eventId, eventRole) VALUES (?, ?, ?)`, 
-        [userId, eid, 0])
+    await connection1.execute(`INSERT INTO events (userId, eventId, eventRole, validated) VALUES (?, ?, ?, ?)`, 
+        [userId, eid, 0, 1])
 
     res.json(eid);
 });

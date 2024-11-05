@@ -52,7 +52,7 @@ class CreateEventActivity : AppCompatActivity() {
         sharedViewModel.currentEvent = editingEvent
         sharedViewModel.getEvent()
 
-        val pagesNames = listOf("Основное", "Планирование", "Цели", "Карта")
+        val pagesNames = listOf(getString(R.string.mainInfo), getString(R.string.plan), getString(R.string.goalsPlan), getString(R.string.map))
         val nextBtn: ImageButton = findViewById(R.id.nextPageBtn)
         val prevBtn: ImageButton = findViewById(R.id.prevPageBtn)
         val endCreation: Button = findViewById(R.id.endCreation)
@@ -66,7 +66,7 @@ class CreateEventActivity : AppCompatActivity() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
                 findViewById<TextView>(R.id.textView31).text = pagesNames[position]
-                findViewById<TextView>(R.id.textView33).text = "Шаг ${position+1} / ${pagesNames.size}"
+                findViewById<TextView>(R.id.textView33).text = "${getString(R.string.step)} ${position+1} / ${pagesNames.size}"
 
                 if ((sharedViewModel.eventData.value?.eventStatus ?: 0) == 0) {
                     endCreation.visibility = if (position == 0) View.GONE else View.VISIBLE
@@ -92,7 +92,7 @@ class CreateEventActivity : AppCompatActivity() {
                 prevBtn.visibility = View.VISIBLE
 
             } else {
-                Toast.makeText(this, "Пожалуйста, введите название своего мероприятия!", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.enterYouEventName), Toast.LENGTH_SHORT).show()
             }
         }
         prevBtn.setOnClickListener {
@@ -110,8 +110,8 @@ class CreateEventActivity : AppCompatActivity() {
 
         endCreation.setOnClickListener {
 
-            if ((sharedViewModel.eventTimes.value?.size ?: 0) > 0) {
-                Toast.makeText(this@CreateEventActivity, "Вы должны добавить хотя бы одно временное событие!", Toast.LENGTH_SHORT).show()
+            if ((sharedViewModel.eventTimes.value?.size ?: 0) == 0) {
+                Toast.makeText(this@CreateEventActivity, getString(R.string.addAtLeastOneTimeAction), Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 

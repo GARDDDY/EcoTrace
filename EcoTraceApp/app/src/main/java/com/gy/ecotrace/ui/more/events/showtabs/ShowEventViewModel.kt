@@ -25,8 +25,13 @@ class ShowEventViewModel(private val repository: Repository) : ViewModel() {
 
     private var startAfter: String? = null
     var foundAll = false
-    fun getEventMembers(username: String? = null) {
+    var new = true
+    var searching = false
+    fun getEventMembers(username: String? = null, new: Boolean = false) {
         viewModelScope.launch {
+            if (new) {
+                startAfter = null
+            }
             val members = repository.getEventMembers(currentEvent, startAfter, username)
 
             _members.postValue(members)
@@ -52,8 +57,10 @@ class ShowEventViewModel(private val repository: Repository) : ViewModel() {
         }
     }
 
-    fun setUserRole(userId: String, role: Int) {
-
+    fun setUserRole(userId: String, role: Int, callback: (Boolean) -> Unit) {
+        viewModelScope.launch {
+            callback(repository.setUserRoleInEvent(userId, currentEvent, role))
+        }
     }
 
 
@@ -64,15 +71,20 @@ class ShowEventViewModel(private val repository: Repository) : ViewModel() {
         }
     }
 
+    // todo callbacks?
     fun joinEvent() {
         viewModelScope.launch {
-            repository.joinEvent(currentEvent)
+            repository.joinEvent(currentEvent) {
+
+            }
 
         }
     }
     fun leaveEvent() {
         viewModelScope.launch {
-            repository.leaveEvent(currentEvent)
+            repository.leaveEvent(currentEvent) {
+
+            }
 
         }
     }
@@ -101,6 +113,16 @@ class ShowEventViewModel(private val repository: Repository) : ViewModel() {
     fun getCoords() {
         viewModelScope.launch {
             _eventCoords.postValue(repository.getEventCoords(currentEvent))
+        }
+    }
+
+
+
+
+
+    fun deleteEvent(callback: (Boolean) -> Unit) {
+        viewModelScope.launch {
+            callback(repository.deleteEvent(currentEvent))
         }
     }
 

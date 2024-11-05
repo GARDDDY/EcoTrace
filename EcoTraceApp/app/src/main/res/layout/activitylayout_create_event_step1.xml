@@ -13,51 +13,43 @@
         android:gravity="top">
 
         <ImageView
-            android:id="@+id/imageView2"
+            android:id="@+id/eventImage"
             android:layout_width="match_parent"
             android:layout_height="150dp"
             android:adjustViewBounds="true"
+            android:scaleType="fitXY"
             android:foreground="#75000000" />
 
-        <TextView
-            android:id="@+id/textView36"
+        <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/name"
-            android:textColor="@color/black"
-            android:textSize="20sp" />
+            android:layout_marginVertical="@dimen/default_PaddingMargin"
+            android:layout_height="wrap_content">
 
-        <EditText
-            android:id="@+id/createEventName"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:backgroundTint="@color/ok_green"
-            android:ems="10"
-            android:hint="@string/eventName"
-            android:inputType="text"
-            android:layout_marginBottom="15dp"
-            android:textColor="@color/ok_green"
-            android:textColorHint="@color/silver" />
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/createEventName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:textColor="@color/ok_green"
+                android:textColorHint="@color/silver"
+                android:inputType="text"
+                android:hint="@string/eventName" />
+        </com.google.android.material.textfield.TextInputLayout>
 
-        <TextView
-            android:id="@+id/textView37"
+        <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/shortDescription"
-            android:textColor="@color/black"
-            android:textSize="20sp" />
+            android:layout_height="wrap_content">
 
-        <EditText
-            android:id="@+id/createEventAbout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:backgroundTint="@color/ok_green"
-            android:ems="10"
-            android:hint="@string/tellAboutYourIdeaShortly"
-            android:inputType="text"
-            android:layout_marginBottom="15dp"
-            android:textColor="@color/ok_green"
-            android:textColorHint="@color/silver" />
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/createEventAbout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="text"
+                android:textColor="@color/ok_green"
+                android:textColorHint="@color/silver"
+                android:hint="@string/tellAboutYourIdeaShortly" />
+        </com.google.android.material.textfield.TextInputLayout>
 
         <TextView
             android:id="@+id/textView38"
@@ -70,7 +62,7 @@
 
         <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="100dp">
+            android:layout_height="wrap_content">
 
             <LinearLayout
                 android:id="@+id/chosenTags"

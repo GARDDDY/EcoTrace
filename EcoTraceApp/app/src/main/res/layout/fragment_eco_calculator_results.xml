@@ -6,15 +6,28 @@
     android:layout_height="match_parent"
     tools:context=".ui.more.ecocalculator.views.EcoCalculatorResultsFragment">
 
+    <TextView
+        android:id="@+id/noResultsWarning"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/resultsWillAppearHere"
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        android:layout_marginVertical="@dimen/default_PaddingMargin"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <ScrollView
+        android:id="@+id/scrollView4"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" >
+        android:layout_height="match_parent">
 
         <LinearLayout
             android:id="@+id/mainLayout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical" >
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
         </LinearLayout>
     </ScrollView>

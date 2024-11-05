@@ -3,9 +3,6 @@ package com.gy.ecotrace.ui.more.groups
 import android.animation.ArgbEvaluator
 import android.animation.ValueAnimator
 import android.app.Activity
-import android.content.ClipData
-import android.content.ClipboardManager
-import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.Resources
@@ -15,7 +12,6 @@ import android.graphics.Rect
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Bundle
-import android.os.Handler
 import android.provider.MediaStore
 import android.text.Editable
 import android.text.TextWatcher
@@ -39,10 +35,8 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.bumptech.glide.Glide
-import com.facebook.shimmer.Shimmer
 import com.facebook.shimmer.ShimmerFrameLayout
 import com.google.android.material.button.MaterialButton
-import com.google.firebase.auth.FirebaseAuth
 import com.google.gson.Gson
 import com.gy.ecotrace.Globals
 import com.gy.ecotrace.R
@@ -52,11 +46,9 @@ import com.gy.ecotrace.db.Repository
 import com.gy.ecotrace.ui.more.groups.additional.ShowGroupViewModelFactory
 import com.gy.ecotrace.ui.more.groups.viewModels.ShowGroupViewModel
 import com.gy.ecotrace.ui.more.profile.ProfileActivity
-import com.yandex.mapkit.search.Line
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
-import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 
@@ -72,7 +64,7 @@ class ShowGroupActivity : AppCompatActivity() {
     private val repository = Repository(DatabaseMethods.UserDatabaseMethods(), DatabaseMethods.ApplicationDatabaseMethods())
     private lateinit var showGroupViewModel: ShowGroupViewModel
 
-    private val currentUser = ETAuth.getInstance().guid()
+    private val currentUser = ETAuth.getInstance().getUID()
     private lateinit var currentGroupCreator: String
     private val currentGroup = Globals.getInstance().getString("CurrentlyWatchingGroup")
     private var currentGroupName = ""
@@ -101,6 +93,7 @@ class ShowGroupActivity : AppCompatActivity() {
     }
 
     private fun reapplyJoinBtn(joinButton: MaterialButton, it: Boolean){
+        Log.d("Button", "reapplying to $it")
         if (it) {
             joinButton.text = "В группе"
             joinButton.setTextColor(ContextCompat.getColor(applicationContext, R.color.ok_green))
@@ -112,7 +105,9 @@ class ShowGroupActivity : AppCompatActivity() {
 
                     builder.setMessage("Вы действительно хотите покинуть эту группу?")
                     builder.setPositiveButton("Подтвердить") { dialog, which ->
-                        showGroupViewModel.leaveGroup()
+                        showGroupViewModel.leaveGroup {
+                            showGroupViewModel.isUserInThisGroup()
+                        }
                         groupMenu(false)
                     }
                     builder.setNegativeButton("Отмена") { dialog, which ->
@@ -133,7 +128,9 @@ class ShowGroupActivity : AppCompatActivity() {
             joinButton.setTextColor(ContextCompat.getColor(applicationContext, R.color.dirt_white))
             joinButton.setBackgroundColor(ContextCompat.getColor(applicationContext, R.color.ok_green))
             joinButton.setOnClickListener{
-                showGroupViewModel.joinGroup()
+                showGroupViewModel.joinGroup {
+                    showGroupViewModel.isUserInThisGroup()
+                }
             }
         }
     }
@@ -221,7 +218,7 @@ class ShowGroupActivity : AppCompatActivity() {
         if (post.postContentImage != null) {
             hasImage = true
             Glide.with(this@ShowGroupActivity)
-                .load(post.postContentImage)
+                .load(DatabaseMethods.ApplicationDatabaseMethods().getImageLink("posts", post.postContentImage!!))
                 .into(postImage)
                 .runCatching {
                     loading.visibility = View.GONE
@@ -341,7 +338,10 @@ class ShowGroupActivity : AppCompatActivity() {
                 R.id.editGroup -> {
                     val intent = Intent(this, CreateGroupActivity::class.java)
                     intent.putExtra("data", Gson().toJson(showGroupViewModel.group.value))
-                    startActivity(intent)
+                    showGroupViewModel.getRules {
+                        intent.putExtra("rules", Gson().toJson(it))
+                        startActivity(intent)
+                    }
                     true
                 }
 
@@ -412,6 +412,8 @@ class ShowGroupActivity : AppCompatActivity() {
             showGroupViewModel.getGroup()
             showGroupViewModel.isUserInThisGroup()
             allPostsLayout.removeAllViews()
+//            showGroupViewModel.anyBreak = true
+            toolbar.menu.clear()
             showGroupViewModel.getRole {
                 userRole = it
                 showGroupViewModel.getOldPosts(true)
@@ -437,14 +439,21 @@ class ShowGroupActivity : AppCompatActivity() {
 
                 showGroupViewModel.getRole {
                     userRole = it
+                    if (it == 0 && !showGroupViewModel.anyBreak) groupMenu(true)
                     showGroupViewModel.getOldPosts()
-                    if (it == 0) groupMenu(true)
                 }
             }
         })
         showGroupViewModel.userInGroup.observe(this) {
             reapplyJoinBtn(joinButton, it)
             postCreator(it)
+            showGroupViewModel.getGroup()
+            showGroupViewModel.anyBreak = true
+
+            showGroupViewModel.getRole {
+                userRole = it
+            }
+            loadingPosts.visibility = View.VISIBLE
         }
 
 

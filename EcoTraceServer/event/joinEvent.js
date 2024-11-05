@@ -1,4 +1,5 @@
 const express = require('express');
+const { checkOAuth2 } = require('../tech/oauth');
 
 const connections = require("../server")
 const connection1 = connections["users"]
@@ -6,7 +7,7 @@ const connection2 = connections["events"]
 
 const router = express.Router();
 
-router.post('/joinEvent', async (req, res) => {
+router.get('/joinEvent', async (req, res) => { // todo set on get
     const userId = req.query.cuid || '0';
     const oauth = req.query.oauth || '0';
     const eventId = req.query.eid || '0';

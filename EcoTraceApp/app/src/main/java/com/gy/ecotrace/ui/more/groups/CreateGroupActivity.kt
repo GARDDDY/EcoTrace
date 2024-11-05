@@ -34,6 +34,7 @@ class CreateGroupActivity : AppCompatActivity() {
         val currentGroup = Globals.getInstance().getString("CurrentlyWatchingGroup")
 
         val groupData = Gson().fromJson(intent.getStringExtra("data"), DatabaseMethods.DataClasses.Group::class.java)
+        val groupRules = Gson().fromJson(intent.getStringExtra("rules"), Array<String?>::class.java)
 
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         Globals().initToolbarIconBack(toolbar, applicationContext)
@@ -48,7 +49,7 @@ class CreateGroupActivity : AppCompatActivity() {
             CreationAdapter(this, 2)
         viewPager.isUserInputEnabled = false
 
-        val tabTitles = arrayOf("Основное", "Подробно")
+        val tabTitles = arrayOf(getString(R.string.mainInfo), getString(R.string.extraInfo))
         val tabView: TabLayout = findViewById(R.id.tabLayout)
         TabLayoutMediator(tabView, viewPager) { tab, pos ->
             tab.text = tabTitles[pos]
@@ -63,16 +64,19 @@ class CreateGroupActivity : AppCompatActivity() {
         val factory = CreateGroupViewModelFactory(repository)
         val sharedViewModel = ViewModelProvider(this, factory)[CreateGroupViewModel::class.java]
 
-        sharedViewModel.groupClass = try {groupData} catch (e: Exception) {DatabaseMethods.DataClasses.Group()}
+        try {
+            sharedViewModel.applyGroupData(groupData, groupRules)
+        } catch (e: Exception) {
+            sharedViewModel.applyGroupData(DatabaseMethods.DataClasses.GroupChange(), arrayOf(null, null))
+        }
 
         sharedViewModel.groupData.observe(this) {
-            Log.d("gd", it.toString())
-            if (it.groupName.length >= 5) {
+            if ((it.groupName?.length ?: 0) >= 5) {
                 createGroup.backgroundTintList = ContextCompat.getColorStateList(applicationContext, R.color.ok_green)
                 createGroup.setOnClickListener {
                     sharedViewModel.createGroup {
                         if (it == null) {
-                            Toast.makeText(this@CreateGroupActivity, "Группа создана!", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(this@CreateGroupActivity, if (currentGroup == "") "Группа создана!" else "Изменения применены!", Toast.LENGTH_SHORT).show()
                             finish()
                         } else {
                             Toast.makeText(this@CreateGroupActivity, it, Toast.LENGTH_SHORT).show()

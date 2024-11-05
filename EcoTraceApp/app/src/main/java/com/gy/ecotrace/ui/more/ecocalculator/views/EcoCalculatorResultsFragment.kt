@@ -31,23 +31,46 @@ class EcoCalculatorResultsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val calcNameToItsType = arrayOf("Пища", "Вода", "Отходы", "Энергия", "Транспорт")
+        val calcNameToItsType = arrayOf(
+            getString(R.string.food),
+            getString(R.string.water),
+            getString(R.string.trash),
+            getString(R.string.energy),
+            getString(R.string.transport))
 
         viewModel = EcoResultsViewModel(Repository(DatabaseMethods.UserDatabaseMethods(), DatabaseMethods.ApplicationDatabaseMethods()))
 
         val mainLayout: LinearLayout = view.findViewById(R.id.mainLayout)
 
-        for (i in 0..4) {
-            viewModel.getNumCalculatorImages(i) { count ->
-                val layout = layoutInflater.inflate(R.layout.layout_eco_calc_res, null)
-                layout.findViewById<TextView>(R.id.calcName).text = calcNameToItsType[i]
-                mainLayout.addView(layout)
-                for (j in 0 until count) {
-                    viewModel.getCalcImage(i, j) { bitmap ->
+        viewModel.getNumCalculatorImages {
+            it?.let {
+                if (it.length != 0) {
+                    view.findViewById<TextView>(R.id.noResultsWarning).visibility = View.GONE
+                }
+
+                it.split(",").forEach {
+                    val calcType = it.split("_")[0].toInt()
+                    val calcTypeType = it.split("_")[1].toInt()
+
+                    val layout = layoutInflater.inflate(R.layout.layout_eco_calc_res, null)
+                    layout.findViewById<TextView>(R.id.calcName).text = calcNameToItsType[calcType]
+                    mainLayout.addView(layout)
+
+                    viewModel.getCalcImage(calcType, calcTypeType-1) { bitmap ->
                         val img = ImageView(context)
                         img.visibility = View.VISIBLE
                         img.adjustViewBounds = true
                         img.setImageBitmap(bitmap)
+                        viewModel.getCalcAdvices(calcType, calcTypeType) { advs ->
+                            val foodAdvices = layout.findViewById<LinearLayout>(R.id.foodAdvices)
+
+                            advs.forEach {
+                                val adv = layoutInflater.inflate(R.layout.layout_eco_advice, null) as TextView
+                                adv.text = it
+                                foodAdvices.addView(adv)
+                            }
+
+                        }
                         layout.findViewById<LinearLayout>(R.id.foodImages).addView(img)
                     }
                 }

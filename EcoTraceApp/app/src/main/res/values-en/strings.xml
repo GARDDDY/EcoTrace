@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="publicInfo">Public info</string>
+    <string name="avatar">Avatar</string>
+    <string name="newUsername">New username</string>
+    <string name="country">Country</string>
+    <string name="tellAboutYourself">About you</string>
+    <string name="personalInfo">Personal info</string>
+    <string name="howToCallYou">How to call you?</string>
+    <string name="currentPassword">Current password</string>
+    <string name="newPassword">New password</string>
+    <string name="applyNewPassword">Apply new password</string>
+    <string name="privacySettings">Privacy settings</string>
+    <string name="yourNameIsSeenTo">Your name is visible to</string>
+    <string name="yourCountryIsSeenTo">Your country is visible to</string>
+    <string name="yourFriendsAreSeenTo">Your friends are visible to</string>
+    <string name="yourGroupsAreSeenTo">Your groups are visible to</string>
+    <string name="end">End</string>
+    <string name="mainInfo">Main</string>
+    <string name="extraInfo">More</string>
+    <string name="publish">Publish</string>
+    <string name="postToTheGroup">Post to the group</string>
+    <string name="image">Image</string>
+    <string name="writeSomething...">Write something...</string>
+    <string name="byMembers">By members</string>
+    <string name="byRole">By role</string>
+</resources>

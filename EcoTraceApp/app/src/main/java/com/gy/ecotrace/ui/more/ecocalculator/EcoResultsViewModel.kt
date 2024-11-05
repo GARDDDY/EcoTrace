@@ -8,9 +8,9 @@ import kotlinx.coroutines.launch
 
 class EcoResultsViewModel(private val repository: Repository): ViewModel() {
 
-    fun getNumCalculatorImages(calcType: Int, callback: (Int) -> Unit) {
+    fun getNumCalculatorImages(callback: (String) -> Unit) {
         viewModelScope.launch {
-            callback(repository.getCountCalculators(calcType))
+            callback(repository.getCountCalculators())
         }
     }
 
@@ -21,8 +21,10 @@ class EcoResultsViewModel(private val repository: Repository): ViewModel() {
         }
     }
 
-    fun getCalcAdvices(calcType: Int) {
-
+    fun getCalcAdvices(calcType: Int, image: Int, callback: (Array<String>) -> Unit) {
+        viewModelScope.launch {
+            callback(repository.getCalcAdvices(calcType, image))
+        }
     }
 
 }

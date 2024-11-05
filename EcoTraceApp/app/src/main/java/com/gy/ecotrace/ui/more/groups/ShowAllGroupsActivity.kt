@@ -14,8 +14,6 @@ import android.widget.Toolbar
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -23,16 +21,11 @@ import com.bumptech.glide.Glide
 import com.facebook.shimmer.ShimmerFrameLayout
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.firebase.auth.FirebaseAuth
 import com.gy.ecotrace.Globals
 import com.gy.ecotrace.R
 import com.gy.ecotrace.customs.ETAuth
 import com.gy.ecotrace.db.DatabaseMethods
 import com.gy.ecotrace.db.Repository
-import com.gy.ecotrace.ui.more.groups.CreateGroupActivity
-import com.gy.ecotrace.ui.more.groups.ShowAllGroupsViewModel
-import com.gy.ecotrace.ui.more.groups.ShowAllGroupsViewModelFactory
-import com.gy.ecotrace.ui.more.groups.ShowGroupActivity
 import com.gy.ecotrace.ui.more.profile.ProfileActivity
 
 class ShowAllGroupsViewModelFactory(private val repository: Repository) : ViewModelProvider.Factory {
@@ -48,7 +41,7 @@ class ShowAllGroupsViewModelFactory(private val repository: Repository) : ViewMo
 class ShowAllGroupsActivity : AppCompatActivity() {
 
     private lateinit var showAllViewModel: ShowAllGroupsViewModel
-    private val currentUser = ETAuth.getInstance().guid() // ?
+    private val currentUser = ETAuth.getInstance().getUID() // ?
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -177,7 +170,9 @@ class ShowAllGroupsActivity : AppCompatActivity() {
         showAllViewModel.getUserGroups(currentUser)
         showAllViewModel.userGroups.observe(this, Observer {
             it?.let{
-                findViewById<LinearLayout>(R.id.userJoinedGroups).visibility = View.VISIBLE
+                if (it.size != 0) {
+                    findViewById<LinearLayout>(R.id.userJoinedGroups).visibility = View.VISIBLE
+                }
                 val joinedGroups = findViewById<LinearLayout>(R.id.userJoinedGroupsLayout)
                 for (group in it) {
                     val groupLayout = layoutInflater.inflate(R.layout.layout_joined_group_short, null)

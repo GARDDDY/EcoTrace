@@ -40,11 +40,12 @@ class ProfileViewModel(private val repository: Repository) : ViewModel() {
             }
         }
     }
-
+    var graphReq = true
     fun getUserGraphs(userId: String, time: Int = 0, hideFilters: MutableList<Int>? = null) {
         viewModelScope.launch {
             val graph = repository.getGraph(userId, time, hideFilters)
             if (graph != null) {
+                graphReq = false
                 _graph.postValue(graph)
             }
         }

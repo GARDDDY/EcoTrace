@@ -1,14 +1,11 @@
 package com.gy.ecotrace.ui.more.groups
 
 import android.content.Intent
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
-import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.PopupWindow
 import android.widget.ScrollView
@@ -17,11 +14,8 @@ import android.widget.Toast
 import android.widget.Toolbar
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.bumptech.glide.Glide
-import com.google.firebase.auth.FirebaseAuth
 import com.gy.ecotrace.Globals
 import com.gy.ecotrace.R
 import com.gy.ecotrace.customs.ETAuth
@@ -125,7 +119,7 @@ class ShowGroupMembersActivity : AppCompatActivity() {
 
         val currentGroup = Globals.getInstance().getString("CurrentlyWatchingGroup")
         showGroupMembersViewModel.groupId = currentGroup
-        val currentUser = ETAuth.getInstance().guid()
+        val currentUser = ETAuth.getInstance().getUID()
 
         showGroupMembersViewModel.getRole {
             userRole = it

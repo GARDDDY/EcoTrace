@@ -44,7 +44,7 @@ class EcologicalCalculatorActivity : AppCompatActivity() {
             CreationAdapter(this, 2)
         viewPager.isUserInputEnabled = false
 
-        val tabTitles = arrayOf("Калькуляторы", "Результаты")
+        val tabTitles = arrayOf(getString(R.string.calculators), getString(R.string.results))
         val tabView: TabLayout = findViewById(R.id.tabLayout)
         TabLayoutMediator(tabView, viewPager) { tab, pos ->
             tab.text = tabTitles[pos]

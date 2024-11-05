@@ -9,7 +9,6 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -17,18 +16,12 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.bumptech.glide.Glide
 import com.facebook.shimmer.ShimmerFrameLayout
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
 import com.gy.ecotrace.Globals
 import com.gy.ecotrace.R
 import com.gy.ecotrace.customs.ETAuth
-import com.gy.ecotrace.databinding.FragmentRatingsBinding
 import com.gy.ecotrace.db.DatabaseMethods
 import com.gy.ecotrace.db.Repository
-import com.gy.ecotrace.ui.more.groups.additional.CreateGroupViewModelFactory
-import com.gy.ecotrace.ui.more.groups.viewModels.CreateGroupViewModel
 import com.gy.ecotrace.ui.more.profile.ProfileActivity
-import org.w3c.dom.Text
 
 class RatingsFragment : Fragment() {
 
@@ -42,7 +35,7 @@ class RatingsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val currentUser = ETAuth.getInstance().guid()
+        val currentUser = ETAuth.getInstance().getUID()
 
         val repository = Repository(
             DatabaseMethods.UserDatabaseMethods(),

@@ -12,6 +12,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.EditText
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.Spinner
 import android.widget.TextView
@@ -20,6 +21,7 @@ import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
+import com.bumptech.glide.Glide
 import com.google.android.material.button.MaterialButton
 import com.gy.ecotrace.Globals
 import com.gy.ecotrace.R
@@ -45,9 +47,13 @@ class CreateEventStep1: Fragment() {
             val eventAboutEntry: EditText = view.findViewById(R.id.createEventAbout)
 
             val filtersLayout: LinearLayout = view.findViewById(R.id.chosenTags)
+            val eventImage = view.findViewById<ImageView>(R.id.eventImage)
 
-//            val startSpinner: Spinner = view.findViewById(R.id.chooseStartWay)
-//            val autostartMembers: EditText = view.findViewById(R.id.autostartWhenMembers)
+            Glide.with(this@CreateEventStep1)
+                .load(DatabaseMethods.ApplicationDatabaseMethods().getImageLink("events", eventClass.eventId))
+                .into(eventImage)
+
+            // todo eventImage onclick choose image
 
             eventNameEntry.setText(eventClass.eventName)
             eventAboutEntry.setText(eventClass.eventAbout)
@@ -81,26 +87,6 @@ class CreateEventStep1: Fragment() {
                 override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
             })
 
-//            startSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-//                override fun onItemSelected(selection: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
-//                    autostartMembers.visibility = View.GONE
-//                    val item = selection!!.selectedItemId
-//                    if (item == 1L) autostartMembers.visibility = View.VISIBLE
-//                    eventClass.eventStart = "$item;0"
-//                }
-//
-//                override fun onNothingSelected(p0: AdapterView<*>?) {
-//                    eventClass.eventStart = "0;0"
-//                }
-//            }
-//            autostartMembers.addTextChangedListener(object : TextWatcher {
-//                override fun afterTextChanged(s: Editable?) {
-//                    eventClass.eventStart = "1;$s"
-//                }
-//
-//                override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-//                override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-//            })
             val usedTags = try {
                 eventClass.filters.split(',').map { it.toInt()-1 }.toMutableList()
             } catch (e: Exception) {
@@ -132,21 +118,7 @@ class CreateEventStep1: Fragment() {
                 filter.isActivated = isActive
                 filter.rippleColor = ColorStateList.valueOf(Color.parseColor(colors[dat].second))
                 filter.isClickable = true
-                val description = TextView(context)
-                description.text = tags[dat].second
-                description.textSize = 18F
-                description.setEms(25)
-                description.setTextColor(Color.BLACK)
-                description.updatePadding(10,0,0,0)
-                description.textAlignment = View.TEXT_ALIGNMENT_CENTER
-                description.gravity = Gravity.TOP
-                val textParams = LinearLayout.LayoutParams(
-                    ViewGroup.LayoutParams.WRAP_CONTENT,
-                    ViewGroup.LayoutParams.MATCH_PARENT
-                )
-                description.layoutParams = textParams
                 layout.addView(filter)
-                layout.addView(description)
 
                 filter.setOnClickListener {
                     filter.isActivated = !filter.isActivated
@@ -154,24 +126,13 @@ class CreateEventStep1: Fragment() {
                     else filter.setBackgroundColor(Color.parseColor(colors[dat].first))
                 }
 
-//                val startData = eventClass.eventStart.split(';').map { it.toInt() }
-//                Log.d("sd", startData.toString())
-//                startSpinner.setSelection(startData[0])
-//                if (startData[0] == 1) {
-//                    autostartMembers.visibility = View.VISIBLE
-//                    autostartMembers.setText(startData[1].toString())
-//                }
-
 
 
                 filtersLayout.addView((layout))
 
             }
 
-
             eventClass.eventCountMembers = 1
-//            eventClass.eventUsersToTheirRoles = hashMapOf()
-//            eventClass.eventUsersToTheirRoles!![Globals.getInstance().getString("CurrentlyLogged")] = 0
         })
 
 

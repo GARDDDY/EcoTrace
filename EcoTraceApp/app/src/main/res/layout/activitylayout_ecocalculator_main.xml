@@ -22,7 +22,7 @@
         android:id="@+id/linearLayout9"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/default_PaddingMargin"
+        android:layout_margin="50dp"
         android:orientation="vertical"
         app:layout_constraintTop_toBottomOf="@id/textOften"
         app:layout_constraintEnd_toEndOf="parent"
@@ -43,6 +43,7 @@
 
         <Space
             android:layout_width="match_parent"
+            android:layout_marginVertical="@dimen/default_PaddingMargin"
             android:layout_height="1dp" />
 
         <Button
@@ -60,6 +61,7 @@
 
         <Space
             android:layout_width="match_parent"
+            android:layout_marginVertical="@dimen/default_PaddingMargin"
             android:layout_height="1dp" />
 
         <Button
@@ -77,6 +79,7 @@
 
         <Space
             android:layout_width="match_parent"
+            android:layout_marginVertical="@dimen/default_PaddingMargin"
             android:layout_height="1dp" />
 
         <Button
@@ -94,6 +97,7 @@
 
         <Space
             android:layout_width="match_parent"
+            android:layout_marginVertical="@dimen/default_PaddingMargin"
             android:layout_height="1dp" />
 
         <Button

@@ -4,16 +4,11 @@ import android.app.DatePickerDialog
 import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
-import android.widget.EditText
 import android.widget.ImageButton
-import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import android.widget.ScrollView
@@ -22,8 +17,6 @@ import android.widget.Toolbar
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -31,18 +24,12 @@ import com.bumptech.glide.Glide
 import com.facebook.shimmer.ShimmerFrameLayout
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.android.material.shape.ShapeAppearanceModel
-import com.google.firebase.auth.FirebaseAuth
 import com.gy.ecotrace.Globals
 import com.gy.ecotrace.R
 import com.gy.ecotrace.customs.ETAuth
 import com.gy.ecotrace.db.DatabaseMethods
 import com.gy.ecotrace.db.Repository
-import com.gy.ecotrace.ui.more.friends.SearcherViewModel
-import com.gy.ecotrace.ui.more.friends.SearcherViewModelFactory
 import com.gy.ecotrace.ui.more.profile.ProfileActivity
-import com.yandex.mapkit.search.Line
-import org.w3c.dom.Text
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -60,7 +47,7 @@ class ShowAllEventsViewModelFactory(private val repository: Repository) : ViewMo
 
 class ShowAllEventsActivity : AppCompatActivity() {
     private lateinit var showAllViewModel: ShowAllEventsViewModel
-    private val currentUser = ETAuth.getInstance().guid()
+    private val currentUser = ETAuth.getInstance().getUID()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -200,18 +187,13 @@ class ShowAllEventsActivity : AppCompatActivity() {
             for (event in it) {
                 val eventLayout = layoutInflater.inflate(R.layout.layout_event_in_all_events, null)
                 eventLayout.findViewById<TextView>(R.id.eventName).text = event.eventName
-                eventLayout.findViewById<TextView>(R.id.eventDescription).text = event.eventAbout ?: "Нет описания"
+                eventLayout.findViewById<TextView>(R.id.eventDescription).text = event.eventAbout
                 eventLayout.findViewById<TextView>(R.id.eventMembers).text = event.eventCountMembers.toString()
                 eventLayout.findViewById<TextView>(R.id.eventCreator).text = event.eventCreatorName
 
-                eventLayout.findViewById<TextView>(R.id.eventStatus).text = when(event.eventStatus) {
-                    0 -> "Начнется ${tsToSt(event.startTime*1000)}\nЗакончится ${tsToSt(event.endTime*1000)}"
-                    1 -> "Проходит до\n${tsToSt(event.endTime*1000)}"
-                    2 -> "Закончилось"
-                    else -> "unreal-event-status"
-                }
+                eventLayout.findViewById<TextView>(R.id.eventStatus).text = event.eventStatusString
 
-                eventLayout.findViewById<LinearLayout>(R.id.creatorLayout).setOnClickListener {
+                eventLayout.findViewById<RelativeLayout>(R.id.creatorLayout).setOnClickListener {
                     Globals.getInstance().setString("CurrentlyWatching", event.eventCreatorId)
                     startActivity(
                         Intent(this, ProfileActivity::class.java)
@@ -267,7 +249,9 @@ class ShowAllEventsActivity : AppCompatActivity() {
         showAllViewModel.getUserEvents(currentUser)
         showAllViewModel.userEvents.observe(this, Observer {
             it?.let{
-                findViewById<LinearLayout>(R.id.userJoinedEvents).visibility = View.VISIBLE
+                if (it.size != 0) {
+                    findViewById<LinearLayout>(R.id.userJoinedEvents).visibility = View.VISIBLE
+                }
                 val joinedEvents = findViewById<LinearLayout>(R.id.userJoinedEventsLayout)
                 for (event in it) {
                     val eventLayout = layoutInflater.inflate(R.layout.layout_joined_event_short, null)
