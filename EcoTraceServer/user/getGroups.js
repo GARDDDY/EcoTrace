@@ -34,7 +34,7 @@ router.get('/getUserGroups', async (req, res) => {
                 WHERE (userId = ? AND senderId = ?) OR (userId = ? AND senderId = ?)
             `, [cUserId, userId, userId, cUserId]);
 
-            if (friend.length === 0 || friend[0].isFriend === 0) {
+            if (userId !== cUserId &&( friend.length === 0 || friend[0].isFriend === 0)) {
                 return res.json([]);
             }
         }

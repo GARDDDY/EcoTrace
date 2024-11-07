@@ -40,11 +40,11 @@ router.post('/createPost', upload.single('image'), async (req, res) => {
     const time = parseInt(new Date().getTime() / 1000);
     const textString = JSON.parse(text)[0];
 
-    const imgName = req.file ? req.file.filename : null;
+    const imgName = req.file ? req.file.filename : "";
     console.log("IMG", imgName)
 
     await connection2.execute('insert into `posts` (groupId, postTime, postCreatorId, postContentText, postContentImage) values (?, ?, ?, ?, ?)',
-        [groupId, time, userId, textString, imgName]
+        [groupId, time, userId, textString, path.basename(imgName, path.extname(imgName))]
     )
     
     

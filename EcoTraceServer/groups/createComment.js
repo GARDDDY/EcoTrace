@@ -48,7 +48,7 @@ router.post('/sendComment', upload.single('image'), async (req, res) => {
         }
 
         await connection2.execute('insert into comments (groupId, postId, commentCreatorId, commentContentText, commentContentImage, commentTime) values(?,?,?,?,?,?)',
-            [groupId, postId, userId, data[0], path.basename(imgName, path.extname(imgName)), Math.floor(Date.now()/1000)]
+            [groupId, postId, userId, data[0], path.basename(imgName ? imgName : "", path.extname(imgName ? imgName : "")), Math.floor(Date.now()/1000)]
         )
 
         return res.send([true])

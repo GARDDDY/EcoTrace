@@ -1,5 +1,6 @@
 const express = require('express');
 const { v4: uuidv4 } = require('uuid');
+const { checkOAuth2 } = require('../tech/oauth');
 
 const connections = require("../server")
 const connection1 = connections["users"]
@@ -7,7 +8,7 @@ const connection2 = connections["events"]
 
 const router = express.Router();
 
-router.post('/createEvent', async (req, res) => { // todo
+router.post('/createEvent', async (req, res) => { // check todo
     const data = req.body;
     const userId = req.query.cuid || '0';
     const oAuth = req.query.oauth || '0';
@@ -19,7 +20,16 @@ router.post('/createEvent', async (req, res) => { // todo
         return
     }
 
-    // todo make exp (50?) check, oauth
+    if (!await checkOAuth2(oAuth, userId)) {
+        return res.send([null])
+    }
+
+
+    const [userExp] = await connection1.execute('select experience from user where userId = ?', [userId])
+
+    if (userExp[0].experience < 50) {
+        return res.send([null])
+    }
 
     res.setHeader('Content-Type', 'application/json; charset=utf-8');
 
@@ -68,7 +78,7 @@ router.post('/createEvent', async (req, res) => { // todo
     await connection1.execute(`INSERT INTO events (userId, eventId, eventRole, validated) VALUES (?, ?, ?, ?)`, 
         [userId, eid, 0, 1])
 
-    res.json(eid);
+    res.send([eid]);
 });
 
 module.exports = router;

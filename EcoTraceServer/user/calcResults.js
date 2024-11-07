@@ -184,7 +184,7 @@ function daysSince(timestamp) {
     return days;
 }
 
-router.get('/calc/getImage', async (req, res) => { // todo
+router.get('/calc/getImage', async (req, res) => {
     const calcType = req.query.cType || 0;
     const imageId = req.query.img || 0;
     const userId = req.query.cid || '0';
@@ -359,8 +359,6 @@ const averageByUsers = uniqueUsers > 0 ? totalSum / uniqueUsers : 0;
 
 res.send([`Среднее значение для всех ${getGenderString(userGender[0].gender)} на сервисе = ${averageByRows} гр.`, 
         `Среднее значение для всех уникальных ${getGenderString(userGender[0].gender)} на сервисе = ${averageByUsers} гр.`]);
-
-// todo
 });
 
 module.exports = router;

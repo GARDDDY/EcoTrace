@@ -7,7 +7,7 @@ const connection2 = connections["events"]
 
 const router = express.Router();
 
-router.get('/validateUser', async (req, res) => { // todo set on get
+router.get('/validateUser', async (req, res) => { // check todo
     const userIdToValidate = req.query.uid;
     const userId = req.query.cid || '0';
     const oauth = req.query.oauth || '0';

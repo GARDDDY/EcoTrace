@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="false" />
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.CAMERA" />
+
+    <application
+        android:name=".Globals"
+        android:allowBackup="true"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:networkSecurityConfig="@xml/network_security_config"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Base.Theme.EcoTraceColors"
+        android:usesCleartextTraffic="true">
+        <activity
+            android:name=".ui.education.ShowEducationActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.news.NewsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.more.friends.PersonalShareActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.more.ecocalculator.DailyEcoCalcActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.more.ecocalculator.EcologicalCalculatorActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.more.groups.CreateGroupPostMenuActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".ui.more.groups.ShowPostWithCommentsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.more.groups.ShowGroupRulesActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.more.groups.ShowGroupMembersActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.more.events.ShowAllEventsActivity"
+            android:exported="false" />
+
+        <meta-data
+            android:name="com.yandex.mapkit.ApiKey"
+            android:value="f3d745ad-1974-4793-978d-52b3a165865c" />
+
+        <activity
+            android:name=".ui.more.events.CreateEventActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.more.groups.ShowGroupActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.more.groups.CreateGroupActivity"
+            android:windowSoftInputMode="adjustResize"
+            android:exported="false" />
+        <activity
+            android:name=".ui.more.groups.ShowAllGroupsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.more.events.ShowEventActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.more.profile.sign.SignInUpHub"
+            android:exported="false" />
+        <activity
+            android:name=".ui.more.friends.UsersSearchFriends"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="ecotrace"
+                    android:pathPrefix="/addFriend"
+                    android:scheme="https" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".ui.more.profile.change.ChangeProfile"
+            android:windowSoftInputMode="adjustResize"
+            android:exported="false" />
+        <activity
+            android:name=".ui.more.profile.ProfileActivity"
+            android:exported="true"
+            android:label="@string/myProfile"
+            android:screenOrientation="fullSensor" />
+        <activity
+            android:name=".MainActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <service
+            android:name=".db.NotificationsService"
+            android:exported="false"
+            android:permission="android.permission.BIND_JOB_SERVICE">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+        <service
+            android:name=".AppService"
+            android:stopWithTask="false" />
+    </application>
+
+</manifest>

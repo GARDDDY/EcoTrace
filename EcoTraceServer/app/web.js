@@ -2,7 +2,7 @@
 
 const axios = require('axios');
 const cheerio = require('cheerio');
-const schedule = require('node-schedule');
+const cron = require('node-cron');
 
 const express = require('express');
 
@@ -57,14 +57,16 @@ async function fetchAndStoreNews() {
 }
 
 
-router.get('/web', async (req, res) => { // todo auto start not as a page
-    const datas = await fetchAndStoreNews()
+cron.schedule('0 0,2,4,6,8,10,12,14,16,18,20,22 * * *', async () => {
+    const datas = await fetchAndStoreNews();
     const promises = datas.map(async (item) => {
         item.image = await fetchImageFromUrl(item.url);
         return item;
-    })
+    });
 
     const results = await Promise.all(promises);
+
+    await connection2.execute('delete from posts');
 
     for (const result of results) {
         await connection2.execute(
@@ -74,14 +76,17 @@ router.get('/web', async (req, res) => { // todo auto start not as a page
     postImage = VALUES(postImage),
     postTitle = VALUES(postTitle),
     fetchTime = VALUES(fetchTime);`,
-            ["NG", result.url, result.image, result.title, new Date()]
-        )
+            ["National Geographic", result.url, result.image, result.title, new Date()]
+        );
     }
 
-    res.send(results);
+    console.log("News fetched!")
+});
+
+router.get('/web', (req, res) => {
+    const now = new Date();
+    now.setHours(now.getHours() % 2 == 0 ? now.getHours() + 2 : now.getHours() + 1,0,0,0)
+    res.send(`Новый фетч случится ${now}`);
 });
 
 module.exports = router
-
-// Периодический запуск задачи
-// schedule.scheduleJob('0 * * * *', fetchAndStoreNews); // Каждый час

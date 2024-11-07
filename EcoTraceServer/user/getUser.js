@@ -40,7 +40,7 @@ router.get('/getUser', async (req, res) => {
 
     try {
         const [rows] = await connection.execute(
-            `SELECT * FROM user where userId = "${userId}"`
+            `SELECT * FROM user where userId = ?`, [userId]
         );
         
         if (rows.length === 0) {
@@ -50,14 +50,16 @@ router.get('/getUser', async (req, res) => {
         const userData = rows[0]//merge(rows[0]);
 
         const [rulesRows] = await connection.execute(
-            `SELECT * FROM rules WHERE userId = "${userId}"`
+            `SELECT * FROM rules WHERE userId = ?`, [userId]
         );
         const rules = rulesRows[0] || {};
 
         const [friendRows] = await connection.execute(
-            `SELECT * FROM friends WHERE userId = "${userId}" AND senderId = "${requestFrom}"`
+            `SELECT * FROM friends WHERE isFriend = 1 and (userId = ? AND senderId = ?) or (userId = ? and senderId = ?) and isFriend = 1`, [userId, requestFrom, requestFrom, userId]
         );
+        console.log(friendRows)
         const isFriend = friendRows.length > 0;
+        console.log(isFriend, requestFrom, userId)
 
         const isOwner = userId === requestFrom;
 
@@ -72,12 +74,13 @@ router.get('/getUser', async (req, res) => {
         }
 
         if (isNotAvailableToGet('canSeeCountry')) {
-            delete userData.country;
+            delete userData.country_code;
         }
         if (isNotAvailableToGet('canSeeFullname')){
             delete userData.fullname;
         }
 
+        console.log(userData)
         res.json(userData);
 
     } catch (error) {

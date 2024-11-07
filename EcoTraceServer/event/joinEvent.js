@@ -7,7 +7,7 @@ const connection2 = connections["events"]
 
 const router = express.Router();
 
-router.get('/joinEvent', async (req, res) => { // todo set on get
+router.get('/joinEvent', async (req, res) => { // check todo
     const userId = req.query.cuid || '0';
     const oauth = req.query.oauth || '0';
     const eventId = req.query.eid || '0';

@@ -6,13 +6,13 @@ const connection1 = connections["users"]
 
 const router = express.Router();
 
-router.get('/getUserFriends', async (req, res) => {
+router.get('/getUserFriends', async (req, res) => { // check todo
 
-    // todo! redo all
     const userId = req.query.uid || '0';
     const cUserId = req.query.cid || '0';
     const oauth = req.query.oauth || '0';
-    const block = req.query.block || null;
+    var block = req.query.block || null;
+    if (block === "null") block = null
 
     try {
         const [rule] = await connection1.execute(`SELECT canSeeFriends FROM rules WHERE userId = ?`, [userId]);
@@ -45,7 +45,7 @@ router.get('/getUserFriends', async (req, res) => {
                 (friends.userId != ? and friends.userId = user.userId)
                 where (? is null or friends.senderId > ? and friends.userId = ? or friends.userId > ? and friends.senderId = ?)
                 limit 6`, [userId, userId, block, block, userId, block, userId])
-
+            console.log(friends, userId, cUserId)
             return res.json(friends)
 
         } else if (canSeeFriends === 2) { // no-one can see

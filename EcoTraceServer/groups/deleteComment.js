@@ -7,7 +7,7 @@ const connection2 = connections["groups"]
 
 const router = express.Router();
 
-router.get('/deleteComment', async (req, res) => {
+router.get('/deleteComment', async (req, res) => { // check todo
     const groupId = req.query.gid || "0";
     const postId = req.query.pid || '0';
     const commentId = req.query.comment || '0';
@@ -40,7 +40,6 @@ router.get('/deleteComment', async (req, res) => {
 
     await connection2.execute('delete from comments where groupId = ? and postId = ? and commentId = ?', [groupId, postId, commentId])
 
-    //todo
     res.send([true])
 });
 

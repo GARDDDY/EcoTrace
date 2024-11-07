@@ -31,7 +31,7 @@ router.get('/getPosts', async (req, res) => {
         const [userInGroup] = await connection1.execute('SELECT * FROM `groups` WHERE userId = ? and groupId = ?', [userId, groupId]);
 
         if (userInGroup.length === 0) {
-            return res.send([false, null]);
+            return res.send([false, []]);
         }
 
         const [posts] = await connection2.execute(

@@ -53,7 +53,7 @@ router.get('/getEvent', async (req, res) => {
 
     res.json(event);
     } catch(e) {
-        res.send(null)
+        res.send([null])
     }
 });
 

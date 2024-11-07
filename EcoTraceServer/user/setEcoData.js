@@ -50,8 +50,15 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
+const ks = [
+    2.5/1000,
+    0.15 / 1000,
+    1 / 1000,
+    0.5,
+    0.25
+]
 
-router.post('/setEcoData', upload.single('image'), async (req, res) => { // todo
+router.post('/setEcoData', upload.single('image'), async (req, res) => { // check todo
     const data = JSON.parse(req.body.jsonData);
     const calcType = req.query.cType || 0;
     const userId = req.query.cuid || '0';
@@ -73,9 +80,6 @@ router.post('/setEcoData', upload.single('image'), async (req, res) => { // todo
     const isUpdating = await isUpdatingF(calcType, userId)
 
 
-
-
-    // средние значения пользователя
     const [columns] = await connection2.execute(`
         SELECT COLUMN_NAME 
         FROM INFORMATION_SCHEMA.COLUMNS 
@@ -121,7 +125,7 @@ router.post('/setEcoData', upload.single('image'), async (req, res) => { // todo
         );
         var previous = previousRows[0].data.split(';');
         for (var i = 0; i < allNew.length; ++i) {
-            previous[i] = (parseInt(previous[i]) + allNew[i]).toString();
+            previous[i] = ((parseInt(previous[i]) + allNew[i]) * ks[calcType]).toString();
         }
         const updatedData = previous.join(';');
         await connection2.execute(
@@ -201,8 +205,8 @@ router.post('/setEcoData', upload.single('image'), async (req, res) => { // todo
         }
 
         await connection2.execute(
-            'update `dataspecify` set `data` = ? WHERE userId = ? AND calculator = ? AND date = ?', 
-            [newDatas.join('$'), userId, calcType, insertation]
+            'insert into `dataspecify` (userId, calculator, date, data) values(?,?,?,?) ', 
+            [userId, calcType, insertation, newDatas.join('$')]
         );
 
         console.log("data inserted")
