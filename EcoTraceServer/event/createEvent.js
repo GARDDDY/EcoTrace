@@ -2,14 +2,29 @@ const express = require('express');
 const { v4: uuidv4 } = require('uuid');
 const { checkOAuth2 } = require('../tech/oauth');
 
+const multer = require('multer');
+const path = require('path');
+const fs = require('fs');
+
 const connections = require("../server")
 const connection1 = connections["users"]
 const connection2 = connections["events"]
 
 const router = express.Router();
 
-router.post('/createEvent', async (req, res) => { // check todo
-    const data = req.body;
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+      cb(null, './EcoTraceServer/uploads/events');
+  },
+  filename: function (req, file, cb) {
+      cb(null, file.originalname);
+  }
+});
+
+const upload = multer({ storage: storage });
+
+router.post('/createEvent', upload.single('image'), async (req, res) => { // check todo
+    const data = JSON.parse(req.body.jsonData);
     const userId = req.query.cuid || '0';
     const oAuth = req.query.oauth || '0';
 
@@ -34,11 +49,25 @@ router.post('/createEvent', async (req, res) => { // check todo
     res.setHeader('Content-Type', 'application/json; charset=utf-8');
 
     const eid = uuidv4();
+    try {
+
+      const tempPath = path.join(__dirname, '../uploads/events', req.file.originalname);
+      const newPath = path.join(__dirname, '../uploads/events', eid + path.extname(req.file.originalname));
+
+      fs.rename(tempPath, newPath, (err) => {
+          if (err) {
+              console.error('Error renaming file:', err);
+          }
+          console.log('File renamed successfully');
+      });
+    } catch (e) {
+      console.log("bad image", e)
+    }
     
     await connection2.execute(
-        `INSERT INTO event (eventId, eventName, eventCountMembers, eventCreatorId, eventStatus, filters, eventStart) 
-            VALUES (?, ?, ?, ?, ?, ?, ?)`,
-            [               eid,     data[0].eventName, 1,             userId, 0,     data[0].filters, data[0].eventStart]
+        `INSERT INTO event (eventId, eventName, eventCountMembers, eventCreatorId, eventStatus, filters) 
+            VALUES (?, ?, ?, ?, ?, ?)`,
+            [eid,data[0].eventName, 1, userId, 0, data[0].filters]
           );
     
           try {

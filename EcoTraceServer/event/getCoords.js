@@ -29,6 +29,7 @@ router.get('/getEventCoords', async (req, res) => {
                 latitude: element.latitude,
                 longitude: element.longitude
             },
+            circleRadius: element.coordRadius,
             fillColor: element.coordColor1,
             strokeColor: element.coordColor2
         }

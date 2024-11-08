@@ -85,13 +85,21 @@ router.get('/getAllEvents', async (req, res) => {
         const usersIds = [...new Set(events.map(event => event.eventCreatorId))];
         const userIds = usersIds.map(id => `'${id}'`).join(', ');
 
+        const eventsIds = [...new Set(events.map(e => e.eventId))];
+        const eventIds = eventsIds.map(id => `'${id}'`).join(', ')
+
         let usernames = {};
+        let mems = {}
         
         if (userIds.length > 0) {
-            const userQuery = `SELECT userId, username FROM user WHERE userId IN (${userIds})`;
-            const [users] = await connection1.execute(userQuery);
+            const [users] = await connection1.execute(`SELECT userId, username FROM user WHERE userId IN (${userIds})`);
+            const [members] = await connection1.execute(`select eventId, count(*) as total from events where eventId in (${eventIds}) group by eventId`)
             usernames = users.reduce((acc, user) => {
                 acc[user.userId] = user.username;
+                return acc;
+            }, {});
+            mems = members.reduce((acc, user) => {
+                acc[user.eventId] = user.total;
                 return acc;
             }, {});
         }
@@ -103,6 +111,7 @@ router.get('/getAllEvents', async (req, res) => {
             eventStatusString: event.startTime <= currentTime && currentTime <= event.endTime && "Проходит" ||
             currentTime < event.startTime && `Начнется ${formatDate(event.startTime)}` ||
             `Закончилось ${formatDate(event.endTime)}`,
+            eventCountMembers: mems[event.eventId],
             eventCreatorName: usernames[event.eventCreatorId] || null
         }));
 

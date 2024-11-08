@@ -9,7 +9,7 @@ const router = express.Router();
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, './EcoTraceServer/uploads');
+        cb(null, './EcoTraceServer/uploads/posts');
     },
     filename: function (req, file, cb) {
         cb(null, Date.now() + path.extname(file.originalname));
