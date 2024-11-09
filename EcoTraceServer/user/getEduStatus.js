@@ -20,7 +20,7 @@ router.get('/eduStatus', async (req, res) => {
     res.setHeader('Content-Type', 'application/json; charset=utf-8');
 
     if (!await checkOAuth2(oAuth, userId)) {
-        return res.status(403).json({ error: "You are not signed in! Not allowed ev" });
+        return res.send([false]);
     }
 
     try {

@@ -99,12 +99,14 @@
                 android:orientation="horizontal" />
         </HorizontalScrollView>
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/joinEvent"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:layout_marginVertical="@dimen/default_PaddingMargin"
+            app:strokeColor="@color/ok_green"
+            app:strokeWidth="2dp"
             android:backgroundTint="@color/ok_green"
             android:textColor="@color/dirt_white"
             android:text="@string/join" />

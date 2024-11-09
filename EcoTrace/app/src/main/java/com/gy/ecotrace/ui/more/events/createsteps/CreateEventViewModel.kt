@@ -16,9 +16,9 @@ class CreateEventViewModel(private val repository: Repository): ViewModel() {
     var eventImage: Bitmap? = null
 
 
-    fun createEvent(eventData: MutableList<Any>){
+    fun createEvent(eventData: MutableList<Any>, callback: (String?) -> Unit){
         viewModelScope.launch {
-            repository.createEvent(eventData, eventImage)
+            callback(repository.createEvent(eventData, eventImage))
         }
     }
 

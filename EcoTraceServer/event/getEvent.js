@@ -39,7 +39,7 @@ router.get('/getEvent', async (req, res) => {
     const event = eventData[0];
     const currentTime = Date.now()/1000;
     console.error("time", currentTime, event)
-    event.eventStatus = event.minTime <= currentTime && currentTime <= event.maxTime && 1 || currentTime < event.minTime && 0 || 2;
+    event.eventStatus = currentTime < event.minTime ? 0 : event.minTime <= currentTime && currentTime <= event.maxTime ? 1 : 2;
     event.eventStatusString = event
     ? event.minTime <= currentTime && currentTime <= event.maxTime
         ? `Проходит до `

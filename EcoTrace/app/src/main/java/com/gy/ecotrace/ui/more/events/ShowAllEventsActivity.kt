@@ -90,6 +90,7 @@ class ShowAllEventsActivity : AppCompatActivity() {
                 allEvents.removeAllViews()
 
                 showAllViewModel.reapplyFilter(tag)
+                allEvents.removeAllViews()
                 showAllViewModel.getEvents()
                 if(!tagButton.isActivated) tagButton.setBackgroundColor(ContextCompat.getColor(applicationContext, R.color.transparent))
                 else tagButton.setBackgroundColor(Color.parseColor(tagsColors[tag].first))
@@ -115,6 +116,7 @@ class ShowAllEventsActivity : AppCompatActivity() {
             val year = calendar.get(Calendar.YEAR)
             val month = calendar.get(Calendar.MONTH)
             val day = calendar.get(Calendar.DAY_OF_MONTH)
+            allEvents.removeAllViews()
 
             val datePickerDialog = DatePickerDialog(this, { _, selectedYear, selectedMonth, selectedDay ->
                 val selectedDate = Calendar.getInstance().apply {
@@ -145,6 +147,7 @@ class ShowAllEventsActivity : AppCompatActivity() {
             val year = calendar.get(Calendar.YEAR)
             val month = calendar.get(Calendar.MONTH)
             val day = calendar.get(Calendar.DAY_OF_MONTH)
+            allEvents.removeAllViews()
 
             val datePickerDialog = DatePickerDialog(this, { _, selectedYear, selectedMonth, selectedDay ->
                 val selectedDate = Calendar.getInstance().apply {
@@ -170,6 +173,7 @@ class ShowAllEventsActivity : AppCompatActivity() {
         }
 
         findViewById<ImageButton>(R.id.clearDates).setOnClickListener {
+            allEvents.removeAllViews()
             startReadyLayout.visibility = View.GONE
             startDate.setText(null)
             showAllViewModel.startDate = null

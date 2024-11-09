@@ -26,7 +26,6 @@ CREATE TABLE `rules` (
   `userId` varchar(255) NOT NULL,
   `canSeeCountry` int DEFAULT '0',
   `canSeeFriends` int DEFAULT '0',
-  `canSeeFullname` int DEFAULT '2',
   `canSeeGroups` int DEFAULT '0',
   PRIMARY KEY (`userId`),
   CONSTRAINT `rules_ibfk_1` FOREIGN KEY (`userId`) REFERENCES `user` (`userId`)
@@ -39,7 +38,7 @@ CREATE TABLE `rules` (
 
 LOCK TABLES `rules` WRITE;
 /*!40000 ALTER TABLE `rules` DISABLE KEYS */;
-INSERT INTO `rules` VALUES ('K1VolLEyUWMm4vapNzSNgOT9Zn33',0,1,2,0),('sQv9fp7KE5Og279Uw2M5csNHoWj1',0,0,2,0),('USz5kgt',0,1,1,2);
+INSERT INTO `rules` VALUES ('K1VolLEyUWMm4vapNzSNgOT9Zn33',0,0,0),('sQv9fp7KE5Og279Uw2M5csNHoWj1',2,0,1),('USz5kgt',0,0,0);
 /*!40000 ALTER TABLE `rules` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -52,4 +51,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-11-05 22:23:49
+-- Dump completed on 2024-11-09 23:11:37

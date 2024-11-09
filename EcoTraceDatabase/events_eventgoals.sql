@@ -36,7 +36,7 @@ CREATE TABLE `eventgoals` (
 
 LOCK TABLES `eventgoals` WRITE;
 /*!40000 ALTER TABLE `eventgoals` DISABLE KEYS */;
-INSERT INTO `eventgoals` VALUES ('event_1',1,'<font color=\"#0f0f0f\">Встречаемся <b>в точке 1 на карте</b></font>'),('event_1',2,'Потом действуем по плану');
+INSERT INTO `eventgoals` VALUES ('event_1',1,'<font color=\"#0f0f0f\">Встречаемся <b>в точке 1 на карте</b></font>'),('event_1',2,'Goal 1');
 /*!40000 ALTER TABLE `eventgoals` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -49,4 +49,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-11-05 22:23:49
+-- Dump completed on 2024-11-09 23:11:38

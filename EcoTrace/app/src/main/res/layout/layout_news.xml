@@ -25,6 +25,7 @@
             android:layout_height="wrap_content"
             android:layout_toEndOf="@+id/translate"
             android:layout_centerVertical="true"
+            android:padding="@dimen/default_PaddingMargin"
             android:text="news title and some other cool text bla bla bla bla bla bla bla"
             android:textColor="@color/black"
             android:textSize="16sp"
@@ -37,6 +38,7 @@
             android:layout_toEndOf="@+id/newsImage"
             android:background="@color/transparent"
             android:layout_centerVertical="true"
+            android:visibility="visible"
             android:layout_marginHorizontal="@dimen/default_PaddingMargin"
             android:src="@drawable/baseline_translate_24"
             app:tint="@color/silver" />

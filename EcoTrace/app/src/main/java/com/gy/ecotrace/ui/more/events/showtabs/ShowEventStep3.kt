@@ -104,7 +104,7 @@ class ShowEventStep3 : Fragment() {
             it?.let {
                 for (coord in it) {
                     when (coord.objectType) {
-                        0 -> {
+                        2 -> {
                             val placeMark = marksCollection.addPlacemark(coord.objectCenter)
                             placeMark.setIcon(
                                 ImageProvider.fromResource(context,
@@ -116,7 +116,7 @@ class ShowEventStep3 : Fragment() {
                             placeMark.addTapListener(dotTapListener)
                         }
 
-                        1 -> {
+                        0 -> {
                             val addedCircle =
                                 marksCollection.addCircle(Circle(coord.objectCenter, coord.circleRadius!!),
                                     Color.parseColor(coord.strokeColor), 2f, Color.parseColor(coord.fillColor)) // stroke, strokeWidth, fill

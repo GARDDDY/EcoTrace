@@ -72,18 +72,18 @@ class ShowEventViewModel(private val repository: Repository) : ViewModel() {
     }
 
     // todo callbacks?
-    fun joinEvent() {
+    fun joinEvent(callback: (Boolean) -> Unit) {
         viewModelScope.launch {
             repository.joinEvent(currentEvent) {
-
+                callback(it)
             }
 
         }
     }
-    fun leaveEvent() {
+    fun leaveEvent(callback: (Boolean) -> Unit) {
         viewModelScope.launch {
             repository.leaveEvent(currentEvent) {
-
+                callback(!it)
             }
 
         }

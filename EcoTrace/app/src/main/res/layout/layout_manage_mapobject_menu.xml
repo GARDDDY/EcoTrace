@@ -88,6 +88,7 @@
                 android:id="@+id/chooseFillColor"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
+                android:foreground="@drawable/square"
                 android:background="@color/red_no" />
 
             <TextView
@@ -104,6 +105,7 @@
                 android:id="@+id/chooseStrokeColor"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
+                android:foreground="@drawable/square"
                 android:background="@color/ok_green" />
         </LinearLayout>
 
@@ -133,6 +135,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:backgroundTint="@color/ok_green"
+            android:textColor="@color/dirt_white"
             android:text="@string/move" />
 
         <Button
@@ -140,6 +143,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:backgroundTint="@color/red_no"
+            android:textColor="@color/dirt_white"
             android:text="@string/delete" />
 
 

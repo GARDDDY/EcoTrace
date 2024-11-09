@@ -42,7 +42,7 @@ CREATE TABLE `event` (
 
 LOCK TABLES `event` WRITE;
 /*!40000 ALTER TABLE `event` DISABLE KEYS */;
-INSERT INTO `event` VALUES ('event_1','Первое мероприятие',2,'K1VolLEyUWMm4vapNzSNgOT9Zn33',2,'1,2',NULL,1726335806000),('event_2','Второе мероприятие',NULL,'sQv9fp7KE5Og279Uw2M5csNHoWj1',2,'1',NULL,1726335806000),('event_3','Третье меропритятие',NULL,'K1VolLEyUWMm4vapNzSNgOT9Zn33',2,'1',NULL,1726335806000);
+INSERT INTO `event` VALUES ('event_1','Первое мероприятие',2,'K1VolLEyUWMm4vapNzSNgOT9Zn33',2,'1,2',NULL,1726335806000),('event_2','Второе мероприятие',NULL,'sQv9fp7KE5Og279Uw2M5csNHoWj1',2,'1',NULL,1726335806000),('event_3','Третье меропритятие',NULL,'K1VolLEyUWMm4vapNzSNgOT9Zn33',2,'1',NULL,1726335806000),('f3cf79db-a9fb-45ce-8824-8e02016b9ded','244242342424234',4,'sQv9fp7KE5Og279Uw2M5csNHoWj1',0,'',NULL,NULL);
 /*!40000 ALTER TABLE `event` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -55,4 +55,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-11-05 22:23:49
+-- Dump completed on 2024-11-09 23:11:37

@@ -98,14 +98,6 @@
                 android:text="@string/female"
                 android:textColor="@color/black" />
 
-            <com.google.android.material.radiobutton.MaterialRadioButton
-                android:id="@+id/genderNone"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:checked="true"
-                android:drawableTint="@color/ok_green"
-                android:text="@string/noSpecify"
-                android:textColor="@color/black" />
         </RadioGroup>
 
         <TextView
@@ -190,13 +182,13 @@
                 android:layout_marginStart="16dp"/>
         </LinearLayout>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:textColor="@color/silver"
-            android:text="@string/dataFillNecessarily"
-            android:layout_below="@id/ll1"
-            android:layout_marginTop="16dp"/>
+<!--        <TextView-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_centerHorizontal="true"-->
+<!--            android:textColor="@color/silver"-->
+<!--            android:text="@string/dataFillNecessarily"-->
+<!--            android:layout_below="@id/ll1"-->
+<!--            android:layout_marginTop="16dp"/>-->
     </RelativeLayout>
 </RelativeLayout>

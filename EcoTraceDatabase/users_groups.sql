@@ -37,7 +37,7 @@ CREATE TABLE `groups` (
 
 LOCK TABLES `groups` WRITE;
 /*!40000 ALTER TABLE `groups` DISABLE KEYS */;
-INSERT INTO `groups` VALUES ('K1VolLEyUWMm4vapNzSNgOT9Zn33','4e6c3791-039b-4b5c-8bb4-44f7ffc10ae2',3),('sQv9fp7KE5Og279Uw2M5csNHoWj1','4e6c3791-039b-4b5c-8bb4-44f7ffc10ae2',0),('sQv9fp7KE5Og279Uw2M5csNHoWj1','group_1',0),('USz5kgt','4e6c3791-039b-4b5c-8bb4-44f7ffc10ae2',3),('USz5kgt','group_1',3);
+INSERT INTO `groups` VALUES ('K1VolLEyUWMm4vapNzSNgOT9Zn33','4e6c3791-039b-4b5c-8bb4-44f7ffc10ae2',3),('K1VolLEyUWMm4vapNzSNgOT9Zn33','group_1',1),('sQv9fp7KE5Og279Uw2M5csNHoWj1','4e6c3791-039b-4b5c-8bb4-44f7ffc10ae2',0),('sQv9fp7KE5Og279Uw2M5csNHoWj1','group_1',0),('USz5kgt','4e6c3791-039b-4b5c-8bb4-44f7ffc10ae2',3),('USz5kgt','group_1',3);
 /*!40000 ALTER TABLE `groups` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -50,4 +50,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-11-05 22:23:49
+-- Dump completed on 2024-11-09 23:11:37

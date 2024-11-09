@@ -82,6 +82,9 @@ connectToDatabases().then(() => {
     app.use(require("./event/getCoords"));
     app.use(require("./event/getMembers"));
 
+    app.use(require("./event/joinEvent"));
+    app.use(require("./event/leaveEvent"));
+
     app.use(require("./event/deleteEvent")); // ?
     app.use(require("./event/deleteEvent")); // ?
 

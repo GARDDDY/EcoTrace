@@ -8,7 +8,7 @@ const router = express.Router();
 
 router.get('/getWeb', async (req, res) => {
     const [posts] = await connection2.execute(
-        `select * from posts`
+        `select source, postLink, postImage, postTitle, isRu from posts`
     )
 
     res.send(posts);

@@ -31,6 +31,7 @@ import com.bumptech.glide.request.target.Target
 import com.google.android.material.button.MaterialButton
 import com.gy.ecotrace.Globals
 import com.gy.ecotrace.R
+import com.gy.ecotrace.customs.ETAuth
 import com.gy.ecotrace.db.DatabaseMethods
 import com.gy.ecotrace.db.Repository
 import com.gy.ecotrace.ui.more.events.createsteps.CreateEventViewModel
@@ -41,6 +42,8 @@ import java.util.Locale
 class ShowEventStep1 : Fragment() {
 
     private val sharedViewModel: ShowEventViewModel by activityViewModels()
+    private val currentUser = ETAuth.getInstance().getUID()
+    private lateinit var currentEventCreator: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,6 +54,47 @@ class ShowEventStep1 : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         return inflater.inflate(R.layout.activitylayout_show_event_step1, container, false)
+    }
+
+    private fun reapplyJoinBtn(joinButton: Button, it: Boolean) {
+        if (it) {
+            joinButton.text = "В мероприятии"
+            joinButton.setTextColor(ContextCompat.getColor(requireContext(), R.color.ok_green))
+            joinButton.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.dirt_white))
+            joinButton.setOnClickListener{
+                val builder = android.app.AlertDialog.Builder(requireActivity())
+                builder.setTitle("Выход из мероприятия")
+                if (currentUser != currentEventCreator) {
+
+                    builder.setMessage("Вы действительно хотите покинуть это мероприятие?")
+                    builder.setPositiveButton(getString(R.string.confirm)) { dialog, which ->
+                        sharedViewModel.leaveEvent {
+                            reapplyJoinBtn(joinButton, it)
+                        }
+                    }
+                    builder.setNegativeButton(getString(R.string.cancel)) { dialog, which ->
+                        dialog.dismiss()
+                    }
+                } else {
+                    builder.setMessage("Вы не можете покинуть это мероприятие, так как являетесь его создателем! Для выхода из мероприятия надо его удалить!")
+                    builder.setNeutralButton("Понятно") { dialog, which ->
+                        dialog.dismiss()
+                    }
+                }
+                val dialog = builder.create()
+                dialog.show()
+
+            }
+        } else {
+            joinButton.text = "Присоединиться"
+            joinButton.setTextColor(ContextCompat.getColor(requireContext(), R.color.dirt_white))
+            joinButton.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.ok_green))
+            joinButton.setOnClickListener{
+                sharedViewModel.joinEvent {
+                    reapplyJoinBtn(joinButton, it)
+                }
+            }
+        }
     }
 
     private fun members(value: Int): String {
@@ -110,6 +154,7 @@ class ShowEventStep1 : Fragment() {
 //        sharedViewModel.getEvent()
         sharedViewModel.event.observe(viewLifecycleOwner, Observer { eventUser ->
             val event = eventUser.eventInfo
+            currentEventCreator = event.eventCreatorId
             view.findViewById<TextView>(R.id.eventName).text = event.eventName
             view.findViewById<TextView>(R.id.eventAbout).text = event.eventAbout
             view.findViewById<TextView>(R.id.eventCountMembers).text = "${event.eventCountMembers} ${members(event.eventCountMembers)}"
@@ -122,7 +167,7 @@ class ShowEventStep1 : Fragment() {
 
             val tags: Array<Pair<String, String>> = Globals.getInstance().getEventsFilters()
             val colors: Array<Pair<String, String>> = Globals.getInstance().getFiltersColors()
-            for (tag in event.filters.split(',').map { it.toInt()-1 }) {
+            for (tag in try {event.filters.split(',').map { it.toInt()-1 }} catch (e: Exception) { listOf()}) {
                 val filter = layoutInflater.inflate(R.layout.widget_tag_filter_button, null) as MaterialButton
                 filter.text = tags[tag].first
                 filter.textSize = 18F
@@ -142,7 +187,9 @@ class ShowEventStep1 : Fragment() {
                 joinBtn.text = "Покинуть"
                 joinBtn.setOnClickListener {
                     if (eventUser.eventRole != 0) {
-                        sharedViewModel.leaveEvent()
+                        sharedViewModel.leaveEvent {
+                            reapplyJoinBtn(joinBtn, it)
+                        }
                     } else {
                         val builder = androidx.appcompat.app.AlertDialog.Builder(requireContext())
                         builder.setTitle("Вы создатель!")
@@ -157,7 +204,9 @@ class ShowEventStep1 : Fragment() {
                 }
             } else {
                 joinBtn.setOnClickListener {
-                    sharedViewModel.joinEvent()
+                    sharedViewModel.joinEvent {
+                        reapplyJoinBtn(joinBtn, it)
+                    }
                 }
             }
         })
@@ -167,6 +216,7 @@ class ShowEventStep1 : Fragment() {
         sharedViewModel.getGoals()
         sharedViewModel.eventGoals.observe(viewLifecycleOwner, Observer {
             it?.let {
+                allGoals.removeAllViews()
                 for (goal in it.indices) {
                     val goalLayout = layoutInflater.inflate(R.layout.layout_event_goaltime, null)
                     goalLayout.findViewById<TextView>(R.id.objectName).text = "${goal+1}. ${Html.fromHtml(it[goal], Html.FROM_HTML_MODE_LEGACY)}"

@@ -104,25 +104,28 @@ class NewsFragment : Fragment() {
             for (news in it) {
                 val newsLayout = layoutInflater.inflate(R.layout.layout_news, null)
                 val titleName = newsLayout.findViewById<TextView>(R.id.newsName)
-                titleName.text = news["postTitle"]
+                titleName.text = news.postTitle
                 Glide.with(this)
-                    .load(news["postImage"])
+                    .load(news.postImage)
                     .into(newsLayout.findViewById(R.id.newsImage))
 
                 newsLayout.setOnClickListener {
                     val browser = Intent(requireActivity(), NewsActivity::class.java)
-                    browser.putExtra("url", news["postLink"].toString())
-                    browser.putExtra("res", news["source"].toString())
+                    browser.putExtra("url", news.postLink.toString())
+                    browser.putExtra("res", news.source.toString())
                     startActivity(browser)
                 }
 
                 val translate = newsLayout.findViewById<ImageButton>(R.id.translate)
+                if (news.isRu == 1) {
+                    translate.visibility = View.GONE
+                }
                 translate.setOnClickListener {
                     translate.isActivated = !translate.isActivated
                     translate.isClickable = false
                     when (translate.isActivated) {
                         true -> {
-                            val actualText = news["postTitle"]?.replace(" ", "%20") ?: ""
+                            val actualText = news.postTitle?.replace(" ", "%20") ?: ""
 
                             savedTranslations[actualText]?.let {
                                 titleName.text = it
@@ -141,7 +144,7 @@ class NewsFragment : Fragment() {
                         }
 
                         false -> {
-                            titleName.text = news["postTitle"]
+                            titleName.text = news.postTitle
                             translate.imageTintList = ContextCompat.getColorStateList(requireActivity(), R.color.silver)
                             translate.isClickable = true
                         }

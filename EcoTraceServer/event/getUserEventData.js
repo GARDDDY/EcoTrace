@@ -29,9 +29,9 @@ router.get('/getUserEventData', async (req, res) => {
 
     res.setHeader('Content-Type', 'application/json; charset=utf-8');
 
-    if (!await checkOAuth2(oAuth, userId)) {
-        return res.status(403).json({ error: "You are not signed in! Not allowed ev" });
-    }
+    // if (!await checkOAuth2(oAuth, userId)) {
+    //     return res.status(403).json({ error: "You are not signed in! Not allowed ev" });
+    // }
 
     const data = {};
 
@@ -46,7 +46,7 @@ router.get('/getUserEventData', async (req, res) => {
     const event = eventData[0];
     const currentTime = Date.now()/1000;
     console.error("time", currentTime)
-    event.eventStatus = event.minTime <= currentTime && currentTime <= event.maxTime && 1 || currentTime < event.minTime && 0 || 2;
+    event.eventStatus = currentTime < event.minTime ? 0 : event.minTime <= currentTime && currentTime <= event.maxTime ? 1 : 2;;
     event.eventStatusString = event
     ? event.minTime <= currentTime && currentTime <= event.maxTime
         ? `Проходит до `

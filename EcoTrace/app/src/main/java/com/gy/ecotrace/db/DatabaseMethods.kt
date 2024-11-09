@@ -356,6 +356,14 @@ object DatabaseMethods {
             var role: Int = -1
         )
 
+        data class News(
+            var source: String = "",
+            var postLink: String = "",
+            var postTitle: String = "",
+            var postImage: String = "",
+            var isRu: Int = 1
+        )
+
 
         // education
 
@@ -1200,10 +1208,15 @@ object DatabaseMethods {
             }
         }
 
-        suspend fun createEvent(eventData: MutableList<Any>, eventImage: Bitmap?): String {
-            return suspendCoroutine { eventId ->
-                Tech().requestPOST("createEvent", Gson().toJson(eventData), "", eventImage) {
-                    eventId.resume(it.toString())
+        suspend fun createEvent(eventData: MutableList<Any>, eventImage: Bitmap?): String? {
+            return suspendCoroutine {
+                Tech().requestPOST("createEvent", Gson().toJson(eventData), "", eventImage) { response ->
+                    if (response == null) {
+                        it.resume(null)
+                        return@requestPOST
+                    }
+                    val responseBody = response.body?.string()
+                    it.resume(Gson().fromJson(responseBody, Array<String?>::class.java)[0])
                 }
             }
         }
@@ -1265,15 +1278,13 @@ object DatabaseMethods {
             }
         }
 
-        suspend fun getWebNews(undesirable: String): MutableList<HashMap<String, String?>> {
+        suspend fun getWebNews(undesirable: String): MutableList<DataClasses.News> {
             return suspendCoroutine {
                 Tech().requestGET("getWeb", "bad=$undesirable") { response ->
                     if (response == null) return@requestGET
 
                     val responseBody = response.body?.string()
-
-                    val typeToken = object : TypeToken<Array<HashMap<String, String?>>>() {}.type
-                    val data: Array<HashMap<String, String?>> = Gson().fromJson(responseBody, typeToken)
+                    val data = Gson().fromJson(responseBody, Array<DataClasses.News>::class.java)
 
                     it.resume(data.toMutableList())
                 }

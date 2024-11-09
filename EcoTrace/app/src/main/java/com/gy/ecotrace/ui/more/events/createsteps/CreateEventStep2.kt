@@ -7,6 +7,8 @@ import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.content.Context
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
 import android.text.format.DateUtils.formatDateTime
@@ -23,6 +25,7 @@ import android.widget.RelativeLayout
 import android.widget.ScrollView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
@@ -33,6 +36,8 @@ import java.util.TimeZone
 class CreateEventStep2: Fragment() {
 
     private val sharedViewModel: CreateEventViewModel by activityViewModels()
+    private val handler = Handler(Looper.getMainLooper())
+    private var runnable: Runnable? = null
 
     private fun deleteLoadingFill(deleter: View, maxWidth: Int): ValueAnimator {
 
@@ -270,7 +275,7 @@ class CreateEventStep2: Fragment() {
                                     )
                                     timeSetter.text = formattedDateTime
 
-                                    val timestampString = "${timestamp1}_${timestamp2}"
+                                    val timestampString = "${(timestamp1/1000).toLong()}_${(timestamp2/1000).toLong()}"
                                     layout.tag = timestampString
                                     sharedViewModel.addTime(timestampString, descriptionEntry.text.toString())
                                 } else {
@@ -301,7 +306,15 @@ class CreateEventStep2: Fragment() {
                 override fun afterTextChanged(s: Editable?) {
                     if (layout.tag != null) {
 
-                        sharedViewModel.addTime(layout.tag as String, s.toString())
+                        runnable?.let { handler.removeCallbacks(it) }
+
+                        runnable = Runnable {
+                            sharedViewModel.addTime(layout.tag as String, s.toString())
+                        }
+
+                        handler.postDelayed(runnable!!, 500)
+
+
 
                     } else {
                         Toast.makeText(
@@ -323,6 +336,7 @@ class CreateEventStep2: Fragment() {
 
         sharedViewModel.getTimes()
         sharedViewModel.eventTimes.observe(viewLifecycleOwner, Observer {
+            timesLayout.removeAllViews()
             for ((id, value) in it) {
                 addTimes(id, value)
             }

@@ -32,7 +32,7 @@ CREATE TABLE `comments` (
   `commentId` int NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`commentId`,`groupId`,`postId`),
   UNIQUE KEY `commentId_UNIQUE` (`commentId`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -41,7 +41,7 @@ CREATE TABLE `comments` (
 
 LOCK TABLES `comments` WRITE;
 /*!40000 ALTER TABLE `comments` DISABLE KEYS */;
-INSERT INTO `comments` VALUES ('group_1',1,'K1VolLEyUWMm4vapNzSNgOT9Zn33','Ура! Первый пост!','none',1727622138,1);
+INSERT INTO `comments` VALUES ('group_1',1,'K1VolLEyUWMm4vapNzSNgOT9Zn33','Ура! Первый пост!','none',1727622138,1),('group_1',8,'sQv9fp7KE5Og279Uw2M5csNHoWj1','Ochen kruto!','',1730998397,8),('group_1',14,'sQv9fp7KE5Og279Uw2M5csNHoWj1','Eto moy post!','',1731082402,10),('group_1',7,'sQv9fp7KE5Og279Uw2M5csNHoWj1','Krasivo!','',1731083444,11);
 /*!40000 ALTER TABLE `comments` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -54,4 +54,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-11-05 22:23:49
+-- Dump completed on 2024-11-09 23:11:36

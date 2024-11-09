@@ -140,7 +140,6 @@ const imagesAvailableFor = [
     "0_1",
     "0_2",
     "0_3",
-    "3_5"
 ]
 
 router.get('/calc/getNumImages', async (req, res) => {
@@ -338,7 +337,10 @@ router.get('/calc/getAdvices', async (req, res) => {
     const userId = req.query.cid || '0';
 
     const [userGender] = await connection1.execute("select gender from user where userId = ?", [userId])
-    const [sameUserGenders] = await connection1.execute('select userId from user where gender = ?', [userGender[0].gender])
+    if (userGender.length === 0) {
+        return res.send([])
+    }
+    const [sameUserGenders] = await connection1.execute('select userId from user where gender = ?', [userGender[0].gender || 0])
 
     const usersIds = sameUserGenders.map(user => user.userId);
     const placeholders = usersIds.map(a => `"${a}"`).join(', ');

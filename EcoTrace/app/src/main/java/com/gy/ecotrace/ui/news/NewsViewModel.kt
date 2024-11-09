@@ -35,8 +35,8 @@ class NewsViewModel(private val repository: Repository) : ViewModel() {
         }
     }
 
-    private val _sites = MutableLiveData<MutableList<HashMap<String, String?>>>()
-    val sites: LiveData<MutableList<HashMap<String, String?>>> get() = _sites
+    private val _sites = MutableLiveData<MutableList<DatabaseMethods.DataClasses.News>>()
+    val sites: LiveData<MutableList<DatabaseMethods.DataClasses.News>> get() = _sites
     fun getNews(undesirable: String) {
         viewModelScope.launch {
             val webNews = repository.getWebNews(undesirable)

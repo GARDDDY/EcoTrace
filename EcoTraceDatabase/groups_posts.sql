@@ -30,7 +30,7 @@ CREATE TABLE `posts` (
   `postContentText` longtext,
   `postContentImage` varchar(255) DEFAULT NULL,
   UNIQUE KEY `postId_UNIQUE` (`postId`)
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -39,7 +39,7 @@ CREATE TABLE `posts` (
 
 LOCK TABLES `posts` WRITE;
 /*!40000 ALTER TABLE `posts` DISABLE KEYS */;
-INSERT INTO `posts` VALUES ('group_1',1,'1726783001','sQv9fp7KE5Og279Uw2M5csNHoWj1','Тестовая запись!',NULL),('group_1',2,'1726783002','sQv9fp7KE5Og279Uw2M5csNHoWj1','Еще одна',NULL),('group_1',3,'1726783003','sQv9fp7KE5Og279Uw2M5csNHoWj1','И еще, 1',NULL),('group_1',4,'1726783004','sQv9fp7KE5Og279Uw2M5csNHoWj1','И еще, 2',NULL),('group_1',5,'1727379506','sQv9fp7KE5Og279Uw2M5csNHoWj1','Новая!',NULL),('group_1',6,'1727379706','sQv9fp7KE5Og279Uw2M5csNHoWj1','Новейшая!',NULL),('group_1',7,'1727899454','K1VolLEyUWMm4vapNzSNgOT9Zn33','gggrgrgrghrtht','1727899454495'),('group_1',8,'1727901386','K1VolLEyUWMm4vapNzSNgOT9Zn33',NULL,'1727901385990');
+INSERT INTO `posts` VALUES ('group_1',1,'1726783001','sQv9fp7KE5Og279Uw2M5csNHoWj1','Тестовая запись!',NULL),('group_1',2,'1726783002','sQv9fp7KE5Og279Uw2M5csNHoWj1','Еще одна',NULL),('group_1',3,'1726783003','sQv9fp7KE5Og279Uw2M5csNHoWj1','И еще, 1',NULL),('group_1',4,'1726783004','sQv9fp7KE5Og279Uw2M5csNHoWj1','И еще, 2',NULL),('group_1',7,'1727899454','K1VolLEyUWMm4vapNzSNgOT9Zn33','gggrgrgrghrtht','1727899454495'),('group_1',8,'1727901386','K1VolLEyUWMm4vapNzSNgOT9Zn33',NULL,'1727901385990'),('4e6c3791-039b-4b5c-8bb4-44f7ffc10ae2',16,'1731167560','sQv9fp7KE5Og279Uw2M5csNHoWj1','67467754754','1731167560913');
 /*!40000 ALTER TABLE `posts` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -52,4 +52,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-11-05 22:23:48
+-- Dump completed on 2024-11-09 23:11:36

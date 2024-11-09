@@ -41,8 +41,8 @@ router.get('/setEventRole', async (req, res) => {
 
     if (userActionRole[0].eventRole === 0 && userRole.length > 0) {
         await connection1.execute(
-            `UPDATE events SET eventRole = ? WHERE eventId = ? and userId = ?`,
-            [role, eventId, user]
+            `UPDATE events SET eventRole = ?, validated = case when ? = 1 then true else false end WHERE eventId = ? and userId = ?`,
+            [role, role, eventId, user]
         );
 
         return res.send([true])

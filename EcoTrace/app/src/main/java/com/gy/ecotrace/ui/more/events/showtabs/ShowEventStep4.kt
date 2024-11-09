@@ -102,12 +102,14 @@ class ShowEventStep4 : Fragment() {
                         toMember.setOnClickListener {
                             sharedViewModel.setUserRole(user.userId, 2) {
                                 Toast.makeText(requireActivity(), if (it) "${user.username} теперь просто участник!" else "Ошибка!", Toast.LENGTH_SHORT).show()
+                                allMembers.removeAllViews()
                                 sharedViewModel.getEventMembers(new=true)
                             }
                         }
                         toHelper.setOnClickListener {
                             sharedViewModel.setUserRole(user.userId, 1) {
                                 Toast.makeText(requireActivity(), if (it) "${user.username} теперь новый помощник!" else "Ошибка!", Toast.LENGTH_SHORT).show()
+                                allMembers.removeAllViews()
                                 sharedViewModel.getEventMembers(new=true)
                             }
                         }

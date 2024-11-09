@@ -355,6 +355,7 @@ class ShowGroupActivity : AppCompatActivity() {
                         builder.setPositiveButton("Подтвердить") { dialog, which ->
                             showGroupViewModel.delete {
                                 if (it) {
+                                    Globals.getInstance().setString("CurrentlyWatchingGroup", "")
                                     finish()
                                 } else {
                                     Toast.makeText(this@ShowGroupActivity, "Не удалось удалить группу!", Toast.LENGTH_SHORT).show()
@@ -439,7 +440,8 @@ class ShowGroupActivity : AppCompatActivity() {
 
                 showGroupViewModel.getRole {
                     userRole = it
-                    if (it == 0 && !showGroupViewModel.anyBreak) groupMenu(true)
+                    toolbar.menu.clear()
+                    if (it == 0) groupMenu(true)
                     showGroupViewModel.getOldPosts()
                 }
             }
@@ -567,6 +569,11 @@ class ShowGroupActivity : AppCompatActivity() {
     private fun addImageToLayout(imageBitmap: Bitmap) {
         findViewById<ImageView>(R.id.attachedImage).setImageBitmap(imageBitmap)
         attachedImage = imageBitmap
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        Globals.getInstance().setString("CurrentlyWatchingGroup", "")
     }
 }
 

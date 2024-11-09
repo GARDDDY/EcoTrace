@@ -26,7 +26,7 @@ class Repository(
         return userDatabase.getUpdates(since)
     }
 
-    suspend fun getWebNews(undesirable: String): MutableList<HashMap<String, String?>> {
+    suspend fun getWebNews(undesirable: String): MutableList<DataClasses.News> {
         return appDatabase.getWebNews(undesirable)
     }
 
@@ -90,7 +90,7 @@ class Repository(
     suspend fun getEvent(eventId: String): DatabaseMethods.DataClasses.Event? {
         return appDatabase.getEvent(eventId)
     }
-    suspend fun createEvent(eventData: MutableList<Any>, eventImage: Bitmap?): String{
+    suspend fun createEvent(eventData: MutableList<Any>, eventImage: Bitmap?): String? {
         return appDatabase.createEvent(eventData, eventImage)
     }
     suspend fun isUserValidated(eventId: String): Boolean {

@@ -23,7 +23,7 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
-router.post('/createEvent', upload.single('image'), async (req, res) => { // check todo
+router.post('/createEvent', upload.single('image'), async (req, res) => {
     const data = JSON.parse(req.body.jsonData);
     const userId = req.query.cuid || '0';
     const oAuth = req.query.oauth || '0';

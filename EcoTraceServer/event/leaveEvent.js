@@ -1,4 +1,5 @@
 const express = require('express');
+const { checkOAuth2 } = require('../tech/oauth');
 
 const connections = require("../server")
 const connection1 = connections["users"]
@@ -6,10 +7,10 @@ const connection2 = connections["events"]
 
 const router = express.Router();
 
-router.get('/leaveEvent', async (req, res) => { // check todo
+router.get('/leaveEvent', async (req, res) => {
     const userId = req.query.cid || '0';
     const oauth = req.query.oauth || '0';
-    const eventId = req.query.eid || '0';
+    const eventId = req.query.eventId || '0';
 
 
     if (!connection1) {
@@ -24,7 +25,7 @@ router.get('/leaveEvent', async (req, res) => { // check todo
     res.setHeader('Content-Type', 'application/json; charset=utf-8');
 
     const [role] = await connection1.execute(
-        `SELECT eventRole AS count FROM events WHERE userId = ? AND eventId = ?`,
+        `SELECT eventRole FROM events WHERE userId = ? AND eventId = ?`,
         [userId, eventId]
     );
 

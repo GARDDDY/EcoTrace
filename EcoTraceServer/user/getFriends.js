@@ -6,7 +6,7 @@ const connection1 = connections["users"]
 
 const router = express.Router();
 
-router.get('/getUserFriends', async (req, res) => { // check todo
+router.get('/getUserFriends', async (req, res) => { 
 
     const userId = req.query.uid || '0';
     const cUserId = req.query.cid || '0';
@@ -40,11 +40,11 @@ router.get('/getUserFriends', async (req, res) => { // check todo
             const [friends] = await connection1.execute(`select user.username, friends.*
                 from friends
                 inner join user ON 
-                (friends.senderId != ? and friends.senderId = user.userId)
+                (friends.senderId != ? and friends.senderId = user.userId and friends.userId = ?)
                 or
-                (friends.userId != ? and friends.userId = user.userId)
+                (friends.userId != ? and friends.userId = user.userId and friends.senderId = ?)
                 where (? is null or friends.senderId > ? and friends.userId = ? or friends.userId > ? and friends.senderId = ?)
-                limit 6`, [userId, userId, block, block, userId, block, userId])
+                limit 6`, [userId, userId, userId, userId, block, block, userId, block, userId])
             console.log(friends, userId, cUserId)
             return res.json(friends)
 

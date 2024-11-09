@@ -1,4 +1,4 @@
-// const parseData = require("webParse")
+const parseData = require("./webParse")
 
 const axios = require('axios');
 const cheerio = require('cheerio');
@@ -16,41 +16,91 @@ function extractBase64(style) {
     return base64Match ? base64Match[1] : null;
 }
 
-// Функция для сохранения base64 строки как изображения
-async function fetchImageFromUrl(url) {
+async function getImgFromUrl(url, d) {
     try {
         const { data } = await axios.get(url);
         const $ = cheerio.load(data);
-        const img = $('img[data-testid="prism-image"]').first().attr('src');
-        return img ? new URL(img, url).href : null;
+        let imgElement = $(d.classIn).first()
+        if (d.widgetValue) {
+            return imgElement.text().trim();
+        } else {
+            return imgElement.attr(d.widgetAttr);
+        }
     } catch (error) {
-        console.error(`Failed to fetch image from ${url}:`, error);
+        // console.error(`Failed to fetch image from ${url}:`, error);
         return null;
     }
 }
 
 async function fetchAndStoreNews() {
     try {
-        const { data } = await axios.get('https://www.nationalgeographic.com/environment');
-        const $ = cheerio.load(data);
-        // res.json($.html());
-
         const newsItems = [];
-        $('.col.col-bottom-gutter').each((i, elem) => {
-            const title = $(elem).attr('aria-label').trim();
-            const url = $(elem).find('.AnchorLink.PromoTile__Link').attr('href');
-            if (title && url) {
-                newsItems.push({
-                    title: title,
-                    url: url.startsWith('http') ? url : `https://www.nationalgeographic.com${url}`
+        for (const [lnk, data] of Object.entries(parseData)) {
+            const response = await axios.get(lnk);
+            const $ = cheerio.load(response.data);
+ 
+            $(data.news).each(async (i, elem) => {
+                let titles = [];
+                let urls = [];
+                let imgs = [];
+    
+                $(elem).find(data.newsTitle.classIn).each((j, elem1) => {
+                    let titleElement = $(elem1);
+                    if (data.newsTitle.widget) {
+                        titleElement = titleElement.find(data.newsTitle.widget);
+                    }
+                        if (data.newsTitle.widgetValue) {
+                            titles.push(titleElement.text().trim())
+                        } else {
+                            titles.push(titleElement.attr(data.newsTitle.widgetAttr))
+                        }
+                    
                 });
-            }
-        });
-
-       
+    
+                $(elem).find(data.newsLink.classIn).each((j, elem1) => {
+                    let linkElement = $(elem1);
+                    if (data.newsLink.widget) {
+                        linkElement = linkElement.find(data.newsLink.widget);
+                    }
+                        if (data.newsLink.widgetValue) {
+                            urls.push(linkElement.text().trim());
+                        } else {
+                            urls.push(linkElement.attr(data.newsLink.widgetAttr));
+                        }
+                    
+                });
+    
+                if (!data.newsImage.gotoUrl) {
+                    $(elem).find(data.newsImage.classIn).each((j, elem1) => {
+                        let imgElement = $(elem1);
+                        if (data.newsImage.widget) {
+                            imgElement = imgElement.find(data.newsImage.widget);
+                        }
+                            if (data.newsImage.widgetValue) {
+                                imgs.push(imgElement.text().trim());
+                            } else {
+                                imgs.push(imgElement.attr(data.newsImage.widgetAttr));
+                            }
+                        
+                    });
+                } else {
+                    imgs.push(null)
+                }
+    
+                for (var n = 0; n < titles.length; ++n) {
+                    newsItems.push({
+                        title: titles[n] || "",
+                        url: urls[n] || "",
+                        image: imgs[n] ? imgs[n] : await getImgFromUrl(urls[n] || null, data.newsImage),
+                        source: data.source,
+                        isRu: data.isRu && 1 || 0
+                    })
+                }
+            });
+        }
 
         console.log('News fetched and stored successfully');
-        return newsItems
+        return newsItems;
     } catch (error) {
         console.error('Error fetching and storing news:', error);
     }
@@ -59,33 +109,28 @@ async function fetchAndStoreNews() {
 
 cron.schedule('0 0,2,4,6,8,10,12,14,16,18,20,22 * * *', async () => {
     const datas = await fetchAndStoreNews();
-    const promises = datas.map(async (item) => {
-        item.image = await fetchImageFromUrl(item.url);
-        return item;
-    });
-
-    const results = await Promise.all(promises);
 
     await connection2.execute('delete from posts');
 
-    for (const result of results) {
+    for (const result of datas) {
         await connection2.execute(
-            `insert into posts (source, postLink, postImage, postTitle, fetchTime) values(?,?,?,?,?)
+            `insert into posts (source, postLink, postImage, postTitle, fetchTime, isRu) values(?,?,?,?,?,?)
             ON DUPLICATE KEY UPDATE 
     postLink = VALUES(postLink),
     postImage = VALUES(postImage),
     postTitle = VALUES(postTitle),
     fetchTime = VALUES(fetchTime);`,
-            ["National Geographic", result.url, result.image, result.title, new Date()]
+            [result.source, result.url, result.image, result.title, new Date(), result.isRu]
         );
     }
 
     console.log("News fetched!")
 });
 
-router.get('/web', (req, res) => {
+router.get('/web', async (req, res) => {
     const now = new Date();
     now.setHours(now.getHours() % 2 == 0 ? now.getHours() + 2 : now.getHours() + 1,0,0,0)
+
     res.send(`Новый фетч случится ${now}`);
 });
 

@@ -1,5 +1,6 @@
 package com.gy.ecotrace.ui.more.events
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -122,7 +123,13 @@ class CreateEventActivity : AppCompatActivity() {
                 sharedViewModel.eventCoords.value ?: mutableMapOf<MapObject, DatabaseMethods.DataClasses.MapObject>()
             )
 
-            sharedViewModel.createEvent(eventData)
+            sharedViewModel.createEvent(eventData) {
+                if (it != null) {
+                    Globals.getInstance().setString("CurrentlyWatchingEvent", it)
+                    startActivity(Intent(this@CreateEventActivity, ShowEventActivity::class.java))
+                    finish()
+                }
+            }
 
 
         }
