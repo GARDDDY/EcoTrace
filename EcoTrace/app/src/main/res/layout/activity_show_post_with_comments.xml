@@ -1,0 +1,506 @@
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:fitsSystemWindows="true"
+    android:id="@+id/main"
+    android:layout_height="match_parent"
+    android:background="@color/dirt_white"
+    android:layout_width="match_parent">
+
+    <Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/dirt_white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/leaveCommentSection"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="bottom"
+        android:paddingTop="10dp"
+        android:background="@color/dirt_white"
+        android:orientation="horizontal"
+        android:layout_marginHorizontal="@dimen/default_PaddingMargin"
+        android:layout_marginBottom="5dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <ImageView
+            android:id="@+id/currentUserImage"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            app:srcCompat="@drawable/baseline_person_24" />
+
+        <EditText
+            android:id="@+id/postCreateCommentEntry"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:ems="10"
+            android:gravity="start|top"
+            android:textColor="@color/black"
+            android:backgroundTint="@color/ok_green"
+            android:hint="@string/leaveAComment"
+            android:inputType="textMultiLine"
+            android:textColorHint="@color/silver" />
+
+        <ImageButton
+            android:id="@+id/postAttachImage"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:backgroundTint="@color/transparent"
+            app:tint="@color/silver"
+            app:srcCompat="@drawable/baseline_add_photo_alternate_24" />
+
+        <ImageButton
+            android:id="@+id/postSendComment"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:backgroundTint="@color/transparent"
+            android:visibility="gone"
+            android:rotationY="180"
+            app:tint="@color/ok_green"
+            app:srcCompat="@drawable/baseline_arrow_back_24" />
+
+    </LinearLayout>
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/postToolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar" />
+
+    <LinearLayout
+        android:id="@+id/upperInfoPost"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="@+id/postToolbar"
+        app:layout_constraintStart_toStartOf="@+id/postToolbar"
+        app:layout_constraintBottom_toBottomOf="@id/postToolbar"
+        app:layout_constraintTop_toTopOf="@+id/postToolbar">
+
+        <ImageView
+            android:id="@+id/postCreatorImage"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginHorizontal="@dimen/default_PaddingMargin"
+            app:srcCompat="@drawable/baseline_person_24" />
+
+        <LinearLayout
+            android:id="@+id/openCreatorProfileLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:clickable="true"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/postCreatorName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="postCreator"
+                android:textColor="@color/ok_green"
+                android:textSize="17sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/postCreateTime"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="postTimeCreate"
+                android:textColor="@color/silver" />
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/postStatus"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginStart="5dp"
+            android:visibility="gone"
+            app:srcCompat="@drawable/eye_close" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/contentLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@color/dirt_white"
+        android:paddingBottom="@dimen/default_PaddingMargin"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/postToolbar">
+
+
+
+        <TextView
+            android:id="@+id/postContentText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/upperInfoPost"
+            android:layout_marginHorizontal="@dimen/default_PaddingMargin"
+            android:layout_marginTop="@dimen/default_PaddingMargin"
+            android:text="WMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWM"
+            android:textColor="@color/black"
+            android:visibility="gone" />
+
+        <ImageView
+            android:id="@+id/postContentImage"
+            android:layout_width="match_parent"
+            android:layout_height="230dp"
+            android:layout_below="@+id/postContentText"
+            android:layout_marginHorizontal="@dimen/default_PaddingMargin"
+            android:layout_marginTop="@dimen/default_PaddingMargin"
+            android:adjustViewBounds="true"
+            android:scaleType="fitCenter"
+            android:visibility="gone"
+            tools:srcCompat="@tools:sample/backgrounds/scenic" />
+
+    </LinearLayout>
+
+    <View
+        android:id="@+id/border1"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/ok_green"
+        app:layout_constraintTop_toBottomOf="@id/contentLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginHorizontal="@dimen/default_PaddingMargin"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <ScrollView
+        android:id="@+id/scrollViewCommentsMain"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:background="@color/dirt_white"
+        app:layout_constraintTop_toBottomOf="@+id/border1" >
+
+        <LinearLayout
+            android:id="@+id/commentsLayout"
+            android:layout_width="match_parent"
+            android:layout_marginHorizontal="@dimen/default_PaddingMargin"
+            android:layout_marginVertical="5dp"
+            android:orientation="vertical"
+            android:layout_height="wrap_content" >
+
+
+        </LinearLayout>
+
+    </ScrollView>
+
+    <com.facebook.shimmer.ShimmerFrameLayout
+        android:id="@+id/loadingComments"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginVertical="@dimen/default_PaddingMargin"
+        app:layout_constraintBottom_toTopOf="@+id/leaveCommentSection"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:background="@color/dirt_white"
+        app:layout_constraintTop_toBottomOf="@+id/scrollViewCommentsMain">
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" >
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical" >
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+
+                    <LinearLayout
+                        android:id="@+id/ll1"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:id="@+id/iv1"
+                            app:srcCompat="@drawable/baseline_person_24"
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:foreground="@drawable/layout_loading_shimmer"
+                            android:layout_marginHorizontal="@dimen/default_PaddingMargin" />
+
+                        <LinearLayout
+                            android:id="@+id/ll2"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/tv11"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="postCreator"
+                                android:foreground="@drawable/layout_loading_shimmer"
+                                android:textColor="@color/ok_green"
+                                android:textSize="16sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/tv2"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="postTimeCreate"
+                                android:foreground="@drawable/layout_loading_shimmer"
+                                android:textColor="@color/silver" />
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/tv1"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/ll1"
+                        android:layout_marginHorizontal="@dimen/default_PaddingMargin"
+                        android:layout_marginTop="@dimen/default_PaddingMargin"
+                        android:foreground="@drawable/layout_loading_shimmer"
+                        android:text="How u seeing this text?\n\n\n\n"
+                        android:visibility="visible" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_below="@id/tv1"
+                        android:layout_marginHorizontal="@dimen/default_PaddingMargin"
+                        android:layout_marginVertical="@dimen/default_PaddingMargin"
+                        android:background="@color/ok_green" />
+
+                </RelativeLayout>
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+
+                    <LinearLayout
+                        android:id="@+id/ll12"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:id="@+id/iv12"
+                            app:srcCompat="@drawable/baseline_person_24"
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:foreground="@drawable/layout_loading_shimmer"
+                            android:layout_marginHorizontal="@dimen/default_PaddingMargin" />
+
+                        <LinearLayout
+                            android:id="@+id/ll22"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/tv112"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="postCreator"
+                                android:foreground="@drawable/layout_loading_shimmer"
+                                android:textColor="@color/ok_green"
+                                android:textSize="16sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/tv22"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="postTimeCreate"
+                                android:foreground="@drawable/layout_loading_shimmer"
+                                android:textColor="@color/silver" />
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/tv12"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/ll12"
+                        android:layout_marginHorizontal="@dimen/default_PaddingMargin"
+                        android:layout_marginTop="@dimen/default_PaddingMargin"
+                        android:foreground="@drawable/layout_loading_shimmer"
+                        android:text="How u seeing this text?\n\n\n\n"
+                        android:visibility="visible" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_below="@id/tv12"
+                        android:layout_marginHorizontal="@dimen/default_PaddingMargin"
+                        android:layout_marginVertical="@dimen/default_PaddingMargin"
+                        android:background="@color/ok_green" />
+
+                </RelativeLayout>
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+
+                    <LinearLayout
+                        android:id="@+id/ll13"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:id="@+id/iv13"
+                            app:srcCompat="@drawable/baseline_person_24"
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:foreground="@drawable/layout_loading_shimmer"
+                            android:layout_marginHorizontal="@dimen/default_PaddingMargin" />
+
+                        <LinearLayout
+                            android:id="@+id/ll23"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/tv113"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="postCreator"
+                                android:foreground="@drawable/layout_loading_shimmer"
+                                android:textColor="@color/ok_green"
+                                android:textSize="16sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/tv23"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="postTimeCreate"
+                                android:foreground="@drawable/layout_loading_shimmer"
+                                android:textColor="@color/silver" />
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/tv13"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/ll13"
+                        android:layout_marginHorizontal="@dimen/default_PaddingMargin"
+                        android:layout_marginTop="@dimen/default_PaddingMargin"
+                        android:foreground="@drawable/layout_loading_shimmer"
+                        android:text="How u seeing this text?\n\n\n\n"
+                        android:visibility="visible" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_below="@id/tv13"
+                        android:layout_marginHorizontal="@dimen/default_PaddingMargin"
+                        android:layout_marginVertical="@dimen/default_PaddingMargin"
+                        android:background="@color/ok_green" />
+
+                </RelativeLayout>
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+
+                    <LinearLayout
+                        android:id="@+id/ll14"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:id="@+id/iv14"
+                            app:srcCompat="@drawable/baseline_person_24"
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:foreground="@drawable/layout_loading_shimmer"
+                            android:layout_marginHorizontal="@dimen/default_PaddingMargin" />
+
+                        <LinearLayout
+                            android:id="@+id/ll24"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/tv114"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="postCreator"
+                                android:foreground="@drawable/layout_loading_shimmer"
+                                android:textColor="@color/ok_green"
+                                android:textSize="16sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/tv24"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="postTimeCreate"
+                                android:foreground="@drawable/layout_loading_shimmer"
+                                android:textColor="@color/silver" />
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/tv14"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/ll14"
+                        android:layout_marginHorizontal="@dimen/default_PaddingMargin"
+                        android:layout_marginTop="@dimen/default_PaddingMargin"
+                        android:foreground="@drawable/layout_loading_shimmer"
+                        android:text="How u seeing this text?\n\n\n\n"
+                        android:visibility="visible" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_below="@id/tv14"
+                        android:layout_marginHorizontal="@dimen/default_PaddingMargin"
+                        android:layout_marginVertical="@dimen/default_PaddingMargin"
+                        android:background="@color/ok_green" />
+
+                </RelativeLayout>
+
+            </LinearLayout>
+
+        </ScrollView>
+
+    </com.facebook.shimmer.ShimmerFrameLayout>
+
+    <View
+        android:id="@+id/border2"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/ok_green"
+        app:layout_constraintBottom_toTopOf="@id/leaveCommentSection"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginHorizontal="@dimen/default_PaddingMargin"
+        app:layout_constraintStart_toStartOf="parent" />
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:layout_margin="30dp"
+    android:padding="10dp"
+    android:background="@color/dirt2_white">
+
+    <ImageButton
+        android:id="@+id/popup_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:backgroundTint="@color/transparent"
+        android:src="@drawable/baseline_cancel_24"
+        android:tint="@color/ok_green" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/imageView3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:srcCompat="@drawable/custom_loading" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/textView19"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Источник: "
+                android:textColor="@color/ok_green"
+                android:textStyle="bold" />
+
+            <ImageButton
+                android:id="@+id/like_this_source_view_news"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:backgroundTint="@color/transparent"
+                android:tint="@color/ok_green"
+                app:srcCompat="@drawable/baseline_favorite_24" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbarStyle="insideOverlay">
+
+        <TextView
+            android:id="@+id/textView30"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:ellipsize="marquee"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:gravity="center"
+            android:marqueeRepeatLimit="marquee_forever"
+            android:scrollbarAlwaysDrawVerticalTrack="true"
+            android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Quis commodo odio aenean sed adipiscing diam donec adipiscing. Amet massa vitae tortor condimentum lacinia quis vel eros donec. Etiam erat velit scelerisque in dictum non consectetur. Tortor at risus viverra adipiscing at in tellus integer feugiat. Mattis vulputate enim nulla aliquet. Sed odio morbi quis commodo. Feugiat vivamus at augue eget arcu dictum varius. Purus semper eget duis at tellus at urna. Cras ornare arcu dui vivamus arcu felis bibendum ut. Eu nisl nunc mi ipsum faucibus vitae. Pretium fusce id velit ut tortor pretium viverra suspendisse. Est velit egestas dui id ornare. Viverra mauris in aliquam sem fringilla ut morbi. Elit eget gravida cum sociis natoque penatibus et magnis. Felis donec et odio pellentesque diam volutpat. Neque convallis a cras semper auctor. Facilisi morbi tempus iaculis urna id. Eu ultrices vitae auctor eu augue ut.  Aliquam etiam erat velit scelerisque in. Nisl rhoncus mattis rhoncus urna neque. Egestas congue quisque egestas diam. Fermentum dui faucibus in ornare quam. Leo integer malesuada nunc vel risus. Volutpat commodo sed egestas egestas fringilla phasellus. Commodo odio aenean sed adipiscing diam donec adipiscing. Condimentum vitae sapien pellentesque habitant. Facilisis gravida neque convallis a cras semper auctor neque. Sed nisi lacus sed viverra tellus in hac habitasse. Feugiat vivamus at augue eget arcu. Sit amet commodo nulla facilisi nullam vehicula ipsum a arcu. Mus mauris vitae ultricies leo integer malesuada. Aliquam ut porttitor leo a diam sollicitudin. Congue eu consequat ac felis donec et. Enim facilisis gravida neque convallis a cras semper. Volutpat lacus laoreet non curabitur gravida arcu ac. Ac tortor vitae purus faucibus ornare suspendisse sed. Enim blandit volutpat maecenas volutpat blandit.  Phasellus faucibus scelerisque eleifend donec. Ut morbi tincidunt augue interdum velit euismod in pellentesque massa. Varius duis at consectetur lorem donec massa. Nullam ac tortor vitae purus faucibus ornare suspendisse sed nisi. Volutpat maecenas volutpat blandit aliquam etiam. Ornare quam viverra orci sagittis. Dignissim enim sit amet venenatis urna cursus. Consectetur libero id faucibus nisl tincidunt eget nullam non. Neque laoreet suspendisse interdum consectetur libero id faucibus nisl tincidunt. Odio tempor orci dapibus ultrices in iaculis. Proin nibh nisl condimentum id venenatis a. Aliquam purus sit amet luctus venenatis lectus. Malesuada nunc vel risus commodo viverra maecenas accumsan lacus. Eget gravida cum sociis natoque penatibus et magnis dis. Laoreet suspendisse interdum consectetur libero id faucibus. Et netus et malesuada fames ac turpis egestas. Hendrerit gravida rutrum quisque non. Posuere urna nec tincidunt praesent semper feugiat nibh sed pulvinar. In dictum non consectetur a erat nam at. Etiam sit amet nisl purus in mollis nunc sed id.  Metus vulputate eu scelerisque felis imperdiet proin fermentum. Ornare quam viverra orci sagittis eu volutpat. Eu sem integer vitae justo eget magna fermentum iaculis. Quis auctor elit sed vulputate mi sit amet. Morbi quis commodo odio aenean sed adipiscing diam. Eleifend mi in nulla posuere sollicitudin aliquam ultrices sagittis. Malesuada pellentesque elit eget gravida cum sociis natoque penatibus. Vestibulum morbi blandit cursus risus at ultrices mi. Elementum integer enim neque volutpat ac tincidunt. Aliquet risus feugiat in ante. Mauris in aliquam sem fringilla.  Dolor purus non enim praesent. Pharetra sit amet aliquam id. Nulla porttitor massa id neque aliquam. Mattis aliquam faucibus purus in massa tempor nec feugiat. Vestibulum morbi blandit cursus risus at ultrices mi tempus imperdiet. Nunc faucibus a pellentesque sit. Tempor commodo ullamcorper a lacus vestibulum. Nunc non blandit massa enim nec dui nunc. Sed blandit libero volutpat sed cras. Euismod lacinia at quis risus sed vulputate odio. Lacus vestibulum sed arcu non odio euismod. Vivamus at augue eget arcu dictum varius duis at consectetur. Morbi non arcu risus quis. Diam sit amet nisl suscipit adipiscing bibendum est ultricies integer. Platea dictumst vestibulum rhoncus est pellentesque elit ullamcorper. Integer enim neque volutpat ac tincidunt vitae semper quis lectus. Laoreet id donec ultrices tincidunt arcu."
+            android:textColor="@color/black"
+            android:textSize="16sp" />
+
+    </ScrollView>
+
+</LinearLayout>

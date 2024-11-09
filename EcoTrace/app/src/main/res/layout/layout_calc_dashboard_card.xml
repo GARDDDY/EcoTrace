@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/cardRoot"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?android:attr/selectableItemBackground"
+    android:clickable="true"
+    android:focusable="true"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:paddingHorizontal="@dimen/default_PaddingMargin"
+    android:paddingVertical="14dp">
+
+    <ImageView
+        android:id="@+id/calcIcon"
+        android:layout_width="28dp"
+        android:layout_height="28dp"
+        android:layout_marginEnd="16dp"
+        android:src="@drawable/baseline_fastfood_24"
+        app:tint="@color/ok_green"
+        tools:ignore="ContentDescription" />
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/calcName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/ok_green"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            tools:text="Пища" />
+
+        <TextView
+            android:id="@+id/calcStatus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:textColor="@color/silver"
+            android:textSize="13sp"
+            tools:text="Ещё не проходили" />
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/calcCheck"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginEnd="8dp"
+        android:src="@drawable/baseline_check_24"
+        android:visibility="gone"
+        app:tint="@color/ok_green"
+        tools:ignore="ContentDescription" />
+
+    <ImageView
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        android:src="@drawable/baseline_arrow_forward_ios_24"
+        app:tint="@color/silver"
+        tools:ignore="ContentDescription" />
+
+</LinearLayout>

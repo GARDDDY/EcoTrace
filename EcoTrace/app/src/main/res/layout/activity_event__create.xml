@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/dirt_white"
+    android:fitsSystemWindows="true"
+    tools:context=".ui.more.events.CreateEventActivity">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar9"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/endCreation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/ok_green"
+        android:text="@string/end"
+        android:textColor="@color/dirt_white"
+        android:textSize="20sp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/toolbar9"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/toolbar9" />
+
+    <TextView
+        android:id="@+id/textView31"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="10dp"
+        android:text="step"
+        android:textColor="@color/ok_green"
+        android:textSize="20sp"
+        app:layout_constraintTop_toBottomOf="@id/toolbar9"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+    <!-- debug text -->
+
+    <TextView
+        android:id="@+id/textView33"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="10dp"
+        android:text="title"
+        android:textColor="@color/ok_green"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:layout_marginTop="@dimen/default_PaddingMargin"
+        app:layout_constraintTop_toBottomOf="@id/textView31"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+    <!-- debug text -->
+
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/viewPagerCreateEvent"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="@dimen/default_PaddingMargin"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/nextPageBtn"
+        app:layout_constraintStart_toEndOf="@+id/prevPageBtn"
+        app:layout_constraintTop_toBottomOf="@+id/textView33" />
+
+    <ImageButton
+        android:id="@+id/prevPageBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:tint="@color/ok_green"
+        android:backgroundTint="@color/transparent"
+        android:rotationY="180"
+        android:visibility="gone"
+        android:src="@drawable/baseline_arrow_forward_ios_24"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar9" />
+
+    <ImageButton
+        android:id="@+id/nextPageBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:tint="@color/ok_green"
+        android:backgroundTint="@color/transparent"
+        android:src="@drawable/baseline_arrow_forward_ios_24"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar9" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

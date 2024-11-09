@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:fitsSystemWindows="true"
+    android:layout_width="match_parent"
+    android:background="@color/dirt_white"
+    android:layout_height="match_parent"
+    tools:context=".ui.more.groups.CreateGroupActivity">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/finishCreateGroup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/end"
+        android:backgroundTint="@color/silver"
+        android:textColor="@color/dirt_white"
+        android:layout_marginEnd="@dimen/default_PaddingMargin"
+        app:layout_constraintBottom_toBottomOf="@+id/toolbar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/toolbar" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/groupImage"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="100dp"
+                android:maxHeight="250dp"
+                android:adjustViewBounds="true"
+                android:foreground="#75000000"
+                android:scaleType="fitXY"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@color/silver"
+                tools:src="@tools:sample/backgrounds/scenic" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/groupNameLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/default_PaddingMargin"
+                android:layout_marginTop="10dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:counterTextColor="@color/silver"
+                style="@style/CustomTextInputLayout"
+                android:textColorHint="@color/silver"
+                app:layout_constraintTop_toBottomOf="@+id/groupImage">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/groupName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:inputType="text"
+                    android:hint="@string/groupName"
+                    android:textColor="@color/black"
+                    android:textColorHint="@color/silver" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/groupAboutLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                android:layout_marginHorizontal="@dimen/default_PaddingMargin"
+                android:layout_marginTop="10dp"
+                app:counterTextColor="@color/silver"
+                style="@style/CustomTextInputLayout"
+                android:textColorHint="@color/silver"
+                app:layout_constraintTop_toBottomOf="@+id/groupNameLayout">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/groupAbout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:inputType="text"
+                    android:textColor="@color/black"
+                    android:textColorHint="@color/silver"
+                    android:hint="@string/aboutYourGroup" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <TextView
+                android:id="@+id/groupTypeLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/default_PaddingMargin"
+                android:layout_marginTop="5dp"
+                android:text="@string/groupTypeLabel"
+                android:textColor="@color/ok_green"
+                android:textSize="16sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/groupAboutLayout" />
+
+            <com.google.android.material.button.MaterialButtonToggleGroup
+                android:id="@+id/groupTypeToggle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/default_PaddingMargin"
+                android:layout_marginTop="8dp"
+                app:checkedButton="@id/typeOpen"
+                app:selectionRequired="true"
+                app:singleSelection="true"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/groupTypeLabel">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/typeOpen"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/opened"
+                    android:textColor="@color/ok_green"
+                    app:strokeColor="@color/ok_green" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/typeClosed"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/private_group"
+                    android:textColor="@color/ok_green"
+                    app:strokeColor="@color/ok_green" />
+            </com.google.android.material.button.MaterialButtonToggleGroup>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/groupRulesLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/default_PaddingMargin"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="@dimen/default_PaddingMargin"
+                app:counterTextColor="@color/silver"
+                style="@style/CustomTextInputLayout"
+                android:textColorHint="@color/silver"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/groupTypeToggle">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/groupRules"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:minLines="3"
+                    android:gravity="top"
+                    android:inputType="textMultiLine"
+                    android:textColor="@color/black"
+                    android:textColorHint="@color/silver"
+                    android:hint="@string/groupRulesHint" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

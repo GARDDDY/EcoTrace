@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/dirt_white"
+    android:fitsSystemWindows="true"
+    tools:context=".ui.more.ecocalculator.EcoCalcResultsActivity">
+
+    <android.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbar">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingHorizontal="@dimen/default_PaddingMargin"
+            android:paddingBottom="@dimen/default_PaddingMargin">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginVertical="@dimen/default_PaddingMargin"
+                android:text="@string/carbonFootprintGraph"
+                android:textColor="@color/ok_green"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/noGraphWarning"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/resultsWillAppearHere"
+                android:textAlignment="center"
+                android:textColor="@color/silver"
+                android:textSize="16sp"
+                android:visibility="gone" />
+
+            <LinearLayout
+                android:id="@+id/graphControls"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingTop="10dp">
+
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/graphTypesChipGroup"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/default_PaddingMargin"
+                    app:chipSpacingHorizontal="6dp"
+                    app:singleSelection="false">
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chipFood"
+                        style="@style/Widget.Material3.Chip.Filter"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checked="true"
+                        android:text="@string/food"
+                        android:textColor="@color/selector_chip_text"
+                        app:chipBackgroundColor="@color/selector_chip_background" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chipWater"
+                        style="@style/Widget.Material3.Chip.Filter"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checked="true"
+                        android:text="@string/water"
+                        android:textColor="@color/selector_chip_text"
+                        app:chipBackgroundColor="@color/selector_chip_background" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chipTrash"
+                        style="@style/Widget.Material3.Chip.Filter"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checked="true"
+                        android:text="@string/trash"
+                        android:textColor="@color/selector_chip_text"
+                        app:chipBackgroundColor="@color/selector_chip_background" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chipEnergy"
+                        style="@style/Widget.Material3.Chip.Filter"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checked="true"
+                        android:text="@string/energy"
+                        android:textColor="@color/selector_chip_text"
+                        app:chipBackgroundColor="@color/selector_chip_background" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chipTransport"
+                        style="@style/Widget.Material3.Chip.Filter"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checked="true"
+                        android:text="@string/transport"
+                        android:textColor="@color/selector_chip_text"
+                        app:chipBackgroundColor="@color/selector_chip_background" />
+
+                </com.google.android.material.chip.ChipGroup>
+
+                <com.google.android.material.button.MaterialButtonToggleGroup
+                    android:id="@+id/graphPeriodToggle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:layout_marginBottom="@dimen/default_PaddingMargin"
+                    app:selectionRequired="true"
+                    app:singleSelection="true">
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/period7Button"
+                        style="@style/Widget.Material3.Button.OutlinedButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checked="true"
+                        android:text="@string/by7days"
+                        android:textColor="@color/selector_chip_text"
+                        app:backgroundTint="@color/selector_chip_background" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/period30Button"
+                        style="@style/Widget.Material3.Button.OutlinedButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/by30days"
+                        android:textColor="@color/selector_chip_text"
+                        app:backgroundTint="@color/selector_chip_background" />
+
+                </com.google.android.material.button.MaterialButtonToggleGroup>
+
+            </LinearLayout>
+
+            <RelativeLayout
+                android:id="@+id/chartCard"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:background="@color/dirt2_white"
+                android:foreground="@drawable/bottom_rounded_border"
+                android:padding="10dp"
+                android:visibility="gone">
+
+                <com.github.mikephil.charting.charts.LineChart
+                    android:id="@+id/carbonGraph"
+                    android:layout_width="match_parent"
+                    android:layout_height="280dp" />
+            </RelativeLayout>
+
+            <com.facebook.shimmer.ShimmerFrameLayout
+                android:id="@+id/graphLoading"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingVertical="10dp"
+                app:shimmer_auto_start="true"
+                app:shimmer_clip_to_children="true">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="280dp"
+                    android:foreground="@drawable/layout_loading_shimmer"
+                    tools:ignore="ContentDescription" />
+            </com.facebook.shimmer.ShimmerFrameLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginVertical="@dimen/default_PaddingMargin"
+                android:background="@color/dirt2_white" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginBottom="@dimen/default_PaddingMargin"
+                android:text="@string/advicesTitle"
+                android:textColor="@color/ok_green"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/noAdvicesWarning"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/specifyDataWhileTakingTestsSoDataWillAppearHere"
+                android:textAlignment="center"
+                android:textColor="@color/silver"
+                android:textSize="14sp"
+                android:visibility="gone" />
+
+            <com.facebook.shimmer.ShimmerFrameLayout
+                android:id="@+id/advicesLoading"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingVertical="10dp"
+                app:shimmer_auto_start="true"
+                app:shimmer_clip_to_children="true">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="180dp"
+                    android:foreground="@drawable/layout_loading_shimmer"
+                    tools:ignore="ContentDescription" />
+            </com.facebook.shimmer.ShimmerFrameLayout>
+
+            <LinearLayout
+                android:id="@+id/specifyBlocksContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" />
+
+        </LinearLayout>
+    </ScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

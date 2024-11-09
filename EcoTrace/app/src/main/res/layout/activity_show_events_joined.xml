@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:background="@color/dirt_white"
+    android:fitsSystemWindows="true"
+    android:layout_height="match_parent">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar10"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textColor="@color/ok_green"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:text="Мои мероприятия" />
+
+    </androidx.appcompat.widget.Toolbar>
+
+    <HorizontalScrollView
+        android:id="@+id/hsv1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:scrollbars="none"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar10">
+
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/tagsChipGroup"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            app:checkedChip="@id/activeEvents"
+            app:singleLine="true"
+            app:singleSelection="true">
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/upcomingEvents"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/dirt_white"
+                android:text="Предстоящие мероприятия"
+                android:textColor="@color/ok_green"
+                app:chipStrokeColor="@color/ok_green"
+                app:chipStrokeWidth="2dp" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/activeEvents"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/dirt_white"
+                android:text="Активные мероприятия"
+                android:textColor="@color/ok_green"
+                app:chipStrokeColor="@color/ok_green"
+                app:chipStrokeWidth="2dp" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/finishedEvents"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/dirt_white"
+                android:text="Прошедшие мероприятия"
+                android:textColor="@color/ok_green"
+                app:chipStrokeColor="@color/ok_green"
+                app:chipStrokeWidth="2dp" />
+        </com.google.android.material.chip.ChipGroup>
+
+    </HorizontalScrollView>
+
+    <TextView
+        android:id="@+id/textNotFoundEvents"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_weight="1"
+        android:visibility="gone"
+        android:text="Среди ваших мероприятий нет подходящих"
+        android:textAlignment="center"
+        android:textColor="@color/ok_green"
+        android:textSize="18sp"
+
+        android:textStyle="bold"
+        app:layout_constraintTop_toBottomOf="@+id/hsv1" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginHorizontal="10dp"
+        android:layout_marginTop="5dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textNotFoundEvents">
+
+        <LinearLayout
+            android:id="@+id/relevantEvents"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+        </LinearLayout>
+    </ScrollView>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

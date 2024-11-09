@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:padding="20dp"
+        android:background="@color/dirt_white">
+
+        <TextView
+            android:id="@+id/text1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:textColor="@color/ok_green"
+            android:textStyle="bold"
+            android:text="Показывать сначала" />
+
+
+        <RadioGroup
+            android:id="@+id/sortOptions"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/text1" >
+
+            <RadioButton
+                android:id="@+id/sortNewest"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="15dp"
+                android:backgroundTint="@color/ok_green"
+                android:layoutDirection="rtl"
+                android:text="Новые группы"
+                android:textColor="@color/ok_green"
+                android:textSize="16sp" />
+
+            <RadioButton
+                android:id="@+id/sortOldest"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="15dp"
+                android:backgroundTint="@color/ok_green"
+                android:layoutDirection="rtl"
+                android:text="Старые группы"
+                android:textColor="@color/ok_green"
+                android:textSize="16sp" />
+
+            <RadioButton
+                android:id="@+id/sortMorePeople"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="15dp"
+                android:backgroundTint="@color/ok_green"
+                android:layoutDirection="rtl"
+                android:text="Где больше участников"
+                android:textColor="@color/ok_green"
+                android:textSize="16sp" />
+
+            <RadioButton
+                android:id="@+id/sortLessPeople"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="15dp"
+                android:backgroundTint="@color/ok_green"
+                android:layoutDirection="rtl"
+                android:text="Где меньше участников"
+                android:textColor="@color/ok_green"
+                android:textSize="16sp" />
+        </RadioGroup>
+
+        <Button
+            android:id="@+id/applySort"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/sortOptions"
+            android:textColor="@color/dirt_white"
+            android:text="Применить" />
+
+    </RelativeLayout>
+</FrameLayout>

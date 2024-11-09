@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/root_layout_sign"
+    android:background="@color/dirt_white"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:padding="@dimen/default_PaddingMargin">
+
+        <TextView
+            android:id="@+id/tw1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/personalInfo"
+            android:textColor="@color/black"
+            android:textSize="18sp"
+            android:layout_centerHorizontal="true" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/emailDataLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tw1"
+            android:layout_marginTop="@dimen/default_PaddingMargin"
+            android:layout_marginHorizontal="50dp">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/emailData"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColorHint="@color/silver"
+                android:inputType="textEmailAddress"
+                android:hint="Email" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/passwordDataLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/emailDataLayout"
+            android:layout_marginTop="@dimen/default_PaddingMargin"
+            app:passwordToggleEnabled="true"
+            app:passwordToggleTint="@color/silver"
+            android:layout_marginHorizontal="50dp">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/passwordData"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColorHint="@color/silver"
+                android:inputType="textPassword"
+                android:hint="@string/password" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/fullnameDataLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/passwordDataLayout"
+            android:layout_marginTop="@dimen/default_PaddingMargin"
+            android:layout_marginHorizontal="50dp">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/fullnameData"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColorHint="@color/silver"
+                android:inputType="text"
+                android:hint="@string/howToCallYou" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <RadioGroup
+            android:id="@+id/userGender"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/fullnameDataLayout"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/default_PaddingMargin"
+            android:orientation="horizontal">
+
+            <androidx.appcompat.widget.AppCompatRadioButton
+                android:id="@+id/genderMale"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/male"
+                android:textColor="@color/black" />
+
+            <androidx.appcompat.widget.AppCompatRadioButton
+                android:id="@+id/genderFemale"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/female"
+                android:textColor="@color/black" />
+
+        </RadioGroup>
+
+        <TextView
+            android:id="@+id/tw2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/publicInfo"
+            android:textColor="@color/black"
+            android:textSize="18sp"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@id/userGender"
+            android:layout_marginTop="16dp"/>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/usernameDataLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tw2"
+            android:layout_marginVertical="@dimen/default_PaddingMargin"
+            android:layout_marginHorizontal="50dp">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/usernameData"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColorHint="@color/silver"
+                android:inputType="textEmailAddress"
+                android:hint="@string/username" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+        <HorizontalScrollView
+            android:id="@+id/userFilters"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/usernameDataLayout"
+            android:layout_alignStart="@id/userGender"
+            android:layout_alignEnd="@id/userGender"
+            android:scrollbars="none"
+            android:layout_marginTop="@dimen/default_PaddingMargin">
+
+            <LinearLayout
+                android:id="@+id/userFiltersLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+            </LinearLayout>
+        </HorizontalScrollView>
+
+        <Button
+            android:id="@+id/registerButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/register"
+            android:textColor="@color/dirt_white"
+            android:backgroundTint="@color/ok_green"
+            android:layout_below="@id/userFilters"
+            android:layout_marginHorizontal="50dp"
+            android:layout_marginTop="16dp"/>
+
+        <LinearLayout
+            android:id="@+id/ll1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/registerButton"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/default_PaddingMargin"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/silver"
+                android:text="@string/haveAnAccount"/>
+
+            <TextView
+                android:id="@+id/gotoLogin"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/login"
+                android:textColor="@color/black"
+                android:layout_marginStart="16dp"/>
+        </LinearLayout>
+
+<!--        <TextView-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_centerHorizontal="true"-->
+<!--            android:textColor="@color/silver"-->
+<!--            android:text="@string/dataFillNecessarily"-->
+<!--            android:layout_below="@id/ll1"-->
+<!--            android:layout_marginTop="16dp"/>-->
+    </RelativeLayout>
+</RelativeLayout>

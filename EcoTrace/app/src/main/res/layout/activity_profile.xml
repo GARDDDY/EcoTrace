@@ -1,0 +1,289 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/dirt_white"
+    android:fitsSystemWindows="true"
+    tools:context=".ui.more.profile.ProfileActivity">
+
+    <!-- Только тулбар и TabLayout — постоянная высота, ничего сворачивать не нужно. TabLayout всегда
+         закреплён сразу под тулбаром. Шапка профиля теперь обычный контент внутри NestedScrollView ниже. -->
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/dirt_white"
+        android:fitsSystemWindows="true"
+        app:liftOnScroll="false"
+        app:elevation="0dp">
+
+        <android.widget.Toolbar
+            android:id="@+id/toolbarProfile"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/transparent"
+            android:titleTextColor="@color/transparent"
+            app:layout_scrollFlags="noScroll">
+
+            <TextView
+                android:id="@+id/toolbarUsername"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:alpha="0"
+                android:textColor="@color/ok_green"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <ImageButton
+                android:id="@+id/setFriend"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end|center_vertical"
+                android:layout_marginEnd="15dp"
+                android:backgroundTint="@color/transparent"
+                android:visibility="gone"
+                app:srcCompat="@drawable/baseline_person_add_24"
+                app:tint="@color/ok_green" />
+
+            <ImageButton
+                android:id="@+id/toolbarFilterButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end|center_vertical"
+                android:background="@color/transparent"
+                android:visibility="gone"
+                android:layout_margin="15dp"
+                app:srcCompat="@drawable/baseline_sort_24"
+                app:tint="@color/ok_green" />
+
+        </android.widget.Toolbar>
+
+        <!-- Дубль-заглушка: видна только когда шапка профиля уже уехала за пределы экрана — тогда
+             создаёт иллюзию, что "настоящий" TabLayout ниже прилип сюда. Настоящая логика (выбор
+             вкладки, показ фрагмента) — на tabLayout ниже, этот только зеркалит выбор и оформление. -->
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tabLayoutSticky"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/transparent"
+            android:visibility="gone"
+            app:tabIndicatorColor="@color/ok_green"
+            app:tabMode="fixed"
+            android:layout_marginBottom="10dp"
+            app:tabSelectedTextColor="@color/ok_green"
+            app:tabTextColor="@color/black">
+
+            <com.google.android.material.tabs.TabItem
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Калькулятор" />
+
+            <com.google.android.material.tabs.TabItem
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Активность" />
+
+            <com.google.android.material.tabs.TabItem
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Друзья" />
+
+            <com.google.android.material.tabs.TabItem
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Группы" />
+
+        </com.google.android.material.tabs.TabLayout>
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/refreshProfile"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <androidx.core.widget.NestedScrollView
+            android:id="@+id/fullProfileScrollView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scrollbars="none">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <!-- Шапка профиля — обычный контент, уезжает вверх вместе со скроллом, как и всё остальное. -->
+                <FrameLayout
+                    android:id="@+id/profileHeaderWrapper"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <RelativeLayout
+                        android:id="@+id/userMainInformationLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="15dp"
+                        android:layout_marginTop="5dp"
+                        android:visibility="visible">
+
+                        <ImageView
+                            android:id="@+id/userImageProfile"
+                            android:layout_width="96dp"
+                            android:layout_height="96dp"
+                            android:layout_centerHorizontal="true"
+                            android:scaleType="centerCrop"
+                            app:srcCompat="@drawable/baseline_person_24" />
+
+                        <RelativeLayout
+                            android:id="@+id/userCountryLayout"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/userImageProfile"
+                            android:layout_centerHorizontal="true"
+                            android:layout_marginTop="6dp"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:id="@+id/userUsernameProfile"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="username"
+                                android:textColor="@color/ok_green"
+                                android:textSize="20sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/userCountryFlag"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="10dp"
+                                android:layout_toEndOf="@id/userUsernameProfile"
+                                android:text="🏳️"
+                                android:textSize="20sp" />
+
+                        </RelativeLayout>
+
+                        <RelativeLayout
+                            android:id="@+id/userExpLayout"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/userCountryLayout"
+                            android:layout_centerHorizontal="true"
+                            android:layout_marginTop="4dp">
+
+                            <ImageView
+                                android:id="@+id/userExperienceImageProfile"
+                                android:layout_width="16dp"
+                                android:layout_height="16dp"
+                                app:srcCompat="@drawable/baseline_circle_24" />
+
+                            <TextView
+                                android:id="@+id/userExperienceProfile"
+                                android:layout_width="wrap_content"
+                                android:layout_height="16dp"
+                                android:layout_marginStart="10dp"
+                                android:layout_toEndOf="@id/userExperienceImageProfile"
+                                android:text="1900"
+                                android:textAlignment="center"
+                                android:textColor="@color/ok_green"
+                                android:textSize="12sp"
+                                android:textStyle="bold" />
+
+                        </RelativeLayout>
+
+                        <TextView
+                            android:id="@+id/userAboutProfile"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/userExpLayout"
+                            android:layout_centerHorizontal="true"
+                            android:layout_marginTop="6dp"
+                            android:layout_marginBottom="4dp"
+                            android:ellipsize="end"
+                            android:hint="@string/noDescription"
+                            android:maxLines="2"
+                            android:text="@string/lorem_ipsum"
+                            android:textAlignment="center"
+                            android:textColor="@color/silver"
+                            android:textColorHint="@color/silver" />
+
+                    </RelativeLayout>
+
+                    <com.facebook.shimmer.ShimmerFrameLayout
+                        android:id="@+id/userMainInformationLayoutLoading"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="15dp"
+                        android:layout_marginTop="5dp"
+                        app:shimmer_auto_start="true"
+                        app:shimmer_clip_to_children="true">
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+
+                            <ImageView
+                                android:layout_width="96dp"
+                                android:layout_height="96dp"
+                                android:layout_centerHorizontal="true"
+                                app:srcCompat="@drawable/baseline_person_24" />
+
+                        </RelativeLayout>
+                    </com.facebook.shimmer.ShimmerFrameLayout>
+
+                </FrameLayout>
+
+                <!-- Основной TabLayout — здесь и живёт вся логика переключения вкладок. В обычном
+                     потоке, сразу после шапки профиля; уезжает вместе со скроллом, а его роль сверху
+                     (сразу под тулбаром) на время исполняет tabLayoutSticky в AppBarLayout. -->
+                <com.google.android.material.tabs.TabLayout
+                    android:id="@+id/tabLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@color/transparent"
+                    app:tabIndicatorColor="@color/ok_green"
+                    app:tabMode="fixed"
+                    android:layout_marginBottom="10dp"
+                    app:tabSelectedTextColor="@color/ok_green"
+                    app:tabTextColor="@color/black">
+
+                    <com.google.android.material.tabs.TabItem
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Калькулятор" />
+
+                    <com.google.android.material.tabs.TabItem
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Активность" />
+
+                    <com.google.android.material.tabs.TabItem
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Друзья" />
+
+                    <com.google.android.material.tabs.TabItem
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Группы" />
+
+                </com.google.android.material.tabs.TabLayout>
+
+                <FrameLayout
+                    android:id="@+id/tabContentContainer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="15dp" />
+
+            </LinearLayout>
+
+        </androidx.core.widget.NestedScrollView>
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

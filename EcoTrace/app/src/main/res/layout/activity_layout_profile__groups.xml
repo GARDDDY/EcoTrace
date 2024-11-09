@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+        <!-- Ряды по 3 группы добавляются кодом (ProfileTabGroups.currentRow) — сама эта LinearLayout
+             только вертикально складывает готовые ряды. -->
+        <LinearLayout
+            android:id="@+id/groupsLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top"
+            android:orientation="vertical"
+            android:paddingVertical="10dp"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/noGroupsWarning"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/userHaveNotJoinedAnyGroupYetOrHidedThem"
+            android:textAlignment="center"
+            android:textColor="@color/silver"
+            android:textSize="16sp"
+            android:visibility="gone" />
+
+        <com.facebook.shimmer.ShimmerFrameLayout
+            android:id="@+id/userGroupsInformationLayoutLoading"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top"
+            android:paddingVertical="10dp"
+            app:shimmer_auto_start="true"
+            app:shimmer_clip_to_children="true">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:orientation="horizontal">
+
+                    <RelativeLayout
+                        android:layout_width="120dp"
+                        android:layout_height="100dp"
+                        android:layout_marginHorizontal="4dp"
+                        android:background="@color/dirt2_white"
+                        android:foreground="@drawable/bottom_rounded_border" />
+
+                    <RelativeLayout
+                        android:layout_width="120dp"
+                        android:layout_height="100dp"
+                        android:layout_marginHorizontal="4dp"
+                        android:background="@color/dirt2_white"
+                        android:foreground="@drawable/bottom_rounded_border" />
+
+                    <RelativeLayout
+                        android:layout_width="120dp"
+                        android:layout_height="100dp"
+                        android:layout_marginHorizontal="4dp"
+                        android:background="@color/dirt2_white"
+                        android:foreground="@drawable/bottom_rounded_border" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:gravity="center_horizontal"
+                    android:orientation="horizontal">
+
+                    <RelativeLayout
+                        android:layout_width="120dp"
+                        android:layout_height="100dp"
+                        android:layout_marginHorizontal="4dp"
+                        android:background="@color/dirt2_white"
+                        android:foreground="@drawable/bottom_rounded_border" />
+
+                    <RelativeLayout
+                        android:layout_width="120dp"
+                        android:layout_height="100dp"
+                        android:layout_marginHorizontal="4dp"
+                        android:background="@color/dirt2_white"
+                        android:foreground="@drawable/bottom_rounded_border" />
+
+                    <RelativeLayout
+                        android:layout_width="120dp"
+                        android:layout_height="100dp"
+                        android:layout_marginHorizontal="4dp"
+                        android:background="@color/dirt2_white"
+                        android:foreground="@drawable/bottom_rounded_border" />
+                </LinearLayout>
+            </LinearLayout>
+        </com.facebook.shimmer.ShimmerFrameLayout>
+
+</FrameLayout>

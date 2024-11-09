@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:background="@color/dirt_white"
+    android:layout_height="match_parent" >
+    <RelativeLayout
+        android:id="@+id/root_layout_sign"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true">
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/loginDataLayout"
+            android:layout_width="match_parent"
+            android:layout_marginHorizontal="50dp"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/loginData"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/username_email"
+                android:textColorHint="@color/silver"
+                android:textColor="@color/ok_green"
+                android:backgroundTint="@color/ok_green"
+                android:ems="10"
+                android:inputType="textEmailAddress" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/passwordDataLayout"
+            android:layout_width="match_parent"
+            android:layout_marginHorizontal="50dp"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            app:passwordToggleEnabled="true"
+            android:layout_below="@id/loginDataLayout">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/passwordData"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/password"
+                android:textColorHint="@color/silver"
+                android:textColor="@color/ok_green"
+                android:backgroundTint="@color/ok_green"
+                android:ems="10"
+                android:inputType="textPassword"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+<!--        <EditText-->
+<!--            android:id="@+id/passwordData"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_toStartOf="@id/showPasswordButton"-->
+<!--            android:layout_marginStart="50dp"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_centerHorizontal="true"-->
+<!--            android:hint="@string/password"-->
+<!--            android:textColorHint="@color/silver"-->
+<!--            android:textColor="@color/ok_green"-->
+<!--            android:backgroundTint="@color/ok_green"-->
+<!--            android:ems="10"-->
+<!--            android:layout_below="@id/loginData"-->
+<!--            android:inputType="textPassword" />-->
+
+        <Button
+            android:id="@+id/loginButton"
+            android:layout_width="match_parent"
+            android:layout_marginHorizontal="50dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/passwordDataLayout"
+            android:layout_marginTop="@dimen/default_PaddingMargin"
+            android:textColor="@color/dirt_white"
+            android:backgroundTint="@color/ok_green"
+            android:layout_centerHorizontal="true"
+            android:text="@string/login" />
+
+        <TextView
+            android:id="@+id/forgotPassword"
+            android:layout_width="wrap_content"
+            android:layout_below="@id/loginButton"
+            android:layout_centerHorizontal="true"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/default_PaddingMargin"
+            android:textColor="@color/black"
+            android:textSize="15sp"
+            android:text="@string/forgotPassword" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/forgotPassword"
+            android:layout_centerHorizontal="true"
+            android:layout_marginVertical="@dimen/default_PaddingMargin"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/default_PaddingMargin"
+                android:textColor="@color/silver"
+                android:textSize="15sp"
+                android:text="@string/nooAccountYet" />
+
+            <TextView
+                android:id="@+id/gotoRegister"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="15sp"
+                android:layout_marginHorizontal="@dimen/default_PaddingMargin"
+                android:textColor="@color/black"
+                android:text="@string/register" />
+        </LinearLayout>
+
+    </RelativeLayout>
+</RelativeLayout>

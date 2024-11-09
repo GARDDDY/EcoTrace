@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/main"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.yandex.mapkit.mapview.MapView
+        android:id="@+id/createMapPoints"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:id="@+id/editTypes"
+            android:background="#75000000"
+            android:layout_alignParentTop="true"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageButton
+                android:id="@+id/addPlacemark"
+                android:layout_width="100dp"
+                android:layout_height="60dp"
+                android:layout_alignParentStart="true"
+                android:backgroundTint="@color/transparent"
+                android:src="@drawable/search_layer_pin_selected_default"
+                android:text="@string/dot"
+                android:textColor="@color/dirt_white" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="60dp"
+                android:layout_alignEnd="@id/addPlacemark"
+                android:layout_alignStart="@id/addCircle" />
+
+            <ImageButton
+                android:id="@+id/addCircle"
+                android:layout_width="100dp"
+                android:layout_height="60dp"
+                android:backgroundTint="@color/transparent"
+                android:src="@drawable/outline_circle_24"
+                android:scaleType="fitCenter"
+                android:text="@string/circle"
+                android:layout_alignParentEnd="true"
+                android:textColor="@color/dirt_white"
+                app:tint="@color/pair2Color1" />
+
+            <View
+                android:id="@+id/selector"
+                android:layout_width="100dp"
+                android:layout_height="5dp"
+                android:layout_alignBottom="@id/addPlacemark"
+                android:foreground="@color/dirt_white" />
+
+        </RelativeLayout>
+
+    </com.yandex.mapkit.mapview.MapView>
+</LinearLayout>

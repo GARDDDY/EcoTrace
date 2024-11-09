@@ -1,0 +1,10 @@
+sdk.dir=/path/to/your/android/sdk
+
+# https://developer.tech.yandex.ru/services/33
+MAPKIT_API_KEY="YANDEX_MAPKIT_KEY"
+
+SERVER_API_URI="https://your_server.example/"
+
+## Not secrets, e.g. 
+TRANSLATE_WEB_PAGE="https://translate.google.com/"
+TRANSLATE_EXPRESSION="https://ftapi.pythonanywhere.com/"

@@ -1,0 +1,542 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    android:background="@color/dirt_white"
+    tools:context=".ui.more.groups.ShowAllGroupsActivity">
+
+    <android.widget.Toolbar
+        android:id="@+id/toolbar6"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/allGroupsSwipeRefresh"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginHorizontal="@dimen/default_PaddingMargin"
+        android:layout_marginVertical="7dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar6" >
+
+    <ScrollView
+        android:id="@+id/allGroupsScrollView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbars="none" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:id="@+id/userJoinedGroups"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/textView27"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Мои группы"
+                        android:textColor="@color/ok_green"
+                        android:textSize="18sp" />
+
+                    <TextView
+                        android:id="@+id/showAllMyGroups"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:textColor="@color/ok_green"
+                        android:textSize="18sp"
+                        android:textAlignment="textEnd"
+                        app:drawableTint="@color/ok_green"
+                        android:drawablePadding="8dp"
+                        app:drawableEndCompat="@drawable/baseline_arrow_forward_ios_24"
+                        android:text="Все" />
+                </LinearLayout>
+
+                <HorizontalScrollView
+                    android:id="@+id/userJoinedGroupsScroll"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/default_PaddingMargin"
+                    android:scrollbars="none">
+
+                    <LinearLayout
+                        android:id="@+id/userJoinedGroupsLayout"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal" >
+
+                    </LinearLayout>
+                </HorizontalScrollView>
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/noMyGroupsWarning"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/default_PaddingMargin"
+                android:text="У вас пока нет групп"
+                android:textColor="@color/silver"
+                android:textAlignment="center"
+                android:textSize="16sp"
+                android:visibility="gone" />
+
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="10dp"
+                android:textSize="18sp"
+                android:textColor="@color/ok_green"
+                android:text="@string/searchForGroups" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <EditText
+                    android:id="@+id/groupNameEntry"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:ems="10"
+                    android:textColor="@color/ok_green"
+                    android:backgroundTint="@color/ok_green"
+                    android:hint="@string/groupName"
+                    android:inputType="text" />
+
+                <ImageButton
+                    android:id="@+id/sortByButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.2"
+                    android:background="@color/transparent"
+                    app:srcCompat="@drawable/baseline_sort_24"
+                    app:tint="@color/ok_green" />
+
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:background="@color/ok_green"
+                android:layout_marginVertical="20dp"
+                android:layout_height="1dp" />
+
+            <LinearLayout
+                android:id="@+id/allGroupsLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                android:orientation="vertical" />
+            <TextView
+                android:id="@+id/noGroupsWarning"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/noGroupsFoundWithSuchTags"
+                android:textColor="@color/ok_green"
+                android:textAlignment="center"
+                android:textSize="18sp"
+                android:visibility="gone"/>
+
+            <com.facebook.shimmer.ShimmerFrameLayout
+                android:id="@+id/allGroupsLoadingLayout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" >
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical" >
+
+                    <FrameLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:clickable="true"
+                        android:layout_gravity="center"
+                        android:paddingBottom="@dimen/default_PaddingMargin">
+                        <RelativeLayout
+                            android:id="@+id/mrl1"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:foreground="@drawable/bottom_rounded_border"
+                            android:paddingBottom="@dimen/default_PaddingMargin"
+                            android:clipChildren="true"
+                            android:clipToPadding="true"
+                            android:background="@color/dirt_white"
+                            android:orientation="vertical">
+
+                            <ImageView
+                                android:id="@+id/gi1"
+                                android:layout_width="match_parent"
+                                android:layout_height="150dp"
+                                android:scaleType="centerCrop"
+                                android:foreground="@color/silver"
+                                tools:srcCompat="@tools:sample/backgrounds/scenic" />
+
+                            <TextView
+                                android:id="@+id/gn1"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_alignBottom="@+id/gi1"
+                                android:layout_marginBottom="10dp"
+                                android:gravity="bottom"
+                                android:text="Group-name\n"
+                                android:textSize="18sp"
+                                android:foreground="@drawable/layout_loading_shimmer"
+                                android:maxLines="2"
+                                android:ellipsize="end"
+                                android:layout_marginStart="10dp"
+                                android:textColor="@color/dirt_white"
+                                android:textStyle="bold"/>
+
+
+
+
+                            <RelativeLayout
+                                android:id="@+id/sgi1"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="15dp"
+                                android:foreground="@drawable/layout_loading_shimmer"
+                                android:layout_below="@+id/gi1">
+
+                                <ImageView
+                                    android:id="@+id/gmvi1"
+                                    android:layout_width="24dp"
+                                    android:layout_height="24dp"
+                                    android:src="@drawable/baseline_people_24"/>
+
+                                <TextView
+                                    android:id="@+id/gm1"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="10dp"
+                                    android:layout_toEndOf="@id/gmvi1"
+                                    android:textColor="@color/black"
+                                    android:text="-1"
+                                    android:layout_centerVertical="true"
+                                    android:textSize="14sp" />
+
+                                <View
+                                    android:id="@+id/d1"
+                                    android:layout_width="1dp"
+                                    android:layout_height="1dp"
+                                    android:layout_toEndOf="@id/gm1"
+                                    android:layout_marginHorizontal="15dp"/>
+
+                                <ImageView
+                                    android:id="@+id/gsvi1"
+                                    android:layout_width="24dp"
+                                    android:layout_height="24dp"
+                                    android:layout_toEndOf="@id/d1"
+                                    app:tint="@color/ok_green"
+                                    android:src="@drawable/round_lock_open_24" />
+
+                                <TextView
+                                    android:id="@+id/gs1"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="10dp"
+                                    android:layout_toEndOf="@id/gsvi1"
+                                    android:textColor="@color/black"
+                                    android:text="Открытая"
+                                    android:layout_centerVertical="true"
+                                    android:textSize="14sp" />
+
+
+                            </RelativeLayout>
+
+                            <TextView
+                                android:id="@+id/gd1"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@+id/sgi1"
+                                android:textColor="@color/black"
+                                android:maxLines="2"
+                                android:ellipsize="end"
+                                android:foreground="@drawable/layout_loading_shimmer"
+                                android:hint="@string/noDescription"
+                                android:textSize="14sp"
+                                android:textColorHint="@color/silver"
+                                android:layout_marginTop="5dp"
+                                android:layout_marginHorizontal="@dimen/default_PaddingMargin"
+                                android:text="group-description" />
+                        </RelativeLayout >
+                    </FrameLayout>
+
+                    <FrameLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:clickable="true"
+                        android:layout_gravity="center"
+                        android:paddingBottom="@dimen/default_PaddingMargin">
+                        <RelativeLayout
+                            android:id="@+id/mrl2"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:foreground="@drawable/bottom_rounded_border"
+                            android:paddingBottom="@dimen/default_PaddingMargin"
+                            android:clipChildren="true"
+                            android:clipToPadding="true"
+                            android:background="@color/dirt_white"
+                            android:orientation="vertical">
+
+                            <ImageView
+                                android:id="@+id/gi2"
+                                android:layout_width="match_parent"
+                                android:layout_height="150dp"
+                                android:scaleType="centerCrop"
+                                android:foreground="@color/silver"
+                                tools:srcCompat="@tools:sample/backgrounds/scenic" />
+
+                            <TextView
+                                android:id="@+id/gn2"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_alignBottom="@+id/gi2"
+                                android:layout_marginBottom="10dp"
+                                android:gravity="bottom"
+                                android:text="Group-name\n"
+                                android:textSize="18sp"
+                                android:foreground="@drawable/layout_loading_shimmer"
+                                android:maxLines="2"
+                                android:ellipsize="end"
+                                android:layout_marginStart="10dp"
+                                android:textColor="@color/dirt_white"
+                                android:textStyle="bold"/>
+
+
+
+
+                            <RelativeLayout
+                                android:id="@+id/sgi2"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="15dp"
+                                android:foreground="@drawable/layout_loading_shimmer"
+                                android:layout_below="@+id/gi2">
+
+                                <ImageView
+                                    android:id="@+id/gmvi2"
+                                    android:layout_width="24dp"
+                                    android:layout_height="24dp"
+                                    android:src="@drawable/baseline_people_24"/>
+
+                                <TextView
+                                    android:id="@+id/gm2"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="10dp"
+                                    android:layout_toEndOf="@id/gmvi2"
+                                    android:textColor="@color/black"
+                                    android:text="-1"
+                                    android:layout_centerVertical="true"
+                                    android:textSize="14sp" />
+
+                                <View
+                                    android:id="@+id/d2"
+                                    android:layout_width="1dp"
+                                    android:layout_height="1dp"
+                                    android:layout_toEndOf="@id/gm2"
+                                    android:layout_marginHorizontal="15dp"/>
+
+                                <ImageView
+                                    android:id="@+id/gsvi2"
+                                    android:layout_width="24dp"
+                                    android:layout_height="24dp"
+                                    android:layout_toEndOf="@id/d2"
+                                    app:tint="@color/ok_green"
+                                    android:src="@drawable/round_lock_open_24" />
+
+                                <TextView
+                                    android:id="@+id/gs2"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="10dp"
+                                    android:layout_toEndOf="@id/gsvi2"
+                                    android:textColor="@color/black"
+                                    android:text="Открытая"
+                                    android:layout_centerVertical="true"
+                                    android:textSize="14sp" />
+
+
+                            </RelativeLayout>
+
+                            <TextView
+                                android:id="@+id/gd2"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@+id/sgi2"
+                                android:textColor="@color/black"
+                                android:maxLines="2"
+                                android:ellipsize="end"
+                                android:foreground="@drawable/layout_loading_shimmer"
+                                android:hint="@string/noDescription"
+                                android:textSize="14sp"
+                                android:textColorHint="@color/silver"
+                                android:layout_marginTop="5dp"
+                                android:layout_marginHorizontal="@dimen/default_PaddingMargin"
+                                android:text="group-description" />
+                        </RelativeLayout >
+                    </FrameLayout>
+
+                    <FrameLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:clickable="true"
+                        android:layout_gravity="center"
+                        android:paddingBottom="@dimen/default_PaddingMargin">
+                        <RelativeLayout
+                            android:id="@+id/mrl3"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:foreground="@drawable/bottom_rounded_border"
+                            android:paddingBottom="@dimen/default_PaddingMargin"
+                            android:clipChildren="true"
+                            android:clipToPadding="true"
+                            android:background="@color/dirt_white"
+                            android:orientation="vertical">
+
+                            <ImageView
+                                android:id="@+id/gi3"
+                                android:layout_width="match_parent"
+                                android:layout_height="150dp"
+                                android:scaleType="centerCrop"
+                                android:foreground="@color/silver"
+                                tools:srcCompat="@tools:sample/backgrounds/scenic" />
+
+                            <TextView
+                                android:id="@+id/gn3"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_alignBottom="@+id/gi3"
+                                android:layout_marginBottom="10dp"
+                                android:gravity="bottom"
+                                android:text="Group-name\n"
+                                android:textSize="18sp"
+                                android:foreground="@drawable/layout_loading_shimmer"
+                                android:maxLines="2"
+                                android:ellipsize="end"
+                                android:layout_marginStart="10dp"
+                                android:textColor="@color/dirt_white"
+                                android:textStyle="bold"/>
+
+
+
+
+                            <RelativeLayout
+                                android:id="@+id/sgi3"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="15dp"
+                                android:foreground="@drawable/layout_loading_shimmer"
+                                android:layout_below="@+id/gi3">
+
+                                <ImageView
+                                    android:id="@+id/gmvi3"
+                                    android:layout_width="24dp"
+                                    android:layout_height="24dp"
+                                    android:src="@drawable/baseline_people_24"/>
+
+                                <TextView
+                                    android:id="@+id/gm3"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="10dp"
+                                    android:layout_toEndOf="@id/gmvi3"
+                                    android:textColor="@color/black"
+                                    android:text="-1"
+                                    android:layout_centerVertical="true"
+                                    android:textSize="14sp" />
+
+                                <View
+                                    android:id="@+id/d3"
+                                    android:layout_width="1dp"
+                                    android:layout_height="1dp"
+                                    android:layout_toEndOf="@id/gm3"
+                                    android:layout_marginHorizontal="15dp"/>
+
+                                <ImageView
+                                    android:id="@+id/gsvi3"
+                                    android:layout_width="24dp"
+                                    android:layout_height="24dp"
+                                    android:layout_toEndOf="@id/d3"
+                                    app:tint="@color/ok_green"
+                                    android:src="@drawable/round_lock_open_24" />
+
+                                <TextView
+                                    android:id="@+id/gs3"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="10dp"
+                                    android:layout_toEndOf="@id/gsvi3"
+                                    android:textColor="@color/black"
+                                    android:text="Открытая"
+                                    android:layout_centerVertical="true"
+                                    android:textSize="14sp" />
+
+
+                            </RelativeLayout>
+
+                            <TextView
+                                android:id="@+id/gd3"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@+id/sgi3"
+                                android:textColor="@color/black"
+                                android:maxLines="2"
+                                android:ellipsize="end"
+                                android:foreground="@drawable/layout_loading_shimmer"
+                                android:hint="@string/noDescription"
+                                android:textSize="14sp"
+                                android:textColorHint="@color/silver"
+                                android:layout_marginTop="5dp"
+                                android:layout_marginHorizontal="@dimen/default_PaddingMargin"
+                                android:text="group-description" />
+                        </RelativeLayout >
+                    </FrameLayout>
+
+
+
+                </LinearLayout>
+            </com.facebook.shimmer.ShimmerFrameLayout>
+        </LinearLayout>
+    </ScrollView>
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabAdd"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/default_PaddingMargin"
+        android:backgroundTint="@color/ok_green"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

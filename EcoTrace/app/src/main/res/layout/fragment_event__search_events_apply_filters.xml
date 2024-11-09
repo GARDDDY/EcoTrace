@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:background="@color/dirt_white"
+    android:fitsSystemWindows="true"
+    android:layout_height="match_parent">
+
+    <android.widget.Toolbar
+        android:id="@+id/toolbar7"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+        
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textColor="@color/ok_green"
+            android:textStyle="bold"
+            android:textSize="20sp"
+            android:text="Фильтры"/>
+    </android.widget.Toolbar>
+
+    <ScrollView
+        android:id="@+id/scrollView5"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:paddingHorizontal="15dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbar7">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/text2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:text="Время"
+                android:textColor="@color/ok_green"
+                android:textSize="18sp" />
+
+            <LinearLayout
+                android:id="@+id/layoutChooseTimes"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/text2"
+                android:orientation="horizontal">
+
+
+                <EditText
+                    android:id="@+id/editTextDate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:backgroundTint="@color/ok_green"
+                    android:ems="10"
+                    android:hint="С lowest_time"
+                    android:inputType="date"
+                    android:textColor="@color/ok_green" />
+
+                <EditText
+                    android:id="@+id/editTextDate2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:backgroundTint="@color/ok_green"
+                    android:ems="10"
+                    android:hint="По highest time"
+                    android:inputType="date"
+                    android:textColor="@color/ok_green" />
+            </LinearLayout>
+
+            <Space
+                android:id="@+id/delimiter1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/layoutChooseTimes"
+                android:layout_marginVertical="5dp" />
+
+            <TextView
+                android:id="@+id/text3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/delimiter1"
+                android:layout_marginBottom="5dp"
+                android:text="Теги"
+                android:textColor="@color/ok_green"
+                android:textSize="18sp" />
+
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/tagsChipGroup"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/text3"
+                app:selectionRequired="false"
+                app:singleLine="false"
+                app:singleSelection="true" />
+
+            <Space
+                android:id="@+id/delimiter2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tagsChipGroup"
+                android:layout_marginVertical="5dp" />
+
+            <TextView
+                android:id="@+id/text4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/delimiter2"
+                android:layout_marginBottom="5dp"
+                android:text="Участники"
+                android:textColor="@color/ok_green"
+                android:textSize="18sp" />
+
+            <LinearLayout
+                android:id="@+id/layoutChooseParticipants"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/text4"
+                android:orientation="horizontal">
+
+
+                <EditText
+                    android:id="@+id/lowMembersCount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:backgroundTint="@color/ok_green"
+                    android:ems="10"
+                    android:hint="От lowest count"
+                    android:inputType="number"
+                    android:textColor="@color/ok_green" />
+
+                <EditText
+                    android:id="@+id/highMemebersCount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:backgroundTint="@color/ok_green"
+                    android:ems="10"
+                    android:hint="До highest count"
+                    android:inputType="number"
+                    android:textColor="@color/ok_green" />
+            </LinearLayout>
+
+            <Space
+                android:id="@+id/delimiter3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/layoutChooseParticipants"
+                android:layout_marginVertical="5dp" />
+
+            <TextView
+                android:id="@+id/text5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/delimiter3"
+                android:layout_marginBottom="5dp"
+                android:text="Есть карта"
+                android:textColor="@color/ok_green"
+                android:textSize="18sp" />
+
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/hasMapGroup"
+                android:layout_below="@id/text5"
+                android:layout_width="wrap_content"
+                app:selectionRequired="false"
+                app:singleLine="true"
+                app:singleSelection="true"
+                android:layout_height="wrap_content">
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/hasMap"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checkable="true"
+                    android:textColor="@color/ok_green"
+                    app:chipStrokeWidth="2dp"
+                    app:chipStrokeColor="@color/black"
+                    android:backgroundTint="@color/dirt2_white"
+                    android:text="Есть карта" />
+            </com.google.android.material.chip.ChipGroup>
+
+            <Space
+                android:id="@+id/delimiter4"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/hasMapGroup"
+                android:layout_marginVertical="5dp" />
+
+            <TextView
+                android:id="@+id/text6"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/delimiter4"
+                android:layout_marginBottom="5dp"
+                android:text="Радиус поиска от моего местоположения, км"
+                android:textColor="@color/ok_green"
+                android:textSize="18sp" />
+
+            <EditText
+                android:id="@+id/radiusKm"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/text6"
+                android:backgroundTint="@color/ok_green"
+                android:ems="10"
+                android:hint="Не ограничено"
+                android:inputType="number"
+                android:textColor="@color/ok_green" />
+
+        </RelativeLayout>
+
+    </ScrollView>
+
+    <Button
+        android:id="@+id/applyFiltersButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/ok_green"
+        android:text="Применить"
+        android:textColor="@color/dirt_white"
+        app:layout_constraintBottom_toBottomOf="@+id/scrollView5"
+        tools:layout_editor_absoluteX="15dp" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

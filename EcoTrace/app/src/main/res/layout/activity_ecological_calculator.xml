@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/dirt_white"
+    android:fitsSystemWindows="true"
+    tools:context=".ui.more.ecocalculator.EcologicalCalculatorActivity">
+
+    <android.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbar">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingBottom="@dimen/default_PaddingMargin">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginVertical="@dimen/default_PaddingMargin"
+                android:text="@string/dataThatShouldBeUpdatedDaily"
+                android:textAlignment="center"
+                android:textColor="@color/black"
+                android:textSize="18sp" />
+
+            <include
+                android:id="@+id/cardProgress"
+                layout="@layout/layout_calc_dashboard_card" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/dirt2_white" />
+
+            <com.facebook.shimmer.ShimmerFrameLayout
+                android:id="@+id/dashboardLoading"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/default_PaddingMargin"
+                app:shimmer_auto_start="true"
+                app:shimmer_clip_to_children="true">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="64dp"
+                        android:layout_marginBottom="2dp"
+                        android:foreground="@drawable/layout_loading_shimmer"
+                        tools:ignore="ContentDescription" />
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="64dp"
+                        android:layout_marginBottom="2dp"
+                        android:foreground="@drawable/layout_loading_shimmer"
+                        tools:ignore="ContentDescription" />
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="64dp"
+                        android:layout_marginBottom="2dp"
+                        android:foreground="@drawable/layout_loading_shimmer"
+                        tools:ignore="ContentDescription" />
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="64dp"
+                        android:layout_marginBottom="2dp"
+                        android:foreground="@drawable/layout_loading_shimmer"
+                        tools:ignore="ContentDescription" />
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="64dp"
+                        android:foreground="@drawable/layout_loading_shimmer"
+                        tools:ignore="ContentDescription" />
+
+                </LinearLayout>
+            </com.facebook.shimmer.ShimmerFrameLayout>
+
+            <LinearLayout
+                android:id="@+id/calcCardsContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone" />
+
+        </LinearLayout>
+    </ScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+        <!-- Ряды по 3 друга добавляются кодом (ProfileTabFriends.currentRow) — сама эта LinearLayout
+             только вертикально складывает готовые ряды. -->
+        <LinearLayout
+            android:id="@+id/friendsLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top"
+            android:orientation="vertical"
+            android:paddingVertical="10dp"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/noFriendsWarning"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/userHaveNotMadeFriendsWithAnyoneYetOrHidedThem"
+            android:textAlignment="center"
+            android:textColor="@color/silver"
+            android:textSize="16sp"
+            android:visibility="gone" />
+
+        <com.facebook.shimmer.ShimmerFrameLayout
+            android:id="@+id/userFriendsInformationLayoutLoading"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top"
+            android:paddingVertical="10dp"
+            app:shimmer_auto_start="true"
+            app:shimmer_clip_to_children="true">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="64dp"
+                        android:layout_height="64dp"
+                        android:layout_marginHorizontal="18dp"
+                        android:foreground="@drawable/layout_loading_shimmer"
+                        android:src="@drawable/baseline_person_24" />
+
+                    <ImageView
+                        android:layout_width="64dp"
+                        android:layout_height="64dp"
+                        android:layout_marginHorizontal="18dp"
+                        android:foreground="@drawable/layout_loading_shimmer"
+                        android:src="@drawable/baseline_person_24" />
+
+                    <ImageView
+                        android:layout_width="64dp"
+                        android:layout_height="64dp"
+                        android:layout_marginHorizontal="18dp"
+                        android:foreground="@drawable/layout_loading_shimmer"
+                        android:src="@drawable/baseline_person_24" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:gravity="center_horizontal"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="64dp"
+                        android:layout_height="64dp"
+                        android:layout_marginHorizontal="18dp"
+                        android:foreground="@drawable/layout_loading_shimmer"
+                        android:src="@drawable/baseline_person_24" />
+
+                    <ImageView
+                        android:layout_width="64dp"
+                        android:layout_height="64dp"
+                        android:layout_marginHorizontal="18dp"
+                        android:foreground="@drawable/layout_loading_shimmer"
+                        android:src="@drawable/baseline_person_24" />
+
+                    <ImageView
+                        android:layout_width="64dp"
+                        android:layout_height="64dp"
+                        android:layout_marginHorizontal="18dp"
+                        android:foreground="@drawable/layout_loading_shimmer"
+                        android:src="@drawable/baseline_person_24" />
+                </LinearLayout>
+            </LinearLayout>
+        </com.facebook.shimmer.ShimmerFrameLayout>
+
+</FrameLayout>

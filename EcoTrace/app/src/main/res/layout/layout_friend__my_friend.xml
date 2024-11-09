@@ -1,0 +1,43 @@
+<!-- form_layout.xml -->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="120dp"
+    android:layout_height="wrap_content"
+    android:clickable="true"
+    android:orientation="vertical">
+
+    <ImageView
+        android:id="@+id/userProfileImage"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:layout_gravity="center"
+        android:padding="0dp"
+        android:src="@drawable/baseline_person_24"
+        android:layout_centerHorizontal="true"
+        android:backgroundTint="@color/transparent" />
+
+        <ImageView
+            android:id="@+id/userRankImage"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_gravity="center"
+            android:padding="0dp"
+            android:layout_alignEnd="@id/userProfileImage"
+            android:layout_alignBottom="@id/userProfileImage"
+            android:src="@drawable/baseline_circle_24"
+            android:backgroundTint="@color/transparent" />
+
+        <TextView
+            android:id="@+id/userUsername"
+            android:layout_width="match_parent"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:padding="5dp"
+            android:gravity="center"
+            android:textSize="14sp"
+            android:ellipsize="end"
+            android:layout_below="@id/userProfileImage"
+            android:layout_centerHorizontal="true"
+            android:layout_height="wrap_content"
+            android:text="username" />
+</RelativeLayout>

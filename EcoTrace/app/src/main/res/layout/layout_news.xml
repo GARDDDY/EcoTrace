@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="@dimen/default_PaddingMargin" >
+
+        <ImageView
+            android:id="@+id/newsImage"
+            android:layout_width="128dp"
+            android:layout_height="72dp"
+            android:adjustViewBounds="true"
+            android:scaleType="fitXY"
+            app:srcCompat="@drawable/outline_rectangle_24" />
+
+        <View
+            android:id="@+id/delimiter1"
+            android:layout_width="2dp"
+            android:layout_height="72dp"
+            android:layout_marginHorizontal="5dp"
+            android:layout_toEndOf="@id/newsImage"
+            android:background="@color/transparent" />
+
+        <TextView
+            android:id="@+id/newsName"
+            android:layout_width="wrap_content"
+            android:layout_height="45dp"
+            android:layout_toEndOf="@+id/delimiter1"
+            android:ellipsize="end"
+            android:maxLines="2"
+            android:text="news title and some other cool text bla bla bla bla bla bla bla 1 1"
+            android:textColor="@color/black"
+            android:textSize="16sp" />
+
+        <View
+            android:id="@+id/delimiter2"
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:layout_marginVertical="2dp"
+            android:layout_below="@id/newsName" />
+        
+        <TextView
+            android:id="@+id/sourceName"
+            android:layout_width="wrap_content"
+            android:layout_height="20dp"
+            android:layout_toEndOf="@id/delimiter1"
+            android:layout_below="@id/delimiter2"
+            android:textSize="12sp"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:textColor="@color/ok_green"
+            android:text="Source * time" />
+
+        <ImageButton
+            android:id="@+id/translate"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginHorizontal="15dp"
+            android:layout_alignParentEnd="true"
+            android:layout_below="@id/delimiter2"
+            android:background="@color/transparent"
+            android:layout_centerVertical="true"
+            android:scaleType="fitCenter"
+            android:visibility="visible"
+            android:src="@drawable/baseline_translate_24"
+            app:tint="@color/silver" />
+
+    </RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,25 @@
+# Dependencies — built inside the container
+EcoTraceServer/node_modules/
+
+# Secrets — never bake into the image; pass via env_file or -e at runtime
+.env
+.env.*
+
+# Android project — not needed by the server
+EcoTrace/
+EcoTraceDatabase/
+
+# Uploads stub — real files live in Supabase Storage
+uploads/
+
+# Git / IDE artefacts
+.git/
+.github/
+.idea/
+*.md
+*.pdf
+*.html
+
+# Logs
+*.log
+EcoTraceServer/npm-debug.log*

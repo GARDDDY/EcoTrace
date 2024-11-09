@@ -1,0 +1,835 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/dirt_white"
+    android:focusable="true"
+    android:fitsSystemWindows="true"
+    tools:context=".ui.more.friends.UsersSearchFriends">
+
+    <android.widget.Toolbar
+        android:id="@+id/toolbar5"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.camera.view.PreviewView
+        android:id="@+id/previewView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/toolbar5"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <ImageButton
+        android:id="@+id/personalShareContent"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:backgroundTint="@color/transparent"
+        app:tint="@color/ok_green"
+        android:src="@drawable/baseline_share_24"
+        app:layout_constraintBottom_toBottomOf="@+id/toolbar5"
+        app:layout_constraintEnd_toStartOf="@+id/scanForQrCode"
+        app:layout_constraintTop_toTopOf="@+id/toolbar5" />
+
+    <ImageButton
+        android:id="@+id/scanForQrCode"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:backgroundTint="@color/transparent"
+        app:tint="@color/ok_green"
+        android:src="@drawable/baseline_qr_code_scanner_24"
+        app:layout_constraintBottom_toBottomOf="@+id/toolbar5"
+        app:layout_constraintEnd_toEndOf="@+id/toolbar5"
+        app:layout_constraintTop_toTopOf="@+id/toolbar5" />
+
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipeRefreshLayout"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar5">
+
+        <ScrollView
+            android:id="@+id/scrollViewMain"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/default_PaddingMargin"
+                android:orientation="vertical" >
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/textView21"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/myFriends"
+                        android:textColor="@color/black"
+                        android:textSize="24sp" />
+
+                    <ImageButton
+                        android:id="@+id/friendsSortButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@color/transparent"
+                        app:srcCompat="@drawable/baseline_sort_24"
+                        app:tint="@color/ok_green" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/userFriendsInformationLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginVertical="@dimen/default_PaddingMargin"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:id="@+id/noFriendsWarning"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/noFriendsFound"
+                        android:textAlignment="center"
+                        android:textColor="@color/ok_green"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <HorizontalScrollView
+                        android:id="@+id/friendsLayoutScrollView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <LinearLayout
+                            android:id="@+id/friendsLayout"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:orientation="horizontal" />
+
+                    </HorizontalScrollView>
+
+                </LinearLayout>
+                <com.facebook.shimmer.ShimmerFrameLayout
+                    android:id="@+id/userFriendsInformationLayoutLoading"
+                    android:layout_width="match_parent"
+                    android:layout_marginVertical="@dimen/default_PaddingMargin"
+                    android:layout_height="wrap_content">
+
+                    <HorizontalScrollView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:scrollbars="none">
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <RelativeLayout
+                                android:layout_width="120dp"
+                                android:layout_height="wrap_content"
+                                android:clickable="true"
+                                android:orientation="vertical">
+
+                                <ImageView
+                                    android:id="@+id/upi1"
+                                    android:layout_width="64dp"
+                                    android:layout_height="64dp"
+                                    android:layout_gravity="center"
+                                    android:padding="0dp"
+                                    android:foreground="@drawable/layout_loading_shimmer"
+                                    android:src="@drawable/baseline_person_24"
+                                    android:layout_centerHorizontal="true"
+                                    android:backgroundTint="@color/transparent" />
+
+                                <ImageView
+                                    android:layout_width="24dp"
+                                    android:layout_height="24dp"
+                                    android:layout_gravity="center"
+                                    android:padding="0dp"
+                                    android:foreground="@drawable/layout_loading_shimmer"
+                                    android:layout_alignEnd="@id/upi1"
+                                    android:layout_alignBottom="@id/upi1"
+                                    android:src="@drawable/baseline_circle_24"
+                                    android:backgroundTint="@color/transparent" />
+
+                                <TextView
+                                    android:id="@+id/un1"
+                                    android:layout_width="match_parent"
+                                    android:textColor="@color/black"
+                                    android:textStyle="bold"
+                                    android:padding="5dp"
+                                    android:gravity="center"
+                                    android:textSize="14sp"
+                                    android:ellipsize="end"
+                                    android:layout_below="@id/upi1"
+                                    android:layout_centerHorizontal="true"
+                                    android:layout_height="wrap_content"
+                                    android:foreground="@drawable/layout_loading_shimmer"
+                                    android:text="username" />
+                            </RelativeLayout>
+
+                            <View
+                                android:layout_width="@dimen/default_PaddingMargin"
+                                android:layout_height="wrap_content" />
+
+                            <RelativeLayout
+                                android:layout_width="120dp"
+                                android:layout_height="wrap_content"
+                                android:clickable="true"
+                                android:orientation="vertical">
+
+                                <ImageView
+                                    android:id="@+id/upi2"
+                                    android:layout_width="64dp"
+                                    android:layout_height="64dp"
+                                    android:layout_gravity="center"
+                                    android:padding="0dp"
+                                    android:foreground="@drawable/layout_loading_shimmer"
+                                    android:src="@drawable/baseline_person_24"
+                                    android:layout_centerHorizontal="true"
+                                    android:backgroundTint="@color/transparent" />
+
+                                <ImageView
+                                    android:layout_width="24dp"
+                                    android:layout_height="24dp"
+                                    android:layout_gravity="center"
+                                    android:padding="0dp"
+                                    android:foreground="@drawable/layout_loading_shimmer"
+                                    android:layout_alignEnd="@id/upi2"
+                                    android:layout_alignBottom="@id/upi2"
+                                    android:src="@drawable/baseline_circle_24"
+                                    android:backgroundTint="@color/transparent" />
+
+                                <TextView
+                                    android:id="@+id/un2"
+                                    android:layout_width="match_parent"
+                                    android:textColor="@color/black"
+                                    android:textStyle="bold"
+                                    android:padding="5dp"
+                                    android:foreground="@drawable/layout_loading_shimmer"
+                                    android:gravity="center"
+                                    android:textSize="14sp"
+                                    android:ellipsize="end"
+                                    android:layout_below="@id/upi2"
+                                    android:layout_centerHorizontal="true"
+                                    android:layout_height="wrap_content"
+                                    android:text="username" />
+                            </RelativeLayout>
+
+                            <View
+                                android:layout_width="@dimen/default_PaddingMargin"
+                                android:layout_height="wrap_content" />
+
+                            <RelativeLayout
+                                android:layout_width="120dp"
+                                android:layout_height="wrap_content"
+                                android:clickable="true"
+                                android:orientation="vertical">
+
+                                <ImageView
+                                    android:id="@+id/upi3"
+                                    android:layout_width="64dp"
+                                    android:layout_height="64dp"
+                                    android:layout_gravity="center"
+                                    android:foreground="@drawable/layout_loading_shimmer"
+                                    android:padding="0dp"
+                                    android:src="@drawable/baseline_person_24"
+                                    android:layout_centerHorizontal="true"
+                                    android:backgroundTint="@color/transparent" />
+
+                                <ImageView
+                                    android:layout_width="24dp"
+                                    android:layout_height="24dp"
+                                    android:layout_gravity="center"
+                                    android:padding="0dp"
+                                    android:foreground="@drawable/layout_loading_shimmer"
+                                    android:layout_alignEnd="@id/upi3"
+                                    android:layout_alignBottom="@id/upi3"
+                                    android:src="@drawable/baseline_circle_24"
+                                    android:backgroundTint="@color/transparent" />
+
+                                <TextView
+                                    android:id="@+id/un3"
+                                    android:layout_width="match_parent"
+                                    android:textColor="@color/black"
+                                    android:textStyle="bold"
+                                    android:padding="5dp"
+                                    android:foreground="@drawable/layout_loading_shimmer"
+                                    android:gravity="center"
+                                    android:textSize="14sp"
+                                    android:ellipsize="end"
+                                    android:layout_below="@id/upi3"
+                                    android:layout_centerHorizontal="true"
+                                    android:layout_height="wrap_content"
+                                    android:text="username" />
+                            </RelativeLayout>
+
+                        </LinearLayout>
+
+                    </HorizontalScrollView>
+
+                </com.facebook.shimmer.ShimmerFrameLayout>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/searchForNewFriends"
+                    android:textColor="@color/black"
+                    android:textSize="24sp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginVertical="@dimen/default_PaddingMargin"
+                    android:orientation="horizontal">
+
+                    <EditText
+                        android:id="@+id/usernameSearcher"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:hint="@string/username"
+                        android:textColorHint="@color/silver"
+                        android:textColor="@color/ok_green"
+                        android:backgroundTint="@color/ok_green" />
+
+                    <ImageButton
+                        android:id="@+id/searchSortByButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_weight="0.3"
+                        android:background="@color/transparent"
+                        app:srcCompat="@drawable/baseline_sort_24"
+                        app:tint="@color/ok_green" />
+
+                    <ImageButton
+                        android:id="@+id/showSearchFiltersButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_weight="0.3"
+                        android:background="@color/transparent"
+                        app:srcCompat="@drawable/rounded_page_info_24"
+                        app:tint="@color/ok_green" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/foundUsersLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical" >
+
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/noUsersWarning"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    android:text="@string/noUsersFoundWithSuchTags"
+                    android:textAlignment="center"
+                    android:textColor="@color/ok_green"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <com.facebook.shimmer.ShimmerFrameLayout
+                    android:id="@+id/allUsersLoading"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:paddingBottom="15dp">
+
+                            <LinearLayout
+                                android:id="@+id/gp1"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:clickable="true"
+                                android:foreground="@drawable/layout_loading_shimmer"
+                                android:orientation="horizontal">
+
+                                <ImageView
+                                    android:id="@+id/uifl1"
+                                    android:layout_width="56dp"
+                                    android:layout_height="56dp"
+                                    app:srcCompat="@drawable/baseline_person_24" />
+
+                                <TextView
+                                    android:id="@+id/ufl1"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:layout_marginStart="10dp"
+                                    android:text="username"
+                                    android:textColor="@color/black"
+                                    android:textSize="18sp"
+                                    android:textStyle="bold" />
+
+                                <ImageView
+                                    android:id="@+id/uri1"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:layout_marginHorizontal="5dp"
+                                    tools:srcCompat="@drawable/baseline_circle_24" />
+
+                                <TextView
+                                    android:id="@+id/ur1"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:text="1000"
+                                    android:textColor="@color/black" />
+                            </LinearLayout>
+
+                            <HorizontalScrollView
+                                android:id="@+id/til1"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@id/gp1"
+                                android:scrollbars="none">
+
+                                <RelativeLayout
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content">
+
+                                    <com.google.android.material.chip.ChipGroup
+                                        android:id="@+id/tcg1"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        app:singleLine="true">
+
+                                        <com.google.android.material.chip.Chip
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:foreground="@drawable/layout_loading_shimmer"
+                                            android:text="Трудолюбивый" />
+
+                                        <com.google.android.material.chip.Chip
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:foreground="@drawable/layout_loading_shimmer"
+                                            android:text="Трудолюбивый" />
+
+                                        <com.google.android.material.chip.Chip
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:foreground="@drawable/layout_loading_shimmer"
+                                            android:text="Трудолюбивый" />
+
+                                    </com.google.android.material.chip.ChipGroup>
+
+                                    <TextView
+                                        android:id="@+id/atc1"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_centerVertical="true"
+                                        android:layout_marginHorizontal="15dp"
+                                        android:layout_toEndOf="@id/tcg1"
+                                        android:foreground="@drawable/layout_loading_shimmer"
+                                        android:text="+5"
+                                        android:textSize="20sp" />
+
+                                </RelativeLayout>
+                            </HorizontalScrollView>
+
+
+                            <RelativeLayout
+                                android:id="@+id/cgl1"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@id/til1"
+                                android:foreground="@drawable/layout_loading_shimmer"
+                                android:layout_marginVertical="10dp">
+
+                                <ImageView
+                                    android:id="@+id/cgvi1"
+                                    android:layout_width="24dp"
+                                    android:layout_height="24dp"
+                                    app:srcCompat="@drawable/round_family_restroom_24" />
+
+                                <TextView
+                                    android:id="@+id/cg1"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="10dp"
+                                    android:layout_toEndOf="@id/cgvi1"
+                                    android:text="1 общая группа"
+                                    android:textColor="@color/black"
+                                    android:textSize="14sp" />
+
+                                <TextView
+                                    android:id="@+id/d1"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginHorizontal="15dp"
+                                    android:layout_toEndOf="@id/cg1"
+                                    android:text="●"
+                                    android:textSize="14sp" />
+
+                                <ImageView
+                                    android:id="@+id/cevi1"
+                                    android:layout_width="24dp"
+                                    android:layout_height="24dp"
+                                    android:layout_toEndOf="@id/d1"
+                                    app:srcCompat="@drawable/baseline_reduce_capacity_24" />
+
+                                <TextView
+                                    android:id="@+id/ce1"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="10dp"
+                                    android:layout_toEndOf="@id/cevi1"
+                                    android:text="1 общее мероприятие"
+                                    android:textColor="@color/black"
+                                    android:textSize="14sp" />
+                            </RelativeLayout>
+
+                        </RelativeLayout>
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:paddingBottom="15dp"
+                            android:orientation="horizontal" >
+
+                            <LinearLayout
+                                android:id="@+id/gp2"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:clickable="true"
+                                android:foreground="@drawable/layout_loading_shimmer"
+                                android:orientation="horizontal">
+
+                                <ImageView
+                                    android:id="@+id/uifl2"
+                                    android:layout_width="56dp"
+                                    android:layout_height="56dp"
+                                    app:srcCompat="@drawable/baseline_person_24" />
+
+                                <TextView
+                                    android:id="@+id/ufl2"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:layout_marginStart="10dp"
+                                    android:text="username"
+                                    android:textColor="@color/black"
+                                    android:textSize="18sp"
+                                    android:textStyle="bold" />
+
+                                <ImageView
+                                    android:id="@+id/uri2"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:layout_marginHorizontal="5dp"
+                                    tools:srcCompat="@drawable/baseline_circle_24" />
+
+                                <TextView
+                                    android:id="@+id/ur2"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:textColor="@color/black"
+                                    android:text="1000" />
+                            </LinearLayout>
+
+                            <HorizontalScrollView
+                                android:id="@+id/til2"
+                                android:layout_below="@id/gp2"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:scrollbars="none">
+
+                                <RelativeLayout
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content" >
+
+                                    <com.google.android.material.chip.ChipGroup
+                                        android:id="@+id/tcg2"
+                                        android:layout_width="wrap_content"
+                                        app:singleLine="true"
+                                        android:layout_height="wrap_content">
+
+                                        <com.google.android.material.chip.Chip
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:foreground="@drawable/layout_loading_shimmer"
+                                            android:text="Трудолюбивый"/>
+
+                                        <com.google.android.material.chip.Chip
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:foreground="@drawable/layout_loading_shimmer"
+                                            android:text="Трудолюбивый"/>
+
+                                        <com.google.android.material.chip.Chip
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:foreground="@drawable/layout_loading_shimmer"
+                                            android:text="Трудолюбивый"/>
+
+                                    </com.google.android.material.chip.ChipGroup>
+
+                                    <TextView
+                                        android:id="@+id/atc2"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:foreground="@drawable/layout_loading_shimmer"
+                                        android:text="+5"
+                                        android:textSize="20sp"
+                                        android:layout_centerVertical="true"
+                                        android:layout_marginHorizontal="15dp"
+                                        android:layout_toEndOf="@id/tcg2"/>
+
+                                </RelativeLayout>
+                            </HorizontalScrollView>
+
+
+
+                            <RelativeLayout
+                                android:id="@+id/cgl2"
+                                android:layout_width="match_parent"
+                                android:layout_below="@id/til2"
+                                android:layout_marginVertical="10dp"
+                                android:foreground="@drawable/layout_loading_shimmer"
+                                android:layout_height="wrap_content">
+
+                                <ImageView
+                                    android:id="@+id/cgvi2"
+                                    android:layout_width="24dp"
+                                    android:layout_height="24dp"
+                                    app:srcCompat="@drawable/round_family_restroom_24" />
+
+                                <TextView
+                                    android:id="@+id/cg2"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="10dp"
+                                    android:textSize="14sp"
+                                    android:textColor="@color/black"
+                                    android:layout_toEndOf="@id/cgvi2"
+                                    android:text="1 общая группа" />
+
+                                <TextView
+                                    android:id="@+id/d2"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:textSize="14sp"
+                                    android:text="●"
+                                    android:layout_toEndOf="@id/cg2"
+                                    android:layout_marginHorizontal="15dp" />
+
+                                <ImageView
+                                    android:id="@+id/cevi2"
+                                    android:layout_width="24dp"
+                                    android:layout_height="24dp"
+                                    app:srcCompat="@drawable/baseline_reduce_capacity_24"
+                                    android:layout_toEndOf="@id/d2"/>
+
+                                <TextView
+                                    android:id="@+id/ce2"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="10dp"
+                                    android:textSize="14sp"
+                                    android:textColor="@color/black"
+                                    android:layout_toEndOf="@id/cevi2"
+                                    android:text="1 общее мероприятие" />
+                            </RelativeLayout>
+
+                        </RelativeLayout>
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:paddingBottom="15dp"
+                            android:orientation="horizontal" >
+
+                            <LinearLayout
+                                android:id="@+id/gp3"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:clickable="true"
+                                android:foreground="@drawable/layout_loading_shimmer"
+                                android:orientation="horizontal">
+
+                                <ImageView
+                                    android:id="@+id/uifl3"
+                                    android:layout_width="56dp"
+                                    android:layout_height="56dp"
+                                    app:srcCompat="@drawable/baseline_person_24" />
+
+                                <TextView
+                                    android:id="@+id/ufl3"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:layout_marginStart="10dp"
+                                    android:text="username"
+                                    android:textColor="@color/black"
+                                    android:textSize="18sp"
+                                    android:textStyle="bold" />
+
+                                <ImageView
+                                    android:id="@+id/uri3"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:layout_marginHorizontal="5dp"
+                                    tools:srcCompat="@drawable/baseline_circle_24" />
+
+                                <TextView
+                                    android:id="@+id/ur3"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:textColor="@color/black"
+                                    android:text="1000" />
+                            </LinearLayout>
+
+                            <HorizontalScrollView
+                                android:id="@+id/til3"
+                                android:layout_below="@id/gp3"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:scrollbars="none">
+
+                                <RelativeLayout
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content" >
+
+                                    <com.google.android.material.chip.ChipGroup
+                                        android:id="@+id/tcg3"
+                                        android:layout_width="wrap_content"
+                                        app:singleLine="true"
+                                        android:layout_height="wrap_content">
+
+                                        <com.google.android.material.chip.Chip
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:foreground="@drawable/layout_loading_shimmer"
+                                            android:text="Трудолюбивый"/>
+
+                                        <com.google.android.material.chip.Chip
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:foreground="@drawable/layout_loading_shimmer"
+                                            android:text="Трудолюбивый"/>
+
+                                        <com.google.android.material.chip.Chip
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:foreground="@drawable/layout_loading_shimmer"
+                                            android:text="Трудолюбивый"/>
+
+                                    </com.google.android.material.chip.ChipGroup>
+
+                                    <TextView
+                                        android:id="@+id/atc3"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="+5"
+                                        android:foreground="@drawable/layout_loading_shimmer"
+                                        android:textSize="20sp"
+                                        android:layout_centerVertical="true"
+                                        android:layout_marginHorizontal="15dp"
+                                        android:layout_toEndOf="@id/tcg3"/>
+
+                                </RelativeLayout>
+                            </HorizontalScrollView>
+
+
+
+                            <RelativeLayout
+                                android:id="@+id/cgl3"
+                                android:layout_width="match_parent"
+                                android:layout_below="@id/til3"
+                                android:foreground="@drawable/layout_loading_shimmer"
+                                android:layout_marginVertical="10dp"
+                                android:layout_height="wrap_content">
+
+                                <ImageView
+                                    android:id="@+id/cgvi3"
+                                    android:layout_width="24dp"
+                                    android:layout_height="24dp"
+                                    app:srcCompat="@drawable/round_family_restroom_24" />
+
+                                <TextView
+                                    android:id="@+id/cg3"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="10dp"
+                                    android:textSize="14sp"
+                                    android:textColor="@color/black"
+                                    android:layout_toEndOf="@id/cgvi3"
+                                    android:text="1 общая группа" />
+
+                                <TextView
+                                    android:id="@+id/d3"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:textSize="14sp"
+                                    android:text="●"
+                                    android:layout_toEndOf="@id/cg3"
+                                    android:layout_marginHorizontal="15dp" />
+
+                                <ImageView
+                                    android:id="@+id/cevi3"
+                                    android:layout_width="24dp"
+                                    android:layout_height="24dp"
+                                    app:srcCompat="@drawable/baseline_reduce_capacity_24"
+                                    android:layout_toEndOf="@id/d3"/>
+
+                                <TextView
+                                    android:id="@+id/ce3"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="10dp"
+                                    android:textSize="14sp"
+                                    android:textColor="@color/black"
+                                    android:layout_toEndOf="@id/cevi3"
+                                    android:text="1 общее мероприятие" />
+                            </RelativeLayout>
+
+                        </RelativeLayout>
+
+                    </LinearLayout>
+
+                </com.facebook.shimmer.ShimmerFrameLayout>
+
+            </LinearLayout>
+        </ScrollView>
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

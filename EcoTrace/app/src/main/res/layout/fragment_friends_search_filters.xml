@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:background="@color/dirt_white"
+    android:fitsSystemWindows="true"
+    android:layout_height="match_parent">
+
+    <android.widget.Toolbar
+        android:id="@+id/toolbar8"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textColor="@color/ok_green"
+            android:textStyle="bold"
+            android:textSize="20sp"
+            android:text="Фильтры"/>
+    </android.widget.Toolbar>
+
+    <ScrollView
+        android:id="@+id/scrollView6"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:paddingHorizontal="15dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbar8">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/text7"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:text="Теги"
+                android:textColor="@color/ok_green"
+                android:textSize="18sp" />
+
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/tagsChipGroup"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/text7"
+                app:selectionRequired="false"
+                app:singleLine="false"
+                app:singleSelection="true" />
+
+            <Space
+                android:id="@+id/delimiter1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tagsChipGroup"
+                android:layout_marginVertical="5dp" />
+
+            <TextView
+                android:id="@+id/text8"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/delimiter1"
+                android:layout_marginBottom="5dp"
+                android:text="Пересечения"
+                android:textColor="@color/ok_green"
+                android:textSize="18sp" />
+
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/overlapGroup"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/text8"
+                app:selectionRequired="false"
+                app:singleLine="false">
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/commonGroupChip"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checkable="true"
+                    android:textColor="@color/ok_green"
+                    app:chipStrokeWidth="2dp"
+                    app:chipStrokeColor="@color/black"
+                    android:backgroundTint="@color/dirt2_white"
+                    android:text="Есть общая группа" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/commonEventChip"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checkable="true"
+                    android:textColor="@color/ok_green"
+                    app:chipStrokeWidth="2dp"
+                    app:chipStrokeColor="@color/black"
+                    android:backgroundTint="@color/dirt2_white"
+                    android:text="Есть общее мероприятие" />
+            </com.google.android.material.chip.ChipGroup>
+
+        </RelativeLayout>
+
+    </ScrollView>
+
+    <Button
+        android:id="@+id/applyFiltersButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/ok_green"
+        android:text="Применить"
+        android:textColor="@color/dirt_white"
+        app:layout_constraintBottom_toBottomOf="@+id/scrollView6"
+        tools:layout_editor_absoluteX="15dp" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
