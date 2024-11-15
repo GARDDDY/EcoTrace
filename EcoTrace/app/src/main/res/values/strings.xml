@@ -64,7 +64,7 @@
 
 <!--    activity_show_all_events.xml-->
     <string name="yourEvents">Ваши мероприятия</string>
-    <string name="eventsYouAreIn">Мероприятяи, в которых Вы участвуете</string>
+    <string name="eventsYouAreIn">Мероприятия, в которых Вы участвуете</string>
     <string name="searchForEvents">Поиск мероприятий</string>
     <string name="sinceNow">С текущего момента</string>
     <string name="tillTheEnd">До конца</string>
