@@ -1,0 +1,26 @@
+version: '3.8'
+services:
+  node-app:
+    build: .
+    ports:
+      - "35288:35288"
+    depends_on:
+      - mysql-db
+    env_file:
+      - .env
+    volumes:
+      - .:/app
+    command: ["./wait-for-it.sh", "mysql-db:3306", "--", "node", "server.js"]
+
+  mysql-db:
+    image: mysql:8
+    environment:
+      MYSQL_ROOT_PASSWORD: RussiaZV
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+
+volumes:
+  mysql-data:
