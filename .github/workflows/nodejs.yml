@@ -28,5 +28,5 @@ jobs:
         working-directory: ./EcoTraceServer
 
       - name: tests
-        run: npm test
+        run: npx jest
         working-directory: ./EcoTraceServer
