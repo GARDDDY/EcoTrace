@@ -25,6 +25,8 @@ jobs:
 
       - name: dependencies
         run: npm install
+        working-directory: ./EcoTraceServer
 
       - name: tests
         run: npm test
+        working-directory: ./EcoTraceServer
