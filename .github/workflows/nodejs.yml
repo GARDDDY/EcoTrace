@@ -12,7 +12,7 @@ on:
       - main
 
 jobs:
-  build:
+  test:
     runs-on: ubuntu-latest
     steps:
       - name: сode
@@ -28,8 +28,13 @@ jobs:
         working-directory: ./EcoTraceServer
 
       - name: check for jest
-        run: npm list jest 
+        run: npm list jest
+        working-directory: ./EcoTraceServer
 
-      - name: tests
+      - name: tests (npm)
+        run: npm test
+        working-directory: ./EcoTraceServer
+
+      - name: tests (npx)
         run: npx jest --verbose
         working-directory: ./EcoTraceServer
