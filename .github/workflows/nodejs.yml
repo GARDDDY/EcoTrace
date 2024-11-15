@@ -34,7 +34,3 @@ jobs:
       - name: tests (npm)
         run: npm test
         working-directory: ./EcoTraceServer
-
-      - name: tests (npx)
-        run: npx jest --verbose
-        working-directory: ./EcoTraceServer
