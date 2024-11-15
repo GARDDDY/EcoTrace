@@ -48,7 +48,13 @@ router.get('/login', async (req, res) => { // generate auth token by user token
     return res.send([uid[0].userId, user[0].userToken]);
 });
 
-const serviceMail = require("../config/account.json")
+const serviceMail = {
+    "service": process.env.EMAIL_SERVICE,
+    "auth": {
+        "user": process.env.EMAIL,
+        "pass": process.env.EMAIL_PASSWORD
+    }
+}
 const nodemailer = require('nodemailer');
 router.get('/sendCode', async (req, res) => {
     const email = req.query.email;

@@ -53,6 +53,10 @@ const secretKey = '56928b0a7cebd6cf77389ab36154843efe374ea2525d9f0535fabf07eac83
 const algorithm = 'aes-256-cbc';
 
 function crypt(text) {
+    if (typeof text !== 'string') {
+        throw new Error('Input must be a string');
+    }
+    
     const iv = crypto.randomBytes(16);
     const cipher = crypto.createCipheriv(algorithm, Buffer.from(secretKey, 'hex'), iv);
     let encrypted = cipher.update(text, 'utf8', 'hex');
@@ -63,14 +67,18 @@ function crypt(text) {
 
 function uncrypt(encryptedText) {
     const parts = encryptedText.split(':');
-    const iv = Buffer.from(parts.shift(), 'hex'); 
+    const iv = Buffer.from(parts.shift(), 'hex');
     const encryptedTextBuffer = Buffer.from(parts.join(':'), 'hex');
     
     const decipher = crypto.createDecipheriv(algorithm, Buffer.from(secretKey, 'hex'), iv);
     let decrypted = decipher.update(encryptedTextBuffer, 'hex', 'utf8');
     decrypted += decipher.final('utf8');
 
-    return JSON.parse(decrypted);
+    try {
+        return JSON.parse(decrypted);
+    } catch (error) {
+        throw new Error('Decrypted data is not valid JSON');
+    }
 }
 
 

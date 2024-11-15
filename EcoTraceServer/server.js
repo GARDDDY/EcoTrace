@@ -1,8 +1,7 @@
 const express = require('express');
-const admin = require('firebase-admin');
 const path = require('path');
 const app = express();
-const port = 8000; // todo _ set to 35288
+const port = 35288
 const mysql = require("mysql2/promise")
 
 
