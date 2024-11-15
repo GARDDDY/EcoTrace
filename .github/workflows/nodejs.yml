@@ -27,6 +27,9 @@ jobs:
         run: npm install
         working-directory: ./EcoTraceServer
 
+      - name: check for jest
+        run: npm list jest 
+
       - name: tests
-        run: npx jest
+        run: npx jest --verbose
         working-directory: ./EcoTraceServer
