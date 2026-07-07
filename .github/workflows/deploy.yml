@@ -1,0 +1,46 @@
+name: Deploy
+on:
+  push: { branches: [main] }
+  workflow_dispatch:
+concurrency: { group: deploy-ecotrace, cancel-in-progress: false }
+jobs:
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      deploy: ${{ steps.filter.outputs.deploy }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            deploy:
+              - 'EcoTraceServer/**'
+              - 'Dockerfile'
+              - 'docker-compose.yml'
+              - 'init.sql'
+              - '.github/workflows/deploy.yml'
+
+  deploy:
+    needs: changes
+    if: needs.changes.outputs.deploy == 'true' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    environment: Deploy
+    steps:
+      - uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          port: ${{ secrets.SSH_PORT || 22 }}
+          script_stop: true
+          script: |
+            set -eu
+            cd "${{ secrets.DEPLOY_PATH }}"
+            git fetch --prune origin
+            git reset --hard origin/main
+            docker compose up -d --build --remove-orphans
+            install -D -m 644 EcoTraceServer/proxy/ecotrace.conf "${{ secrets.PROXY_CONFD_PATH }}/ecotrace.conf"
+            docker exec gddd-proxy nginx -t
+            docker exec gddd-proxy nginx -s reload
+            docker image prune -f
