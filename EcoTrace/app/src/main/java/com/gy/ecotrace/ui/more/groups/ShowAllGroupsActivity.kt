@@ -46,6 +46,9 @@ class ShowAllGroupsActivity : AppCompatActivity() {
     private fun groupImageUrl(key: String?): String? =
         key?.let { "${BuildConfig.SERVER_API_URI}uploads/groups/$it" }
 
+    private fun userImageUrl(key: String?): String? =
+        key?.let { "${BuildConfig.SERVER_API_URI}uploads/users/$it" }
+
     private fun statusIcon(type: String): Int =
         if (type == "closed") R.drawable.round_lock_24 else R.drawable.round_lock_open_24
 
@@ -76,6 +79,7 @@ class ShowAllGroupsActivity : AppCompatActivity() {
             allGroups.removeAllViews()
             renderedGroupIds.clear()
             showAllViewModel.search(reset = true)
+            showAllViewModel.loadUserGroups(tokenStore.userId)
         }
 
         swipeRefresh.setOnRefreshListener {
@@ -146,7 +150,9 @@ class ShowAllGroupsActivity : AppCompatActivity() {
                 Glide.with(this).load(groupImageUrl(group.rulesImageKey))
                     .placeholder(R.drawable.ic_launcher_background)
                     .into(groupLayout.findViewById(R.id.groupImage))
-                Glide.with(this).load(R.drawable.baseline_person_24).circleCrop()
+                Glide.with(this).load(userImageUrl(group.creatorAvatarKey))
+                    .placeholder(R.drawable.baseline_person_24)
+                    .circleCrop()
                     .into(groupLayout.findViewById(R.id.groupCreatorImage))
 
                 groupLayout.setOnClickListener {

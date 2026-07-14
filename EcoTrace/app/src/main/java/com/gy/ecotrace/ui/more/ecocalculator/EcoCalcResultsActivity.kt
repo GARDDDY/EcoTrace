@@ -25,6 +25,10 @@ class EcoCalcResultsActivity : AppCompatActivity() {
     private val viewModel: CalcResultsViewModel by viewModels()
     private val chipIds = listOf(R.id.chipFood, R.id.chipWater, R.id.chipTrash, R.id.chipEnergy, R.id.chipTransport)
 
+    // Заполняется в setupAiSummaries() — вызывается из setupGraph(), чтобы карточки
+    // анализа фильтровались теми же чипами/переключателем периода, что и график.
+    private var renderAiSummaries: () -> Unit = {}
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -34,11 +38,11 @@ class EcoCalcResultsActivity : AppCompatActivity() {
         Globals().initToolbarIconBack(toolbar, applicationContext)
         toolbar.setNavigationOnClickListener { onBackPressed() }
 
+        setupAiSummaries()
         setupGraph()
-        setupSpecifyBlocks()
 
         viewModel.loadGraph()
-        viewModel.loadSpecifyBlocks()
+        viewModel.loadAiSummaries()
     }
 
     private fun setupGraph() {
@@ -63,10 +67,12 @@ class EcoCalcResultsActivity : AppCompatActivity() {
             val time = if (checkedId == R.id.period30Button) 1 else 0
             if (viewModel.lastGraphTime == time) return@addOnButtonCheckedListener
             viewModel.loadGraph(time = time, excludeTypes = viewModel.lastGraphTypes)
+            renderAiSummaries()
         }
         typeChips.setOnCheckedStateChangeListener { group, _ ->
             val excluded = excludedTypes(group as ChipGroup)
             viewModel.loadGraph(time = viewModel.lastGraphTime, excludeTypes = excluded)
+            renderAiSummaries()
         }
 
         viewModel.graphLoading.observe(this) { isLoading ->
@@ -80,34 +86,37 @@ class EcoCalcResultsActivity : AppCompatActivity() {
         }
     }
 
-    private fun setupSpecifyBlocks() {
-        val loading: ShimmerFrameLayout = findViewById(R.id.advicesLoading)
-        val noAdvicesWarning: TextView = findViewById(R.id.noAdvicesWarning)
-        val container: LinearLayout = findViewById(R.id.specifyBlocksContainer)
+    private fun setupAiSummaries() {
+        val loading: ShimmerFrameLayout = findViewById(R.id.aiSummaryLoading)
+        val noSummaryWarning: TextView = findViewById(R.id.noAiSummaryWarning)
+        val container: LinearLayout = findViewById(R.id.aiSummaryContainer)
 
-        viewModel.specifyLoading.observe(this) { isLoading ->
-            loading.visibility = if (isLoading) View.VISIBLE else View.GONE
-        }
-        viewModel.specifyBlocks.observe(this) { blocks ->
+        fun render() {
+            val summaries = viewModel.aiSummaries.value ?: emptyList()
+            val period = if (viewModel.lastGraphTime == 1) 30 else 7
+            val excluded = viewModel.lastGraphTypes.orEmpty()
+            val filtered = summaries
+                .filter { it.period == period && it.calculatorId !in excluded }
+                .sortedBy { it.calculatorId }
+
             container.removeAllViews()
-            noAdvicesWarning.visibility = if (blocks.isEmpty()) View.VISIBLE else View.GONE
-            blocks.forEach { block ->
+            noSummaryWarning.visibility = if (filtered.isEmpty()) View.VISIBLE else View.GONE
+            filtered.forEach { item ->
                 val view = LayoutInflater.from(this)
-                    .inflate(R.layout.layout_calc_specify_block, container, false)
-                view.findViewById<TextView>(R.id.blockTitle).text = block.title
-                renderSpecifyChart(view.findViewById(R.id.blockChart), block.chart)
-
-                val advicesLayout = view.findViewById<LinearLayout>(R.id.blockAdvices)
-                block.advices.forEach { advice ->
-                    val adv = LayoutInflater.from(this)
-                        .inflate(R.layout.layout_eco_advice, advicesLayout, false) as TextView
-                    adv.text = advice
-                    advicesLayout.addView(adv)
-                }
-
+                    .inflate(R.layout.layout_calc_ai_summary_card, container, false)
+                view.findViewById<TextView>(R.id.aiSummaryCalcName).text = getString(CALC_NAMES[item.calculatorId])
+                view.findViewById<TextView>(R.id.aiSummaryPeriod).text =
+                    getString(if (item.period == 30) R.string.by30days else R.string.by7days)
+                view.findViewById<TextView>(R.id.aiSummaryText).text = item.summary
                 container.addView(view)
             }
         }
+        renderAiSummaries = ::render
+
+        viewModel.aiSummariesLoading.observe(this) { isLoading ->
+            loading.visibility = if (isLoading) View.VISIBLE else View.GONE
+        }
+        viewModel.aiSummaries.observe(this) { render() }
     }
 
     private fun excludedTypes(chipGroup: ChipGroup): MutableList<Int> = chipIds

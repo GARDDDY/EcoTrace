@@ -13,9 +13,9 @@ data class CalcTodayEntry(
 )
 
 data class CalcState(
-    val updating: Boolean = false,   // true if already submitted today; new entries sum with today's
-    val first: Boolean = false,      // true if user has never completed this calculator
-    val daysSince: Int? = null,      // null if there's no data at all
+    val updating: Boolean = false,
+    val first: Boolean = false,
+    val daysSince: Int? = null,
     val averages: List<CalcAverage> = emptyList(),
     val today: List<CalcTodayEntry> = emptyList()
 )
@@ -30,24 +30,16 @@ data class CalcEntriesRequest(
 )
 
 data class CalcEntryResult(
-    val awarded: Int = 0,            // 0 if not the first submission of the day
+    val awarded: Int = 0,
     val message: String = ""
 )
 
-data class CalcSpecifyConfig(
-    val available: List<String> = emptyList()
+data class CalcAiSummary(
+    val period: Int = 7,
+    val summary: String? = null,
+    val generatedFor: String? = null
 )
 
-data class CalcSpecifySeries(
-    val key: Int = 0,
-    val name: String = "",
-    val color: String = "128, 128, 128",
-    val data: List<Double> = emptyList()
-)
-
-data class CalcSpecifyChart(
-    val unit: String = "",
-    val days: List<String> = emptyList(),
-    val labels: List<String> = emptyList(),
-    val datasets: List<CalcSpecifySeries> = emptyList()
+data class CalcAiSummaries(
+    val items: List<CalcAiSummary> = emptyList()
 )

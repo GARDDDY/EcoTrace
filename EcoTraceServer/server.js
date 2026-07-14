@@ -2,6 +2,7 @@ require('dotenv').config();
 const http = require('http');
 const logger = require('./logger');
 const { ping } = require('./core/db');
+const { migrate } = require('./core/migrate');
 const app = require('./app');
 const { init: initRealtime } = require('./core/realtime');
 
@@ -17,5 +18,6 @@ process.on('unhandledRejection', (reason) => {
 });
 
 ping()
+    .then(() => migrate())
     .then(() => server.listen(port, () => logger.info(`Server is running at http://localhost:${port}`)))
     .catch((err) => logger.error('Error starting server', { err: err.message, stack: err.stack }));

@@ -94,7 +94,7 @@ router.post('/login', route(async (req) => {
 // POST /logout -- разлогинить текущую сессию (по токену).
 router.post('/logout', route(async (req) => {
     await destroySession(bearerToken(req));
-    return { loggedOut: true };
+    return { logged_out: true };
 }));
 
 // GET /me -- текущий пользователь (проверка токена).

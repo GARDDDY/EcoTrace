@@ -19,7 +19,7 @@ router.get('/users/:id/groups', route(async (req) => {
     const isOwner = String(target.id) === String(req.user.id);
     const isFriend = isOwner ? true : await areFriends(req.user.id, target.id);
     if (!canSee(target.groups_visibility, isOwner, isFriend)) {
-        return { items: [], hasMore: false, hidden: true };
+        return { items: [], has_more: false, hidden: true };
     }
 
     const rows = await query(
@@ -32,7 +32,7 @@ router.get('/users/:id/groups', route(async (req) => {
          LIMIT $3`,
         [target.id, after, limit + 1]
     );
-    return { items: rows.slice(0, limit), hasMore: rows.length > limit };
+    return { items: rows.slice(0, limit), has_more: rows.length > limit };
 }));
 
 // GET /users/:id/events?sort=members|role -- мероприятия пользователя (видны всем).
@@ -55,7 +55,7 @@ router.get('/users/:id/events', route(async (req) => {
         [targetId, after, limit + 1]
     );
     const items = rows.slice(0, limit).map(e => ({ ...e, timing: timing(e.starts_at, e.ends_at) }));
-    return { items, hasMore: rows.length > limit };
+    return { items, has_more: rows.length > limit };
 }));
 
 module.exports = router;

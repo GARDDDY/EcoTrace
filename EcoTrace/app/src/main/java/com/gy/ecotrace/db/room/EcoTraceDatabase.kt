@@ -7,7 +7,7 @@ import androidx.room.RoomDatabase
 
 @Database(
     entities = [UserEntity::class, PostEntity::class, UserProfileEntity::class, GroupEntity::class, EventEntity::class],
-    version = 5,
+    version = 7,
     exportSchema = false
 )
 abstract class EcoTraceDatabase : RoomDatabase() {

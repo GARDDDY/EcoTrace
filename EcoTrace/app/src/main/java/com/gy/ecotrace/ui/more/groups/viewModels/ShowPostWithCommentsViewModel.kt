@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gy.ecotrace.network.CommentEvent
 import com.gy.ecotrace.network.dto.GroupComment
+import com.gy.ecotrace.network.dto.GroupPost
 import com.gy.ecotrace.repos.GroupRepository
 import com.gy.ecotrace.repos.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -25,7 +26,7 @@ class ShowPostWithCommentsViewModel @Inject constructor(
     var myRole: String? = null
 
     var textComment: String? = null
-    var imageComment: Bitmap? = null
+    val imagesComment: MutableList<Bitmap> = mutableListOf()
 
     private val _comments = MutableLiveData<List<GroupComment>>()
     val comments: LiveData<List<GroupComment>> get() = _comments
@@ -49,23 +50,38 @@ class ShowPostWithCommentsViewModel @Inject constructor(
 
     private var after: Long? = null
     var foundAll = false
+    var fetching = false
     private var observing = false
 
-    fun loadRole() {
+    fun loadRole(callback: () -> Unit = {}) {
         viewModelScope.launch {
             myRole = runCatching {
                 repository.cachedGroup(groupId)?.myRole ?: repository.refreshGroup(groupId).myRole
             }.getOrNull()
+            callback()
         }
     }
 
     fun loadComments() {
+        if (fetching) return
         viewModelScope.launch {
-            val page = runCatching { repository.comments(postId, after) }.getOrNull() ?: return@launch
+            fetching = true
+            val page = runCatching { repository.comments(postId, after) }.getOrNull()
+            fetching = false
+            if (page == null) return@launch
             foundAll = !page.hasMore
             page.items.lastOrNull()?.let { after = it.id }
             _comments.postValue(page.items)
         }
+    }
+
+    fun resetComments() {
+        after = null
+        foundAll = false
+    }
+
+    fun refreshPost(callback: (GroupPost?) -> Unit) {
+        viewModelScope.launch { callback(runCatching { repository.post(postId) }.getOrNull()) }
     }
 
     fun observeComments() {
@@ -83,7 +99,7 @@ class ShowPostWithCommentsViewModel @Inject constructor(
 
     fun sendComment(callback: (Boolean) -> Unit) {
         viewModelScope.launch {
-            val result = runCatching { repository.createComment(postId, textComment, imageComment?.toPng()) }
+            val result = runCatching { repository.createComment(postId, textComment, imagesComment.map { it.toPng() }) }
             result.getOrNull()?.let { _newComment.postValue(it) }
             callback(result.isSuccess)
         }
@@ -95,6 +111,14 @@ class ShowPostWithCommentsViewModel @Inject constructor(
 
     fun deletePost(callback: (Boolean) -> Unit) {
         viewModelScope.launch { callback(runCatching { repository.deletePost(postId) }.getOrDefault(false)) }
+    }
+
+    fun pinPost(callback: (Boolean) -> Unit) {
+        viewModelScope.launch { callback(runCatching { repository.pinPost(postId) }.isSuccess) }
+    }
+
+    fun unpinPost(callback: (Boolean) -> Unit) {
+        viewModelScope.launch { callback(runCatching { repository.unpinPost(postId) }.getOrDefault(false)) }
     }
 
     private fun Bitmap.toPng(): ByteArray {

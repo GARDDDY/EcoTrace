@@ -2,21 +2,14 @@ package com.gy.ecotrace.ui.more.groups
 
 import android.animation.ArgbEvaluator
 import android.animation.ValueAnimator
-import android.app.Activity
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.content.res.Resources
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.graphics.Rect
 import android.graphics.drawable.ColorDrawable
-import android.net.Uri
 import android.os.Bundle
-import android.provider.MediaStore
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
-import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.ImageView
@@ -72,10 +65,6 @@ class ShowGroupActivity : AppCompatActivity() {
     private var currentGroupName = ""
     private var myRank = 0
 
-    private var imageAttached = false
-    private var attachedImage: Bitmap? = null
-    private var imageAttachedF: () -> Unit = {}
-
     private var postsStarted = false
     private var menuConfigured = false
     private val postViews = HashMap<Long, View>()
@@ -89,6 +78,9 @@ class ShowGroupActivity : AppCompatActivity() {
 
     private var myAvatarKey: String? = null
     private var createPostAvatarImage: ImageView? = null
+    // currentUserImage во всех постах (лента + закреплённый) — привязываются заново,
+    // когда currentUserAvatarKey приходит уже после того, как посты отрисованы.
+    private val currentUserImageViews = java.util.WeakHashMap<ImageView, Unit>()
 
     private var toolbarAnimator: ValueAnimator? = null
     private lateinit var backIcon: android.graphics.drawable.Drawable
@@ -218,39 +210,21 @@ class ShowGroupActivity : AppCompatActivity() {
         postLayout.visibility = if (available) View.VISIBLE else View.GONE
         if (!available) return
 
-        postLayout.setOnClickListener {
+        fun openComposer(openPickerImmediately: Boolean) {
             val intent = Intent(this, CreateGroupPostMenuActivity::class.java)
             intent.putExtra("groupName", currentGroupName)
+            intent.putExtra("openPickerImmediately", openPickerImmediately)
             startActivity(intent)
         }
-        findViewById<LinearLayout>(R.id.attachImage).setOnClickListener { showImageSourceDialog() }
+
+        postLayout.setOnClickListener { openComposer(openPickerImmediately = false) }
+        findViewById<ImageButton>(R.id.attachImageQuick).setOnClickListener {
+            openComposer(openPickerImmediately = true)
+        }
         createPostAvatarImage = postLayout.findViewById<ImageView>(R.id.currentUserImage).also {
             Glide.with(this).load(imageUrl("users", myAvatarKey)).circleCrop()
                 .placeholder(R.drawable.baseline_person_24)
                 .into(it)
-        }
-
-        val publishButton = findViewById<Button>(R.id.publishPost)
-        publishButton.setOnClickListener {
-            if (imageAttached) {
-                showGroupViewModel.createPost(null, attachedImage) { ok ->
-                    if (!ok) Toast.makeText(this, "Не удалось создать пост!", Toast.LENGTH_SHORT).show()
-                    else { imageAttached = false; imageAttachedF() }
-                }
-            }
-        }
-        imageAttachedF = {
-            postLayout.layoutParams.height = if (imageAttached) 350.toPx() else 150.toPx()
-            publishButton.setBackgroundColor(
-                ContextCompat.getColor(applicationContext, if (imageAttached) R.color.ok_green else R.color.silver)
-            )
-            findViewById<ImageButton>(R.id.removeAttachedImage).visibility =
-                if (imageAttached) View.VISIBLE else View.GONE
-            findViewById<ImageView>(R.id.attachedImage).visibility =
-                if (imageAttached) View.VISIBLE else View.GONE
-        }
-        findViewById<ImageButton>(R.id.removeAttachedImage).setOnClickListener {
-            imageAttached = false; imageAttachedF()
         }
     }
 
@@ -308,13 +282,15 @@ class ShowGroupActivity : AppCompatActivity() {
         }
 
         val loading: ShimmerFrameLayout = mainLayout.findViewById(R.id.postContentLoading)
-        var hasImage = false
-        val postImage: ImageView = mainLayout.findViewById(R.id.postContentImage)
-        if (post.imageKey != null) {
-            hasImage = true
-            Glide.with(this).load(imageUrl("posts", post.imageKey)).into(postImage)
+        val hasImage = post.imageKeys.isNotEmpty()
+        if (hasImage) {
+            renderImageStrip(
+                this,
+                mainLayout.findViewById(R.id.postImagesScroll),
+                mainLayout.findViewById(R.id.postImagesContainer),
+                post.imageKeys.map { imageUrl("posts", it)!! }
+            )
             loading.visibility = View.GONE
-            postImage.visibility = View.VISIBLE
         }
 
         val postText = mainLayout.findViewById<TextView>(R.id.postContentText)
@@ -327,9 +303,11 @@ class ShowGroupActivity : AppCompatActivity() {
         }
         if (!hasImage && !hasText) return null
 
+        val currentUserImage = mainLayout.findViewById<ImageView>(R.id.currentUserImage)
+        currentUserImageViews[currentUserImage] = Unit
         Glide.with(this).load(imageUrl("users", myAvatarKey)).circleCrop()
             .placeholder(R.drawable.baseline_person_24)
-            .into(mainLayout.findViewById(R.id.currentUserImage))
+            .into(currentUserImage)
 
         val postComment: ImageButton = mainLayout.findViewById(R.id.postSendComment)
         val commentView: EditText = mainLayout.findViewById(R.id.postCreateCommentEntry)
@@ -472,7 +450,8 @@ class ShowGroupActivity : AppCompatActivity() {
         showGroupViewModel.loadCurrentUserAvatar()
         showGroupViewModel.currentUserAvatarKey.observe(this) { key ->
             myAvatarKey = key
-            createPostAvatarImage?.let {
+            val targets = listOfNotNull(createPostAvatarImage) + currentUserImageViews.keys
+            targets.forEach {
                 Glide.with(this).load(imageUrl("users", key)).circleCrop()
                     .placeholder(R.drawable.baseline_person_24)
                     .into(it)
@@ -601,38 +580,11 @@ class ShowGroupActivity : AppCompatActivity() {
             }
         }
         scrollView.setOnScrollChangeListener { view, _, _, _, _ ->
-            if (scrollView.getChildAt(scrollView.childCount - 1).bottom == scrollView.height + view.scrollY) {
+            val bottomGap = scrollView.getChildAt(scrollView.childCount - 1).bottom - (scrollView.height + view.scrollY)
+            if (bottomGap <= 32.toPx()) {
                 if (!showGroupViewModel.foundAll && !showGroupViewModel.fetching) {
                     showGroupViewModel.loadOldPosts()
                 }
-            }
-        }
-    }
-
-    private fun showImageSourceDialog() {
-        val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-        val galleryIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI).apply {
-            type = "image/*"
-        }
-        val chooserIntent = Intent.createChooser(galleryIntent, "Добавьте изображение, используя")
-        chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, arrayOf(cameraIntent))
-        startActivityForResult(chooserIntent, 100)
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode == Activity.RESULT_OK && requestCode == 100) {
-            data?.let {
-                val extras = it.extras
-                val bitmap = if (extras != null && extras.containsKey("data")) {
-                    extras.get("data") as Bitmap
-                } else {
-                    BitmapFactory.decodeStream(it.data?.let { uri -> contentResolver.openInputStream(uri) })
-                }
-                findViewById<ImageView>(R.id.attachedImage).setImageBitmap(bitmap)
-                attachedImage = bitmap
-                imageAttached = true
-                imageAttachedF()
             }
         }
     }

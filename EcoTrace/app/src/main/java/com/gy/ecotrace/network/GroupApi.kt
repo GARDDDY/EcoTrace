@@ -62,6 +62,9 @@ interface GroupApi {
     @DELETE("groups/{id}")
     suspend fun delete(@Path("id") id: Long): ApiResponse<DeletedResponse>
 
+    @DELETE("groups/{id}/image")
+    suspend fun removeImage(@Path("id") id: Long): ApiResponse<RemoteGroup>
+
     @GET("groups/{id}/posts")
     suspend fun posts(
         @Path("id") id: Long,
@@ -74,7 +77,7 @@ interface GroupApi {
     suspend fun createPost(
         @Path("id") id: Long,
         @Part("text") text: RequestBody?,
-        @Part image: MultipartBody.Part?
+        @Part images: List<MultipartBody.Part>
     ): ApiResponse<GroupPost>
 
     @DELETE("posts/{postId}")
@@ -82,6 +85,9 @@ interface GroupApi {
 
     @GET("groups/{id}/posts/pinned")
     suspend fun pinnedPost(@Path("id") id: Long): ApiResponse<GroupPost?>
+
+    @GET("posts/{postId}")
+    suspend fun post(@Path("postId") postId: Long): ApiResponse<GroupPost>
 
     @POST("posts/{postId}/pin")
     suspend fun pinPost(@Path("postId") postId: Long): ApiResponse<GroupPost>
@@ -100,7 +106,7 @@ interface GroupApi {
     suspend fun createComment(
         @Path("postId") postId: Long,
         @Part("text") text: RequestBody?,
-        @Part image: MultipartBody.Part?
+        @Part images: List<MultipartBody.Part>
     ): ApiResponse<GroupComment>
 
     @DELETE("comments/{commentId}")

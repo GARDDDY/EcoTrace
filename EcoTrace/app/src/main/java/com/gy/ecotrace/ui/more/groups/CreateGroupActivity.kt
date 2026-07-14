@@ -4,12 +4,15 @@ import android.app.Activity
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.View
 import android.widget.Button
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
@@ -31,6 +34,7 @@ class CreateGroupActivity : AppCompatActivity() {
 
     private val sharedViewModel: CreateGroupViewModel by viewModels()
     private lateinit var groupImage: ImageView
+    private lateinit var removeGroupImage: ImageButton
 
     private var isBinding = false
 
@@ -47,6 +51,12 @@ class CreateGroupActivity : AppCompatActivity() {
 
         groupImage = findViewById(R.id.groupImage)
         groupImage.setOnClickListener { showImageSourceDialog() }
+        removeGroupImage = findViewById(R.id.removeGroupImage)
+        removeGroupImage.setOnClickListener {
+            sharedViewModel.requestRemoveImage()
+            groupImage.setImageDrawable(ColorDrawable(ContextCompat.getColor(this, R.color.silver)))
+            removeGroupImage.visibility = View.GONE
+        }
 
         val nameField: TextInputEditText = findViewById(R.id.groupName)
         val aboutField: TextInputEditText = findViewById(R.id.groupAbout)
@@ -138,6 +148,8 @@ class CreateGroupActivity : AppCompatActivity() {
                         .placeholder(R.color.silver)
                         .into(groupImage)
                 }
+                removeGroupImage.visibility =
+                    if (!sharedViewModel.groupImageGenerated && sharedViewModel.groupImageKey != null) View.VISIBLE else View.GONE
                 isBinding = false
                 nameValid = true
                 setSaveEnabled(true)
@@ -183,5 +195,7 @@ class CreateGroupActivity : AppCompatActivity() {
     private fun addImageToLayout(imageBitmap: Bitmap) {
         groupImage.setImageBitmap(imageBitmap)
         sharedViewModel.groupImage = imageBitmap
+        sharedViewModel.removeImageRequested = false
+        removeGroupImage.visibility = View.GONE
     }
 }

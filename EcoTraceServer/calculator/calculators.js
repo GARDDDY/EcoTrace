@@ -4,6 +4,7 @@ const { route, HttpError } = require('../core/route');
 const { validate } = require('../core/validate');
 const { query, one, tx } = require('../core/db');
 const { MSK_TODAY } = require('./shared');
+const { ensureFreshSummaries } = require('./groq');
 
 const router = express.Router();
 const CALC_REWARD = 2;
@@ -97,7 +98,7 @@ router.post('/calculators/:id/entries', route(async (req) => {
         answersJson[i] = a.specify ? { value: total, specify: a.specify } : { value: total };
     });
 
-    return tx(async (client) => {
+    const result = await tx(async (client) => {
         const { rows: [pre] } = await client.query(
             `SELECT EXISTS(
                 SELECT 1 FROM calc_entry
@@ -122,6 +123,15 @@ router.post('/calculators/:id/entries', route(async (req) => {
             [CALC_REWARD, req.user.id]);
         return { awarded: CALC_REWARD, message: `Данные добавлены, +${CALC_REWARD} опыта` };
     });
+
+    return result;
+}));
+
+// GET /calculators/:id/ai-summary -- анализы за 7 и 30 дней. Пересчитываются лениво,
+// не по расписанию, а при первом за сутки запросе (т.е. когда пользователь открывает советы).
+router.get('/calculators/:id/ai-summary', route(async (req) => {
+    const items = await ensureFreshSummaries(req.user.id, req.params.id);
+    return { items };
 }));
 
 module.exports = router;

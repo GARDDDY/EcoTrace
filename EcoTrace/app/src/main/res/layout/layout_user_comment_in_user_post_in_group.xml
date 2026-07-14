@@ -82,17 +82,21 @@
             android:text="WMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWM"
             android:visibility="gone" />
 
-        <ImageView
-            android:id="@+id/postContentImage"
+        <HorizontalScrollView
+            android:id="@+id/postImagesScroll"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/postContentText"
             android:layout_marginHorizontal="@dimen/default_PaddingMargin"
             android:layout_marginTop="@dimen/default_PaddingMargin"
-            android:adjustViewBounds="true"
-            android:scaleType="fitCenter"
-            android:visibility="gone"
-            tools:srcCompat="@tools:sample/backgrounds/scenic" />
+            android:visibility="gone">
+
+            <LinearLayout
+                android:id="@+id/postImagesContainer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal" />
+        </HorizontalScrollView>
     </LinearLayout>
 
     <View

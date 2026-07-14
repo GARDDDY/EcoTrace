@@ -26,7 +26,7 @@ router.get('/events/:id/members', route(async (req) => {
          LIMIT $4`,
         [req.params.id, uname, after, limit + 1]
     );
-    return { items: rows.slice(0, limit), hasMore: rows.length > limit };
+    return { items: rows.slice(0, limit), has_more: rows.length > limit };
 }));
 
 // GET /events/:id/members/preview -- до 5 случайных участников (только аватар, без имени) -- превью на карточке.
@@ -42,7 +42,7 @@ router.get('/events/:id/members/preview', route(async (req) => {
          LIMIT $2`,
         [req.params.id, limit]
     );
-    return { items: rows, hasMore: false };
+    return { items: rows, has_more: false };
 }));
 
 // POST /events/:id/members -- вступить.

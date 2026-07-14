@@ -4,7 +4,7 @@ const { query } = require('../core/db');
 
 const router = express.Router();
 
-// GET /rating?country=RU&limit=20&offset=0 -- топ по опыту, страница. Публично (виден и без входа).
+// GET /rating?country=RU&limit=20&offset=0 -- топ по опыту
 const TOP_LIMIT = 200;
 
 router.get('/rating', route(async (req) => {
@@ -12,7 +12,7 @@ router.get('/rating', route(async (req) => {
     const pageSize = Math.min(Math.max(Number(req.query.limit) || 20, 1), 50);
     const offset = Math.max(Number(req.query.offset) || 0, 0);
 
-    if (offset >= TOP_LIMIT) return { items: [], hasMore: false };
+    if (offset >= TOP_LIMIT) return { items: [], has_more: false };
     const limit = Math.min(pageSize, TOP_LIMIT - offset);
 
     const rows = await query(
@@ -25,8 +25,8 @@ router.get('/rating', route(async (req) => {
         [country, limit + 1, offset]
     );
     const items = rows.slice(0, limit);
-    const hasMore = rows.length > limit && (offset + limit) < TOP_LIMIT;
-    return { items, hasMore };
+    const has_more = rows.length > limit && (offset + limit) < TOP_LIMIT;
+    return { items, has_more };
 }, { auth: false }));
 
 module.exports = router;

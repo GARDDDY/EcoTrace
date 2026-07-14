@@ -5,6 +5,7 @@ const { route, HttpError } = require('../core/route');
 const { validate } = require('../core/validate');
 const { query, one, tx } = require('../core/db');
 const { uploadImage } = require('../core/upload');
+const { generateGroupGradientPng } = require('../core/gradientImage');
 
 const router = express.Router();
 const upload = multer({ storage: multer.memoryStorage() });
@@ -58,6 +59,7 @@ router.get('/groups', route(async (req) => {
     const rows = await query(
         `SELECT g.*,
                 u.username AS creator_username,
+                u.avatar_key AS creator_avatar_key,
                 (SELECT COUNT(*) FROM group_member gm WHERE gm.group_id = g.id) AS members_count
          FROM "group" g
          JOIN app_user u ON u.id = g.creator_id
@@ -71,7 +73,7 @@ router.get('/groups', route(async (req) => {
          LIMIT $4`,
         [filter, after, name, limit + 1]
     );
-    return { items: rows.slice(0, limit), hasMore: rows.length > limit };
+    return { items: rows.slice(0, limit), has_more: rows.length > limit };
 }));
 
 // GET /groups/:groupId -- карточка (+ моя роль, + число участников).
@@ -79,6 +81,7 @@ router.get('/groups/:groupId', route(async (req) => {
     const group = await one(
         `SELECT g.*,
                 u.username AS creator_username,
+                u.avatar_key AS creator_avatar_key,
                 (SELECT COUNT(*) FROM group_member gm WHERE gm.group_id = g.id) AS members_count,
                 (SELECT role FROM group_member gm WHERE gm.group_id = g.id AND gm.user_id = $2) AS my_role
          FROM "group" g
@@ -100,13 +103,16 @@ router.post('/groups', upload.single('image'), route(async (req) => {
     const taken = await one('SELECT 1 FROM "group" WHERE name = $1', [data.name]);
     if (taken) throw new HttpError(409, 'Группа с таким именем уже существует');
 
-    const imageKey = await uploadImage(req.file, 'groups');
+    const imageGenerated = !req.file;
+    const imageKey = req.file
+        ? await uploadImage(req.file, 'groups')
+        : await uploadImage({ buffer: generateGroupGradientPng(data.name), mimetype: 'image/png' }, 'groups');
 
     return tx(async (client) => {
         const { rows: [group] } = await client.query(
-            `INSERT INTO "group" (name, creator_id, type, about, rules, rules_image_key)
-             VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`,
-            [data.name, req.user.id, data.type, data.about ?? null, data.rules ?? null, imageKey]
+            `INSERT INTO "group" (name, creator_id, type, about, rules, rules_image_key, image_generated)
+             VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *`,
+            [data.name, req.user.id, data.type, data.about ?? null, data.rules ?? null, imageKey, imageGenerated]
         );
         await client.query(
             `INSERT INTO group_member (group_id, user_id, role) VALUES ($1, $2, 'creator')`,
@@ -139,7 +145,8 @@ router.patch('/groups/:groupId', upload.single('image'), route(async (req) => {
     return tx(async (client) => {
         const { rows: [updated] } = await client.query(
             `UPDATE "group" SET name = $2, type = $3, about = $4, rules = $5,
-                    rules_image_key = COALESCE($6, rules_image_key)
+                    rules_image_key = COALESCE($6, rules_image_key),
+                    image_generated = CASE WHEN $6::text IS NULL THEN image_generated ELSE FALSE END
              WHERE id = $1 RETURNING *`,
             [groupId, data.name, data.type, data.about ?? null, data.rules ?? null, imageKey ?? null]
         );
@@ -152,6 +159,25 @@ router.patch('/groups/:groupId', upload.single('image'), route(async (req) => {
         }
         return updated;
     });
+}));
+
+// DELETE /groups/:groupId/image -- убрать загруженную фотографию (только создатель, только если это не сгенерированный градиент).
+router.delete('/groups/:groupId/image', route(async (req) => {
+    const groupId = req.params.groupId;
+    const group = await one('SELECT creator_id, name, image_generated FROM "group" WHERE id = $1', [groupId]);
+    if (!group) throw new HttpError(404, 'group not found');
+    if (group.creator_id !== req.user.id) throw new HttpError(403, 'only creator can edit');
+    if (group.image_generated) throw new HttpError(409, 'image is already a generated placeholder');
+
+    const imageKey = await uploadImage(
+        { buffer: generateGroupGradientPng(group.name), mimetype: 'image/png' },
+        'groups'
+    );
+    const updated = await one(
+        `UPDATE "group" SET rules_image_key = $2, image_generated = TRUE WHERE id = $1 RETURNING *`,
+        [groupId, imageKey]
+    );
+    return updated;
 }));
 
 // DELETE /groups/:groupId -- удалить (только создатель).

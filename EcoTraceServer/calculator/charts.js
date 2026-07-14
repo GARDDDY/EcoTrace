@@ -1,7 +1,7 @@
 const express = require('express');
 const { route } = require('../core/route');
 const { query, one } = require('../core/db');
-const { CALCULATORS, KS, CALC_COLORS, SPECIFY, SPECIFY_AVAILABLE, MSK_TODAY, lastDays } = require('./shared');
+const { CALCULATORS, KS, CARBON_UNIT, CALC_COLORS, SPECIFY, SPECIFY_AVAILABLE, MSK_TODAY, lastDays } = require('./shared');
 
 const router = express.Router();
 
@@ -37,7 +37,7 @@ router.get('/users/:id/graph', route(async (req) => {
         datasets.push({ calculator: c, name: CALCULATORS[c], color: CALC_COLORS[c], data });
     }
 
-    return { unit: 'тонны CO₂', days: keys, labels, datasets };
+    return { unit: CARBON_UNIT, days: keys, labels, datasets };
 }, { auth: false }));
 
 // GET /calculators/:id/specify?question=0 -- разбивка уточнений за неделю, серия на вид (свои данные).

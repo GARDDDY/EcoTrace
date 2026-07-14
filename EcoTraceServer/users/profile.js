@@ -75,7 +75,7 @@ router.get('/users', route(async (req) => {
          LIMIT $7`,
         [req.user.id, q, filter, after, commonGroup, commonEvent, limit + 1]
     );
-    return { items: rows.slice(0, limit), hasMore: rows.length > limit };
+    return { items: rows.slice(0, limit), has_more: rows.length > limit };
 }));
 
 // GET /users/:id -- карточка профиля (id или "me"). Применяет приватность.

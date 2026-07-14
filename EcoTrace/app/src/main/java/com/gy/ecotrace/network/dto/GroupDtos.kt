@@ -8,8 +8,10 @@ data class RemoteGroup(
     val about: String? = null,
     val rules: String? = null,
     val rulesImageKey: String? = null,
+    val imageGenerated: Boolean = false,
     val createdAt: String? = null,
     val creatorUsername: String? = null,
+    val creatorAvatarKey: String? = null,
     val membersCount: Int = 0,
     val myRole: String? = null
 )
@@ -37,7 +39,7 @@ data class GroupPost(
     val groupId: Long = 0,
     val authorId: Long = 0,
     val text: String? = null,
-    val imageKey: String? = null,
+    val imageKeys: List<String> = emptyList(),
     val pinnedAt: String? = null,
     val createdAt: String? = null,
     val authorUsername: String? = null,
@@ -71,9 +73,10 @@ data class GroupComment(
     val postId: Long = 0,
     val authorId: Long = 0,
     val text: String? = null,
-    val imageKey: String? = null,
+    val imageKeys: List<String> = emptyList(),
     val createdAt: String? = null,
     val authorUsername: String? = null,
+    val authorAvatarKey: String? = null,
     val authorRole: String? = null
 )
 

@@ -1,6 +1,8 @@
 package com.gy.ecotrace.ui.more.groups
 
 import android.os.Bundle
+import android.view.View
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -39,9 +41,13 @@ class ShowGroupRulesActivity : AppCompatActivity() {
             findViewById<TextView>(R.id.groupRulesText).text =
                 group?.rules ?: getString(R.string.noRulesInThisGroupYet)
 
-            val imageUrl = group?.rulesImageKey?.let { "${BuildConfig.SERVER_API_URI}uploads/groups/$it" }
-            Glide.with(this@ShowGroupRulesActivity).load(imageUrl)
-                .into(findViewById(R.id.groupRulesImage))
+            val rulesImage = findViewById<ImageView>(R.id.groupRulesImage)
+            if (group?.imageGenerated == true) {
+                rulesImage.visibility = View.GONE
+            } else {
+                val imageUrl = group?.rulesImageKey?.let { "${BuildConfig.SERVER_API_URI}uploads/groups/$it" }
+                Glide.with(this@ShowGroupRulesActivity).load(imageUrl).into(rulesImage)
+            }
         }
     }
 }

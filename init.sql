@@ -103,6 +103,7 @@ CREATE TABLE "group" (
     about           TEXT,
     rules           TEXT,
     rules_image_key TEXT,
+    image_generated BOOLEAN     NOT NULL DEFAULT FALSE,
     created_at      TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
@@ -127,21 +128,35 @@ CREATE TABLE post (
     group_id   BIGINT      NOT NULL REFERENCES "group"(id) ON DELETE CASCADE,
     author_id  BIGINT      NOT NULL REFERENCES app_user(id),
     text       TEXT,
-    image_key  TEXT,
     pinned_at  TIMESTAMPTZ,
     created_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 CREATE INDEX idx_post_group_id ON post (group_id, id);
+
+CREATE TABLE post_image (
+    id        BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    post_id   BIGINT   NOT NULL REFERENCES post(id) ON DELETE CASCADE,
+    image_key TEXT     NOT NULL,
+    position  SMALLINT NOT NULL DEFAULT 0
+);
+CREATE INDEX idx_post_image_post ON post_image (post_id, position);
 
 CREATE TABLE comment (
     id         BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     post_id    BIGINT      NOT NULL REFERENCES post(id) ON DELETE CASCADE,
     author_id  BIGINT      NOT NULL REFERENCES app_user(id),
     text       TEXT,
-    image_key  TEXT,
     created_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 CREATE INDEX idx_comment_post ON comment (post_id, id);
+
+CREATE TABLE comment_image (
+    id         BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    comment_id BIGINT   NOT NULL REFERENCES comment(id) ON DELETE CASCADE,
+    image_key  TEXT     NOT NULL,
+    position   SMALLINT NOT NULL DEFAULT 0
+);
+CREATE INDEX idx_comment_image_comment ON comment_image (comment_id, position);
 
 CREATE TABLE event (
     id              BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
@@ -228,6 +243,16 @@ CREATE TABLE calc_entry (
     created_at    TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 CREATE INDEX idx_calc_entry_user ON calc_entry (user_id, calculator_id, entry_date);
+
+CREATE TABLE calc_ai_summary (
+    user_id       BIGINT      NOT NULL REFERENCES app_user(id) ON DELETE CASCADE,
+    calculator_id SMALLINT    NOT NULL REFERENCES calculator(id),
+    period_days   SMALLINT    NOT NULL DEFAULT 7,
+    summary       TEXT        NOT NULL,
+    generated_for DATE        NOT NULL,
+    created_at    TIMESTAMPTZ NOT NULL DEFAULT now(),
+    PRIMARY KEY (user_id, calculator_id, period_days)
+);
 
 CREATE TABLE news_post (
     id         BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,

@@ -7,10 +7,10 @@ EcoTraceServer/npm-debug.log*
 EcoTraceServer/yarn-debug.log*
 EcoTraceServer/yarn-error.log*
 
-uploads/**/*
-!uploads/**/.gitkeep
-!uploads/$ranks/
-!uploads/$ranks/**
+EcoTraceServer/uploads/**/*
+!EcoTraceServer/uploads/**/.gitkeep
+!EcoTraceServer/uploads/$ranks/
+!EcoTraceServer/uploads/$ranks/**
 
 
 EcoTrace/.gradle/

@@ -16,11 +16,11 @@ class CreateGroupPostMenuViewModel @Inject constructor(
 
     var groupId: Long = 0
     var textContent: String? = null
-    var image: Bitmap? = null
+    val images: MutableList<Bitmap> = mutableListOf()
 
     fun createPost(callback: (Boolean) -> Unit) {
         viewModelScope.launch {
-            callback(runCatching { repository.createPost(groupId, textContent, image?.toPng()) }.isSuccess)
+            callback(runCatching { repository.createPost(groupId, textContent, images.map { it.toPng() }) }.isSuccess)
         }
     }
 

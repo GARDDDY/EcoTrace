@@ -18,7 +18,7 @@ router.get('/users/:id/friends', route(async (req) => {
     const isOwner = String(target.id) === String(req.user.id);
     const isFriend = isOwner ? true : await areFriends(req.user.id, target.id);
     if (!canSee(target.friends_visibility, isOwner, isFriend)) {
-        return { items: [], hasMore: false, hidden: true };
+        return { items: [], has_more: false, hidden: true };
     }
 
     const orderBy = sort === 'rating' ? 'u.experience DESC, u.id' : 'u.id';
@@ -33,7 +33,7 @@ router.get('/users/:id/friends', route(async (req) => {
          LIMIT $3`,
         [target.id, after, limit + 1]
     );
-    return { items: rows.slice(0, limit), hasMore: rows.length > limit };
+    return { items: rows.slice(0, limit), has_more: rows.length > limit };
 }));
 
 // GET /users/:id/friendship -- статус по отношению ко мне (code: 0 нет связи, 1 я отправил, 2 мне отправили, 3 друзья).

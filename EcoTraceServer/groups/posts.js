@@ -2,14 +2,29 @@ const express = require('express');
 const multer = require('multer');
 const { route, HttpError } = require('../core/route');
 const { query, one, tx } = require('../core/db');
-const { uploadImage } = require('../core/upload');
+const { uploadImages } = require('../core/upload');
 const { publish } = require('../core/realtime');
 const { requireMember, requireRole, assertCanModerate } = require('./access');
 
 const router = express.Router();
 const upload = multer({ storage: multer.memoryStorage() });
+const MAX_POST_IMAGES = 6;
 
-// GET /groups/:groupId/posts?before=&after= -- лента постов.
+const POST_SELECT = `
+    SELECT p.*,
+           u.username   AS author_username,
+           u.avatar_key AS author_avatar_key,
+           gm.role      AS author_role,
+           (SELECT COUNT(*) FROM comment c WHERE c.post_id = p.id) AS comments_count,
+           COALESCE(
+               (SELECT json_agg(pi.image_key ORDER BY pi.position) FROM post_image pi WHERE pi.post_id = p.id),
+               '[]'
+           ) AS image_keys
+    FROM post p
+    JOIN app_user u ON u.id = p.author_id
+    LEFT JOIN group_member gm ON gm.group_id = p.group_id AND gm.user_id = p.author_id
+`;
+
 router.get('/groups/:groupId/posts', route(async (req) => {
     const { groupId } = req.params;
     const after = req.query.after || null;
@@ -21,14 +36,7 @@ router.get('/groups/:groupId/posts', route(async (req) => {
     if (group.type === 'closed') await requireMember(groupId, req.user.id);
 
     const rows = await query(
-        `SELECT p.*,
-                u.username   AS author_username,
-                u.avatar_key AS author_avatar_key,
-                gm.role      AS author_role,
-                (SELECT COUNT(*) FROM comment c WHERE c.post_id = p.id) AS comments_count
-         FROM post p
-         JOIN app_user u ON u.id = p.author_id
-         LEFT JOIN group_member gm ON gm.group_id = p.group_id AND gm.user_id = p.author_id
+        `${POST_SELECT}
          WHERE p.group_id = $1
            AND ($2::bigint IS NULL OR p.id > $2)
            AND ($3::bigint IS NULL OR p.id < $3)
@@ -36,50 +44,47 @@ router.get('/groups/:groupId/posts', route(async (req) => {
          LIMIT $4`,
         [groupId, after, before, limit + 1]
     );
-    return { items: rows.slice(0, limit), hasMore: rows.length > limit };
+    return { items: rows.slice(0, limit), has_more: rows.length > limit };
 }));
 
-// GET /groups/:groupId/posts/pinned -- закреплённый пост группы (или null, если такого нет).
 router.get('/groups/:groupId/posts/pinned', route(async (req) => {
     const { groupId } = req.params;
-    const post = await one(
-        `SELECT p.*,
-                u.username   AS author_username,
-                u.avatar_key AS author_avatar_key,
-                gm.role      AS author_role,
-                (SELECT COUNT(*) FROM comment c WHERE c.post_id = p.id) AS comments_count
-         FROM post p
-         JOIN app_user u ON u.id = p.author_id
-         LEFT JOIN group_member gm ON gm.group_id = p.group_id AND gm.user_id = p.author_id
-         WHERE p.group_id = $1 AND p.pinned_at IS NOT NULL`,
-        [groupId]
-    );
+    const post = await one(`${POST_SELECT} WHERE p.group_id = $1 AND p.pinned_at IS NOT NULL`, [groupId]);
     return post || null;
 }));
 
-// POST /groups/:groupId/posts -- создать пост (любой участник).
-router.post('/groups/:groupId/posts', upload.single('image'), route(async (req) => {
-    const { groupId } = req.params;
-    const m = await requireMember(groupId, req.user.id);
-
-    const imageKey = await uploadImage(req.file, 'posts');
-    const post = await one(
-        `INSERT INTO post (group_id, author_id, text, image_key)
-         VALUES ($1, $2, $3, $4) RETURNING *`,
-        [groupId, req.user.id, req.body.text ?? null, imageKey]
-    );
-
-    publish(`group:${groupId}:posts`, 'post:new', {
-        ...post,
-        author_username: req.user.username,
-        author_avatar_key: req.user.avatar_key,
-        author_role: m.role,
-        comments_count: 0,
-    });
+router.get('/posts/:postId', route(async (req) => {
+    const post = await one(`${POST_SELECT} WHERE p.id = $1`, [req.params.postId]);
+    if (!post) throw new HttpError(404, 'post not found');
+    const group = await one('SELECT type FROM "group" WHERE id = $1', [post.group_id]);
+    if (group?.type === 'closed') await requireMember(post.group_id, req.user.id);
     return post;
 }));
 
-// DELETE /posts/:postId -- удалить (автор, либо помощник+ выше автора по рангу).
+router.post('/groups/:groupId/posts', upload.array('images', MAX_POST_IMAGES), route(async (req) => {
+    const { groupId } = req.params;
+    await requireMember(groupId, req.user.id);
+
+    const imageKeys = await uploadImages(req.files, 'posts');
+
+    const post = await tx(async (client) => {
+        const { rows: [inserted] } = await client.query(
+            `INSERT INTO post (group_id, author_id, text) VALUES ($1, $2, $3) RETURNING id`,
+            [groupId, req.user.id, req.body.text ?? null]
+        );
+        if (imageKeys.length > 0) {
+            const values = imageKeys.map((_, i) => `($1, $${i * 2 + 2}, $${i * 2 + 3})`).join(', ');
+            const params = [inserted.id, ...imageKeys.flatMap((key, i) => [key, i])];
+            await client.query(`INSERT INTO post_image (post_id, image_key, position) VALUES ${values}`, params);
+        }
+        const { rows: [full] } = await client.query(`${POST_SELECT} WHERE p.id = $1`, [inserted.id]);
+        return full;
+    });
+
+    publish(`group:${groupId}:posts`, 'post:new', post);
+    return post;
+}));
+
 router.delete('/posts/:postId', route(async (req) => {
     const post = await one('SELECT group_id, author_id FROM post WHERE id = $1', [req.params.postId]);
     if (!post) throw new HttpError(404, 'post not found');
@@ -91,27 +96,24 @@ router.delete('/posts/:postId', route(async (req) => {
     return { deleted: true };
 }));
 
-// POST /posts/:postId/pin -- закрепить (помощник+).
 router.post('/posts/:postId/pin', route(async (req) => {
     const post = await one('SELECT group_id FROM post WHERE id = $1', [req.params.postId]);
     if (!post) throw new HttpError(404, 'post not found');
     await requireRole(post.group_id, req.user.id, 'assistant');
 
-    return tx(async (client) => {
+    const updated = await tx(async (client) => {
         await client.query(
             'UPDATE post SET pinned_at = NULL WHERE group_id = $1 AND pinned_at IS NOT NULL',
             [post.group_id]
         );
-        const { rows: [updated] } = await client.query(
-            'UPDATE post SET pinned_at = now() WHERE id = $1 RETURNING *',
-            [req.params.postId]
-        );
-        publish(`group:${post.group_id}:posts`, 'post:pinned', { id: updated.id, pinnedAt: updated.pinned_at });
-        return updated;
+        await client.query('UPDATE post SET pinned_at = now() WHERE id = $1', [req.params.postId]);
+        const { rows: [full] } = await client.query(`${POST_SELECT} WHERE p.id = $1`, [req.params.postId]);
+        return full;
     });
+    publish(`group:${post.group_id}:posts`, 'post:pinned', { id: updated.id, pinnedAt: updated.pinned_at });
+    return updated;
 }));
 
-// DELETE /posts/:postId/pin -- открепить (помощник+).
 router.delete('/posts/:postId/pin', route(async (req) => {
     const post = await one('SELECT group_id FROM post WHERE id = $1', [req.params.postId]);
     if (!post) throw new HttpError(404, 'post not found');

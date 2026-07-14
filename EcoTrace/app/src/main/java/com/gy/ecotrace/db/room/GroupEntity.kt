@@ -13,8 +13,10 @@ data class GroupEntity(
     val about: String?,
     val rules: String?,
     val rulesImageKey: String?,
+    val imageGenerated: Boolean = false,
     val createdAt: String?,
     val creatorUsername: String?,
+    val creatorAvatarKey: String?,
     val membersCount: Int,
     val myRole: String?,
     val cachedAt: Long = System.currentTimeMillis()
@@ -28,8 +30,10 @@ fun GroupEntity.toRemote() = RemoteGroup(
     about = about,
     rules = rules,
     rulesImageKey = rulesImageKey,
+    imageGenerated = imageGenerated,
     createdAt = createdAt,
     creatorUsername = creatorUsername,
+    creatorAvatarKey = creatorAvatarKey,
     membersCount = membersCount,
     myRole = myRole
 )
@@ -42,8 +46,10 @@ fun RemoteGroup.toEntity() = GroupEntity(
     about = about,
     rules = rules,
     rulesImageKey = rulesImageKey,
+    imageGenerated = imageGenerated,
     createdAt = createdAt,
     creatorUsername = creatorUsername,
+    creatorAvatarKey = creatorAvatarKey,
     membersCount = membersCount,
     myRole = myRole
 )

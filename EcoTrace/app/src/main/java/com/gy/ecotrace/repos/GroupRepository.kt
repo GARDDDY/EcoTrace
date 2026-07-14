@@ -53,17 +53,19 @@ class GroupRepository @Inject constructor(
 
     fun postEvents(groupId: Long): Flow<PostEvent> = realtime.groupPostEvents(groupId)
 
-    suspend fun createPost(groupId: Long, text: String?, imagePng: ByteArray? = null): GroupPost {
+    suspend fun createPost(groupId: Long, text: String?, imagesPng: List<ByteArray> = emptyList()): GroupPost {
         val textPart = text?.toRequestBody("text/plain".toMediaTypeOrNull())
-        val imagePart = imagePng?.let {
-            MultipartBody.Part.createFormData("image", "post.png", it.toRequestBody("image/png".toMediaTypeOrNull()))
+        val imageParts = imagesPng.mapIndexed { i, bytes ->
+            MultipartBody.Part.createFormData("images", "post_$i.png", bytes.toRequestBody("image/png".toMediaTypeOrNull()))
         }
-        return apiCall { api.createPost(groupId, textPart, imagePart) }
+        return apiCall { api.createPost(groupId, textPart, imageParts) }
     }
 
     suspend fun deletePost(postId: Long): Boolean = apiCall { api.deletePost(postId) }.deleted
 
     suspend fun pinnedPost(groupId: Long): GroupPost? = apiCall { api.pinnedPost(groupId) }
+
+    suspend fun post(postId: Long): GroupPost = apiCall { api.post(postId) }
 
     suspend fun pinPost(postId: Long): GroupPost = apiCall { api.pinPost(postId) }
 
@@ -74,12 +76,12 @@ class GroupRepository @Inject constructor(
 
     fun commentEvents(postId: Long): Flow<CommentEvent> = realtime.commentEvents(postId)
 
-    suspend fun createComment(postId: Long, text: String?, imagePng: ByteArray? = null): GroupComment {
+    suspend fun createComment(postId: Long, text: String?, imagesPng: List<ByteArray> = emptyList()): GroupComment {
         val textPart = text?.toRequestBody("text/plain".toMediaTypeOrNull())
-        val imagePart = imagePng?.let {
-            MultipartBody.Part.createFormData("image", "comment.png", it.toRequestBody("image/png".toMediaTypeOrNull()))
+        val imageParts = imagesPng.mapIndexed { i, bytes ->
+            MultipartBody.Part.createFormData("images", "comment_$i.png", bytes.toRequestBody("image/png".toMediaTypeOrNull()))
         }
-        return apiCall { api.createComment(postId, textPart, imagePart) }
+        return apiCall { api.createComment(postId, textPart, imageParts) }
     }
 
     suspend fun deleteComment(commentId: Long): Boolean = apiCall { api.deleteComment(commentId) }.deleted
@@ -104,6 +106,12 @@ class GroupRepository @Inject constructor(
             MultipartBody.Part.createFormData("image", "group.png", it.toRequestBody("image/png".toMediaTypeOrNull()))
         }
         val group = apiCall { api.update(groupId, dataPart, imagePart) }
+        dao.upsert(group.toEntity())
+        return group
+    }
+
+    suspend fun removeGroupImage(groupId: Long): RemoteGroup {
+        val group = apiCall { api.removeImage(groupId) }
         dao.upsert(group.toEntity())
         return group
     }

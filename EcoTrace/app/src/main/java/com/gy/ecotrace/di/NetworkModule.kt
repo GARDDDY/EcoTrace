@@ -9,6 +9,7 @@ import com.gy.ecotrace.network.AuthInterceptor
 import com.gy.ecotrace.network.CalcApi
 import com.gy.ecotrace.network.EventApi
 import com.gy.ecotrace.network.GroupApi
+import com.gy.ecotrace.network.NetworkLoggingInterceptor
 import com.gy.ecotrace.network.NewsApi
 import com.gy.ecotrace.network.RatingApi
 import com.gy.ecotrace.network.ServerApi
@@ -56,7 +57,12 @@ object NetworkModule {
 
     @Provides
     @Singleton
+    fun provideNetworkLoggingInterceptor(): NetworkLoggingInterceptor = NetworkLoggingInterceptor()
+
+    @Provides
+    @Singleton
     fun provideOkHttpClient(
+        networkLoggingInterceptor: NetworkLoggingInterceptor,
         authInterceptor: AuthInterceptor,
         loggingInterceptor: HttpLoggingInterceptor
     ): OkHttpClient {
@@ -65,6 +71,7 @@ object NetworkModule {
             .readTimeout(15, TimeUnit.SECONDS)
             .writeTimeout(15, TimeUnit.SECONDS)
             .retryOnConnectionFailure(true)
+            .addInterceptor(networkLoggingInterceptor)
             .addInterceptor(authInterceptor)
             .addInterceptor(loggingInterceptor)
             .build()

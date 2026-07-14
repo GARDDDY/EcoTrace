@@ -20,6 +20,8 @@ class CreateGroupViewModel @Inject constructor(
 
     var groupImage: Bitmap? = null
     var groupImageKey: String? = null
+    var groupImageGenerated: Boolean = false
+    var removeImageRequested: Boolean = false
     var groupName: String? = null
     var groupAbout: String? = null
     // 0 - открытая, 1 - закрытая
@@ -40,8 +42,16 @@ class CreateGroupViewModel @Inject constructor(
             groupType = if (group.type == "closed") 1 else 0
             groupRulesText = group.rules
             groupImageKey = group.rulesImageKey
+            groupImageGenerated = group.imageGenerated
             onLoaded(true)
         }
+    }
+
+    // Ничего не отправляет на сервер — фактическое удаление фото происходит
+    // только при сохранении (submitGroup), как и остальные изменения формы.
+    fun requestRemoveImage() {
+        removeImageRequested = true
+        groupImage = null
     }
 
     fun isGroupNameAvailable(name: String, callback: (String?) -> Unit) {
@@ -70,6 +80,18 @@ class CreateGroupViewModel @Inject constructor(
                 runCatching { repository.update(editId, request, groupImage?.toPng()) }
             } else {
                 runCatching { repository.create(request, groupImage?.toPng()) }
+            }
+            if (result.isSuccess && editId != null && removeImageRequested && groupImage == null) {
+                val removed = runCatching { repository.removeGroupImage(editId) }
+                removed.getOrNull()?.let {
+                    groupImageKey = it.rulesImageKey
+                    groupImageGenerated = it.imageGenerated
+                }
+                removeImageRequested = false
+                if (removed.isFailure) {
+                    callback(removed.exceptionOrNull()?.message ?: "Не удалось убрать фото")
+                    return@launch
+                }
             }
             callback(
                 if (result.isSuccess) null

@@ -1,13 +1,28 @@
 const express = require('express');
 const multer = require('multer');
 const { route, HttpError } = require('../core/route');
-const { query, one } = require('../core/db');
-const { uploadImage } = require('../core/upload');
+const { query, one, tx } = require('../core/db');
+const { uploadImages } = require('../core/upload');
 const { publish } = require('../core/realtime');
 const { requireMember, assertCanModerate } = require('./access');
 
 const router = express.Router();
 const upload = multer({ storage: multer.memoryStorage() });
+const MAX_COMMENT_IMAGES = 6;
+
+const COMMENT_SELECT = `
+    SELECT c.*,
+           u.username   AS author_username,
+           u.avatar_key AS author_avatar_key,
+           gm.role      AS author_role,
+           COALESCE(
+               (SELECT json_agg(ci.image_key ORDER BY ci.position) FROM comment_image ci WHERE ci.comment_id = c.id),
+               '[]'
+           ) AS image_keys
+    FROM comment c
+    JOIN app_user u ON u.id = c.author_id
+    LEFT JOIN group_member gm ON gm.group_id = $2 AND gm.user_id = c.author_id
+`;
 
 function postWithGroup(postId) {
     return one(
@@ -18,7 +33,7 @@ function postWithGroup(postId) {
     );
 }
 
-// GET /posts/:postId/comments -- список комментов. ?after=<id> -- только новые.
+// GET /posts/:postId/comments?after -- список комментариев поста постранично (по 20, курсор after)
 router.get('/posts/:postId/comments', route(async (req) => {
     const after = req.query.after || null;
     const post = await postWithGroup(req.params.postId);
@@ -26,40 +41,45 @@ router.get('/posts/:postId/comments', route(async (req) => {
     if (post.group_type === 'closed') await requireMember(post.group_id, req.user.id);
 
     const rows = await query(
-        `SELECT c.*,
-                u.username AS author_username,
-                gm.role    AS author_role
-         FROM comment c
-         JOIN app_user u ON u.id = c.author_id
-         LEFT JOIN group_member gm ON gm.group_id = $2 AND gm.user_id = c.author_id
+        `${COMMENT_SELECT}
          WHERE c.post_id = $1 AND ($3::bigint IS NULL OR c.id > $3)
          ORDER BY c.id
          LIMIT 20`,
         [req.params.postId, post.group_id, after]
     );
-    return { items: rows, hasMore: rows.length === 20 };
+    return { items: rows, has_more: rows.length === 20 };
 }));
 
-// POST /posts/:postId/comments -- добавить коммент (любой участник группы).
-router.post('/posts/:postId/comments', upload.single('image'), route(async (req) => {
+// POST /posts/:postId/comments -- добавить комментарий к посту (текст + до 6 изображений)
+router.post('/posts/:postId/comments', upload.array('images', MAX_COMMENT_IMAGES), route(async (req) => {
     const post = await postWithGroup(req.params.postId);
     if (!post) throw new HttpError(404, 'post not found');
-    const m = await requireMember(post.group_id, req.user.id);
+    await requireMember(post.group_id, req.user.id);
 
-    const imageKey = await uploadImage(req.file, 'comments');
-    const comment = await one(
-        `INSERT INTO comment (post_id, author_id, text, image_key)
-         VALUES ($1, $2, $3, $4) RETURNING *`,
-        [post.id, req.user.id, req.body.text ?? null, imageKey]
-    );
+    const imageKeys = await uploadImages(req.files, 'comments');
 
-    publish(`post:${post.id}:comments`, 'comment:new', {
-        ...comment, author_username: req.user.username, author_role: m.role,
+    const comment = await tx(async (client) => {
+        const { rows: [inserted] } = await client.query(
+            `INSERT INTO comment (post_id, author_id, text) VALUES ($1, $2, $3) RETURNING id`,
+            [post.id, req.user.id, req.body.text ?? null]
+        );
+        if (imageKeys.length > 0) {
+            const values = imageKeys.map((_, i) => `($1, $${i * 2 + 2}, $${i * 2 + 3})`).join(', ');
+            const params = [inserted.id, ...imageKeys.flatMap((key, i) => [key, i])];
+            await client.query(`INSERT INTO comment_image (comment_id, image_key, position) VALUES ${values}`, params);
+        }
+        const { rows: [full] } = await client.query(
+            `${COMMENT_SELECT} WHERE c.id = $1`,
+            [inserted.id, post.group_id]
+        );
+        return full;
     });
+
+    publish(`post:${post.id}:comments`, 'comment:new', comment);
     return comment;
 }));
 
-// DELETE /comments/:commentId -- удалить (автор, либо помощник+ выше автора по рангу).
+// DELETE /comments/:commentId -- удалить комментарий (автор или модератор группы)
 router.delete('/comments/:commentId', route(async (req) => {
     const c = await one(
         `SELECT c.author_id, c.post_id, p.group_id

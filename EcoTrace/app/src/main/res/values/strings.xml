@@ -43,6 +43,13 @@
     <string name="postToTheGroup">Пост в группу</string>
     <string name="image">Изображение</string>
     <string name="writeSomething...">Написать что-нибудь…</string>
+    <string name="postPublishError">Произошла ошибка! Повторите снова</string>
+    <string name="discardPostTitle">Отменить пост?</string>
+    <string name="discardPostMessage">Введённый текст и фото пропадут.</string>
+    <string name="discard">Не сохранять</string>
+    <string name="keepEditing">Продолжить редактирование</string>
+    <string name="charCounter">%1$d / %2$d</string>
+    <string name="tooManyImages">Можно прикрепить не больше %1$d фото</string>
 
     <!--    activity_ecological_calculator.xml-->
     <string name="calculators">Калькуляторы</string>
@@ -54,8 +61,9 @@
     <string name="calcNotDoneSince">Не проходили %s</string>
     <string name="calcLoadFailed">Не удалось загрузить</string>
     <string name="carbonFootprintGraph">Ваш углеродный след</string>
-    <string name="specifyBreakdownTitle">Разбивка по видам за неделю</string>
-    <string name="advicesTitle">Советы</string>
+    <string name="aiAnalysisTitle">Анализ от ИИ</string>
+    <string name="aiAnalysisDisclaimer">Анализ и советы генерируются ИИ автоматически и могут содержать неточности</string>
+    <string name="aiAnalysisWillAppearHere">Анализ появится здесь после нескольких дней внесения данных</string>
 
     <!--    activity_friends.xml-->
     <string name="myFriends">Мои друзья</string>

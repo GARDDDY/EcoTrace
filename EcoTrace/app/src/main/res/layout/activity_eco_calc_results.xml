@@ -192,24 +192,32 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginBottom="@dimen/default_PaddingMargin"
-                android:text="@string/advicesTitle"
+                android:text="@string/aiAnalysisTitle"
                 android:textColor="@color/ok_green"
                 android:textSize="20sp"
                 android:textStyle="bold" />
 
             <TextView
-                android:id="@+id/noAdvicesWarning"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/specifyDataWhileTakingTestsSoDataWillAppearHere"
+                android:layout_marginBottom="@dimen/default_PaddingMargin"
+                android:text="@string/aiAnalysisDisclaimer"
+                android:textAlignment="center"
+                android:textColor="@color/silver"
+                android:textSize="12sp" />
+
+            <TextView
+                android:id="@+id/noAiSummaryWarning"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/aiAnalysisWillAppearHere"
                 android:textAlignment="center"
                 android:textColor="@color/silver"
                 android:textSize="14sp"
                 android:visibility="gone" />
 
             <com.facebook.shimmer.ShimmerFrameLayout
-                android:id="@+id/advicesLoading"
+                android:id="@+id/aiSummaryLoading"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingVertical="10dp"
@@ -218,13 +226,13 @@
 
                 <ImageView
                     android:layout_width="match_parent"
-                    android:layout_height="180dp"
+                    android:layout_height="120dp"
                     android:foreground="@drawable/layout_loading_shimmer"
                     tools:ignore="ContentDescription" />
             </com.facebook.shimmer.ShimmerFrameLayout>
 
             <LinearLayout
-                android:id="@+id/specifyBlocksContainer"
+                android:id="@+id/aiSummaryContainer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical" />

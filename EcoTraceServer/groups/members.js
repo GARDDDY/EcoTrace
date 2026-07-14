@@ -35,7 +35,7 @@ router.get('/groups/:groupId/members', route(async (req) => {
         'SELECT COUNT(*)::int AS count FROM group_member WHERE group_id = $1 AND ($2::group_role IS NULL OR role = $2)',
         [groupId, role]
     );
-    return { items: rows.slice(0, limit), hasMore: rows.length > limit, total: total.count };
+    return { items: rows.slice(0, limit), has_more: rows.length > limit, total: total.count };
 }));
 
 // POST /groups/:groupId/members -- вступить самому.

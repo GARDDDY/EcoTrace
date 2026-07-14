@@ -1,6 +1,5 @@
 package com.gy.ecotrace.ui.more.groups.viewModels
 
-import android.graphics.Bitmap
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -12,7 +11,6 @@ import com.gy.ecotrace.repos.GroupRepository
 import com.gy.ecotrace.repos.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import java.io.ByteArrayOutputStream
 import javax.inject.Inject
 
 @HiltViewModel
@@ -93,14 +91,6 @@ class ShowGroupViewModel @Inject constructor(
         }
     }
 
-    fun createPost(text: String?, image: Bitmap?, callback: (Boolean) -> Unit) {
-        viewModelScope.launch {
-            val result = runCatching { repository.createPost(groupId, text, image?.toPng()) }
-            result.getOrNull()?.let { _newPost.postValue(it) }
-            callback(result.isSuccess)
-        }
-    }
-
     fun deletePost(postId: Long, callback: (Boolean) -> Unit) {
         viewModelScope.launch { callback(runCatching { repository.deletePost(postId) }.getOrDefault(false)) }
     }
@@ -150,11 +140,5 @@ class ShowGroupViewModel @Inject constructor(
 
     fun deleteGroup(callback: (Boolean) -> Unit) {
         viewModelScope.launch { callback(runCatching { repository.delete(groupId) }.getOrDefault(false)) }
-    }
-
-    private fun Bitmap.toPng(): ByteArray {
-        val stream = ByteArrayOutputStream()
-        compress(Bitmap.CompressFormat.PNG, 100, stream)
-        return stream.toByteArray()
     }
 }

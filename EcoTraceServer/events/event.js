@@ -104,7 +104,7 @@ router.get('/events', route(async (req) => {
     );
 
     const items = rows.slice(0, limit).map((e) => ({ ...e, timing: timing(e.starts_at, e.ends_at) }));
-    return { items, hasMore: rows.length > limit };
+    return { items, has_more: rows.length > limit };
 }));
 
 // GET /events/bounds -- крайние значения для подсказок в фильтрах (мин/макс время, мин/макс участников).

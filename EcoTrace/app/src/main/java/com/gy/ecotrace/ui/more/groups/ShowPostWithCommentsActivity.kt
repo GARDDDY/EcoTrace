@@ -2,29 +2,22 @@ package com.gy.ecotrace.ui.more.groups
 
 import android.app.Activity
 import android.content.Intent
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.net.Uri
 import android.os.Bundle
-import android.provider.MediaStore
 import android.text.Editable
 import android.text.TextWatcher
-import android.view.Gravity
 import android.view.View
-import android.view.ViewGroup
-import android.widget.Button
 import android.widget.EditText
+import android.widget.HorizontalScrollView
 import android.widget.ImageButton
-import android.widget.ImageView
 import android.widget.LinearLayout
-import android.widget.PopupWindow
+import android.widget.ScrollView
 import android.widget.TextView
 import android.widget.Toast
 import android.widget.Toolbar
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.bumptech.glide.Glide
 import com.facebook.shimmer.ShimmerFrameLayout
 import com.google.gson.Gson
@@ -54,9 +47,14 @@ class ShowPostWithCommentsActivity : AppCompatActivity() {
 
     private val currentUser: Long get() = tokenStore.userId
     private val commentViews = HashMap<Long, View>()
+    private var isPinned = false
+    private var toolbarMenuInflated = false
+    private lateinit var currentPost: GroupPost
 
     private lateinit var attachImage: ImageButton
     private lateinit var sendComment: ImageButton
+    private lateinit var commentImagesScroll: View
+    private lateinit var commentImagesContainer: LinearLayout
 
     private fun groupRoleRank(role: String?): Int = when (role) {
         "creator" -> 3; "manager" -> 2; "assistant" -> 1; else -> 0
@@ -91,44 +89,40 @@ class ShowPostWithCommentsActivity : AppCompatActivity() {
 
         showPostViewModel.postId = post.id
         showPostViewModel.groupId = groupId
-        showPostViewModel.loadRole()
 
-        findViewById<TextView>(R.id.postCreatorName).text = post.authorUsername
-        findViewById<TextView>(R.id.postCreateTime).text = formatTime(post.createdAt)
-        Glide.with(this).load(R.drawable.baseline_person_24).circleCrop()
-            .into(findViewById(R.id.postCreatorImage))
+        bindPost(post)
 
-        if (post.text != null) {
-            findViewById<TextView>(R.id.postContentText).apply {
-                text = post.text
-                visibility = View.VISIBLE
+        showPostViewModel.loadRole {
+            setupPostToolbar()
+
+            val commentsLayout: LinearLayout = findViewById(R.id.commentsLayout)
+            showPostViewModel.loadComments()
+            showPostViewModel.observeComments()
+
+            showPostViewModel.comments.observe(this) { page ->
+                findViewById<ShimmerFrameLayout>(R.id.loadingComments).visibility = View.GONE
+                page.forEach { renderComment(commentsLayout, it, atTop = false) }
             }
+            showPostViewModel.newComment.observe(this) { comment ->
+                if (comment.postId == currentPost.id) renderComment(commentsLayout, comment, atTop = false)
+            }
+            showPostViewModel.deletedComment.observe(this) { id ->
+                commentViews.remove(id)?.let { (it.parent as? LinearLayout)?.removeView(it) }
+            }
+
+            setupCommentsPagination()
         }
-        if (post.imageKey != null) {
-            findViewById<ImageView>(R.id.postContentImage).apply {
-                Glide.with(this@ShowPostWithCommentsActivity)
-                    .load(imageUrl("posts", post.imageKey))
-                    .placeholder(R.drawable.layout_loading_shimmer)
-                    .into(this)
-                visibility = View.VISIBLE
-            }
-        }
 
-        val canModeratePost = post.authorId == currentUser ||
-            (groupRoleRank(showPostViewModel.myRole) >= 1 &&
-                groupRoleRank(showPostViewModel.myRole) > groupRoleRank(post.authorRole))
-        if (canModeratePost) {
-            val postToolbar = findViewById<androidx.appcompat.widget.Toolbar>(R.id.postToolbar)
-            postToolbar.inflateMenu(R.menu.popup_menu_group_posts)
-            postToolbar.setOnMenuItemClickListener {
-                if (it.itemId == R.id.deletePost) {
-                    showPostViewModel.deletePost { ok ->
-                        if (ok) finish()
-                        else Toast.makeText(this, "Не удалось удалить пост!", Toast.LENGTH_SHORT).show()
-                    }
-                }
-                true
-            }
+        val swipeRefresh = findViewById<SwipeRefreshLayout>(R.id.postSwipeRefresh)
+        swipeRefresh.setOnRefreshListener {
+            showPostViewModel.refreshPost { refreshed -> refreshed?.let { bindPost(it) } }
+
+            val commentsLayout: LinearLayout = findViewById(R.id.commentsLayout)
+            commentsLayout.removeAllViews()
+            commentViews.clear()
+            showPostViewModel.resetComments()
+            showPostViewModel.loadComments()
+            swipeRefresh.isRefreshing = false
         }
 
         showPostViewModel.loadCurrentUserAvatar()
@@ -138,27 +132,12 @@ class ShowPostWithCommentsActivity : AppCompatActivity() {
                 .into(findViewById(R.id.currentUserImage))
         }
 
-        val commentsLayout: LinearLayout = findViewById(R.id.commentsLayout)
-        showPostViewModel.loadComments()
-        showPostViewModel.observeComments()
-
-        showPostViewModel.comments.observe(this) { page ->
-            findViewById<ShimmerFrameLayout>(R.id.loadingComments).visibility = View.GONE
-            page.forEach { renderComment(commentsLayout, it, atTop = false) }
-        }
-        showPostViewModel.newComment.observe(this) { comment ->
-            if (comment.postId == post.id) renderComment(commentsLayout, comment, atTop = false)
-        }
-        showPostViewModel.deletedComment.observe(this) { id ->
-            commentViews.remove(id)?.let { (it.parent as? LinearLayout)?.removeView(it) }
-        }
-
         val commentText = findViewById<EditText>(R.id.postCreateCommentEntry)
         sendComment = findViewById(R.id.postSendComment)
         commentText.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(p0: Editable?) {
                 showPostViewModel.textComment = p0?.toString()
-                sendComment.visibility = if (p0.isNullOrEmpty()) View.GONE else View.VISIBLE
+                sendComment.visibility = if (p0.isNullOrEmpty() && showPostViewModel.imagesComment.isEmpty()) View.GONE else View.VISIBLE
             }
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
@@ -167,9 +146,7 @@ class ShowPostWithCommentsActivity : AppCompatActivity() {
             showPostViewModel.sendComment { ok ->
                 if (ok) {
                     commentText.setText("")
-                    showPostViewModel.imageComment = null
-                    attachImage.imageTintList =
-                        ContextCompat.getColorStateList(applicationContext, R.color.silver)
+                    clearAttachedImages()
                     Toast.makeText(applicationContext, "Комментарий опубликован", Toast.LENGTH_SHORT).show()
                 } else {
                     Toast.makeText(applicationContext, "Произошла ошибка!", Toast.LENGTH_SHORT).show()
@@ -178,8 +155,95 @@ class ShowPostWithCommentsActivity : AppCompatActivity() {
         }
 
         attachImage = findViewById(R.id.postAttachImage)
-        attachImage.setOnClickListener {
-            if (showPostViewModel.imageComment == null) showImageSourceDialog() else showPopup()
+        attachImage.setOnClickListener { showImageSourceDialog() }
+
+        commentImagesScroll = findViewById(R.id.commentImagesScroll)
+        commentImagesContainer = findViewById(R.id.commentImagesContainer)
+    }
+
+    private fun bindPost(post: GroupPost) {
+        currentPost = post
+        isPinned = post.pinnedAt != null
+
+        findViewById<TextView>(R.id.postCreatorName).text = post.authorUsername
+        findViewById<TextView>(R.id.postCreateTime).text = formatTime(post.createdAt)
+        Glide.with(this).load(imageUrl("users", post.authorAvatarKey)).circleCrop()
+            .placeholder(R.drawable.baseline_person_24)
+            .into(findViewById(R.id.postCreatorImage))
+
+        val textView = findViewById<TextView>(R.id.postContentText)
+        if (!post.text.isNullOrEmpty()) {
+            textView.text = post.text
+            textView.visibility = View.VISIBLE
+        } else {
+            textView.visibility = View.GONE
+        }
+
+        if (post.imageKeys.isNotEmpty()) {
+            renderImageStrip(
+                this,
+                findViewById(R.id.postImagesScroll),
+                findViewById(R.id.postImagesContainer),
+                post.imageKeys.map { imageUrl("posts", it)!! }
+            )
+        } else {
+            findViewById<HorizontalScrollView>(R.id.postImagesScroll).visibility = View.GONE
+        }
+
+        if (toolbarMenuInflated) updatePostToolbarState()
+    }
+
+    private fun setupPostToolbar() {
+        val postToolbar = findViewById<androidx.appcompat.widget.Toolbar>(R.id.postToolbar)
+        postToolbar.inflateMenu(R.menu.popup_menu_group_posts)
+        toolbarMenuInflated = true
+        postToolbar.setOnMenuItemClickListener {
+            when (it.itemId) {
+                R.id.deletePost -> {
+                    showPostViewModel.deletePost { ok ->
+                        if (ok) finish()
+                        else Toast.makeText(this, "Не удалось удалить пост!", Toast.LENGTH_SHORT).show()
+                    }
+                }
+                R.id.pinPost -> {
+                    if (isPinned) {
+                        showPostViewModel.unpinPost { ok ->
+                            if (ok) { isPinned = false; updatePostToolbarState() }
+                            else Toast.makeText(this, "Не удалось открепить пост!", Toast.LENGTH_SHORT).show()
+                        }
+                    } else {
+                        showPostViewModel.pinPost { ok ->
+                            if (ok) { isPinned = true; updatePostToolbarState() }
+                            else Toast.makeText(this, "Не удалось закрепить пост!", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                }
+            }
+            true
+        }
+        updatePostToolbarState()
+    }
+
+    private fun updatePostToolbarState() {
+        val postToolbar = findViewById<androidx.appcompat.widget.Toolbar>(R.id.postToolbar)
+        val canDelete = currentPost.authorId == currentUser ||
+            (groupRoleRank(showPostViewModel.myRole) >= 1 &&
+                groupRoleRank(showPostViewModel.myRole) > groupRoleRank(currentPost.authorRole))
+        val canPin = groupRoleRank(showPostViewModel.myRole) >= 1
+        postToolbar.menu.findItem(R.id.deletePost).isVisible = canDelete
+        postToolbar.menu.findItem(R.id.pinPost).apply {
+            isVisible = canPin
+            title = if (isPinned) "Открепить" else "Закрепить"
+        }
+    }
+
+    private fun setupCommentsPagination() {
+        val scrollView: ScrollView = findViewById(R.id.scrollViewCommentsMain)
+        scrollView.setOnScrollChangeListener { view, _, _, _, _ ->
+            val bottomGap = scrollView.getChildAt(scrollView.childCount - 1).bottom - (scrollView.height + view.scrollY)
+            if (bottomGap <= 64 && !showPostViewModel.foundAll && !showPostViewModel.fetching) {
+                showPostViewModel.loadComments()
+            }
         }
     }
 
@@ -195,13 +259,15 @@ class ShowPostWithCommentsActivity : AppCompatActivity() {
             }
             hasText = true
         }
-        var hasImage = false
-        if (comment.imageKey != null) {
-            commentLayout.findViewById<ImageView>(R.id.postContentImage).apply {
-                Glide.with(this@ShowPostWithCommentsActivity).load(imageUrl("comments", comment.imageKey)).into(this)
-                visibility = View.VISIBLE
-            }
-            hasImage = true
+        val hasImage = comment.imageKeys.isNotEmpty()
+        if (hasImage) {
+            renderImageStrip(
+                this,
+                commentLayout.findViewById(R.id.postImagesScroll),
+                commentLayout.findViewById(R.id.postImagesContainer),
+                comment.imageKeys.map { imageUrl("comments", it)!! },
+                maxSingleWidthPx = 220.toPx()
+            )
         }
         if (!hasImage && !hasText) return
 
@@ -211,6 +277,7 @@ class ShowPostWithCommentsActivity : AppCompatActivity() {
         if (canModerate) {
             val postToolbar = commentLayout.findViewById<androidx.appcompat.widget.Toolbar>(R.id.postToolbar)
             postToolbar.inflateMenu(R.menu.popup_menu_group_posts)
+            postToolbar.menu.findItem(R.id.pinPost).isVisible = false
             postToolbar.setOnMenuItemClickListener {
                 if (it.itemId == R.id.deletePost) {
                     showPostViewModel.deleteComment(comment.id) { ok ->
@@ -227,7 +294,8 @@ class ShowPostWithCommentsActivity : AppCompatActivity() {
             startActivity(Intent(this, ProfileActivity::class.java))
         }
         commentLayout.findViewById<TextView>(R.id.postCreatorName).text = comment.authorUsername
-        Glide.with(this).load(R.drawable.baseline_person_24).circleCrop()
+        Glide.with(this).load(imageUrl("users", comment.authorAvatarKey)).circleCrop()
+            .placeholder(R.drawable.baseline_person_24)
             .into(commentLayout.findViewById(R.id.postCreatorImage))
         commentLayout.findViewById<TextView>(R.id.postCreateTime).text = formatTime(comment.createdAt)
 
@@ -236,59 +304,41 @@ class ShowPostWithCommentsActivity : AppCompatActivity() {
     }
 
     private fun showImageSourceDialog() {
-        val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-        val galleryIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI).apply {
-            type = "image/*"
-        }
-        val chooserIntent = Intent.createChooser(galleryIntent, "Добавьте изображение, используя")
-        chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, arrayOf(cameraIntent))
-        startActivityForResult(chooserIntent, 100)
+        startActivityForResult(buildImagePickerChooser(this), REQUEST_PICK_IMAGES)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode == Activity.RESULT_OK && requestCode == 100) {
-            data?.let {
-                val extras = it.extras
-                val bitmap = if (extras != null && extras.containsKey("data")) {
-                    extras.get("data") as Bitmap
-                } else {
-                    BitmapFactory.decodeStream(it.data?.let { uri -> contentResolver.openInputStream(uri) })
-                }
-                addImageToLayout(bitmap)
-            }
-        }
-    }
+        if (requestCode != REQUEST_PICK_IMAGES || resultCode != Activity.RESULT_OK) return
 
-    private fun addImageToLayout(imageBitmap: Bitmap) {
-        showPostViewModel.imageComment = imageBitmap
-        attachImage.imageTintList = ContextCompat.getColorStateList(applicationContext, R.color.ok_green)
+        val picked = extractPickedBitmaps(this, data)
+        val room = MAX_ATTACHED_IMAGES - showPostViewModel.imagesComment.size
+        if (room <= 0) {
+            Toast.makeText(this, getString(R.string.tooManyImages, MAX_ATTACHED_IMAGES), Toast.LENGTH_SHORT).show()
+            return
+        }
+        showPostViewModel.imagesComment.addAll(picked.take(room))
+        renderAttachedImages()
         sendComment.visibility = View.VISIBLE
+        attachImage.imageTintList = androidx.core.content.ContextCompat.getColorStateList(applicationContext, R.color.ok_green)
     }
 
-    private fun showPopup() {
-        val popupView = layoutInflater.inflate(R.layout.layout_attached_image_comment, null)
-        val popupWindow = PopupWindow(
-            popupView, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, true
-        )
-        popupWindow.setBackgroundDrawable(
-            android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT)
-        )
-        popupWindow.isOutsideTouchable = true
-        val imageAttached = popupView.findViewById<ImageView>(R.id.attachedImage)
-        imageAttached.setImageBitmap(showPostViewModel.imageComment)
+    private fun renderAttachedImages() {
+        renderEditableThumbnails(this, commentImagesScroll, commentImagesContainer, showPostViewModel.imagesComment) { index ->
+            showPostViewModel.imagesComment.removeAt(index)
+            renderAttachedImages()
+            if (showPostViewModel.imagesComment.isEmpty()) clearAttachedImages()
+        }
+    }
 
-        popupView.findViewById<Button>(R.id.removeImage).setOnClickListener {
-            imageAttached.setImageDrawable(null)
-            showPostViewModel.imageComment = null
-            attachImage.imageTintList = ContextCompat.getColorStateList(applicationContext, R.color.silver)
-            popupWindow.dismiss()
-        }
-        popupView.findViewById<Button>(R.id.reattachImage).setOnClickListener {
-            showImageSourceDialog()
-            sendComment.visibility = if (showPostViewModel.textComment == null) View.GONE else View.VISIBLE
-            popupWindow.dismiss()
-        }
-        popupWindow.showAtLocation(findViewById(R.id.main), Gravity.CENTER, 0, 0)
+    private fun clearAttachedImages() {
+        showPostViewModel.imagesComment.clear()
+        commentImagesScroll.visibility = View.GONE
+        attachImage.imageTintList = androidx.core.content.ContextCompat.getColorStateList(applicationContext, R.color.silver)
+        sendComment.visibility = if (showPostViewModel.textComment.isNullOrEmpty()) View.GONE else View.VISIBLE
+    }
+
+    companion object {
+        private const val REQUEST_PICK_IMAGES = 100
     }
 }

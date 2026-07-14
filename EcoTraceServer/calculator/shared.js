@@ -2,6 +2,9 @@ const CALCULATORS = ['Пища', 'Вода', 'Отходы', 'Энергия', '
 
 const KS = [2.5 / 1000, 0.15 / 1000, 1 / 1000, 0.5, 0.25];
 
+// Итог каждого калькулятора после умножения на KS выражен в кг CO2 (не в тоннах).
+const CARBON_UNIT = 'кг CO2';
+
 const CALC_COLORS = ['85,255,85', '85,85,255', '0,0,0', '154,205,50', '188,143,143'];
 
 const SPECIFY_AVAILABLE = ['0_0', '0_1', '0_2'];
@@ -42,6 +45,6 @@ function lastDays(n) {
 }
 
 module.exports = {
-    CALCULATORS, KS, CALC_COLORS, SPECIFY, SPECIFY_AVAILABLE,
-    MSK_TODAY, lastDays,
+    CALCULATORS, KS, CARBON_UNIT, CALC_COLORS, SPECIFY, SPECIFY_AVAILABLE,
+    MSK_TODAY, mskTodayString, lastDays,
 };
